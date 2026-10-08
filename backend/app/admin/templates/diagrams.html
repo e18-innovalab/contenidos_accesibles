@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>InnovaLab · Diagramas de arquitectura</title>
+    <style>
+        body { font-family: system-ui, sans-serif; max-width: 1100px; margin: 2rem auto; padding: 0 1rem; color: #1a1a1a; }
+        h1 { font-size: 1.4rem; }
+        ul { padding-left: 1.2rem; }
+        li { margin-top: 0.8rem; }
+        a { font-weight: 600; }
+        .muted { color: #777; font-size: 0.85rem; }
+    </style>
+</head>
+<body>
+    <p><a href="/admin">← Conexiones de IA</a></p>
+    <h1>Diagramas de arquitectura</h1>
+    <p class="muted">
+        Generados con Archify a partir del código del backend. Cada caja tiene un badge
+        <strong>SRC</strong> con el archivo y las líneas de donde sale. Para regenerarlos,
+        ver <code>docs/diagramas/README.md</code>.
+    </p>
+    <ul>
+        {% for slug, (title, description) in diagrams.items() %}
+        <li>
+            <a href="/admin/diagramas/{{ slug }}">{{ title }}</a>
+            <div class="muted">{{ description }}</div>
+        </li>
+        {% endfor %}
+    </ul>
+</body>
+</html>

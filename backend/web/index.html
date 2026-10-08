@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>InnovaLab · Web de pruebas</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<main>
+    <h1>InnovaLab · Web de pruebas</h1>
+    <p class="muted">
+        Recorre el flujo completo de la API: carga del material → diagnóstico → propuestas de adaptación
+        → revisión docente (aceptar, editar, descartar, deshacer) → registro de decisiones.
+        Cada llamada queda en el <a href="#log">registro de requests</a> con su JSON.
+    </p>
+
+    <!-- 0. Conexión -->
+    <section>
+        <h2>0. Backend</h2>
+        <div class="row">
+            <label class="grow">URL del backend
+                <input id="api-url" type="url" placeholder="https://...up.railway.app" autocomplete="off">
+            </label>
+            <button id="btn-health" type="button">Probar conexión</button>
+        </div>
+        <label class="check">
+            <input id="mock" type="checkbox" checked>
+            Modo mock (<code>?mock=true</code>): reglas reales, IA simulada, 0 tokens.
+            Desmarcar para usar la IA real configurada en <code>/admin</code>.
+        </label>
+        <p id="health-status" class="muted"></p>
+    </section>
+
+    <!-- 1. Material -->
+    <section>
+        <h2>1. Material</h2>
+        <div class="tabs" role="tablist">
+            <button type="button" class="tab active" data-tab="text" role="tab">Texto</button>
+            <button type="button" class="tab" data-tab="pdf" role="tab">PDF</button>
+        </div>
+
+        <div id="tab-text" class="tab-panel">
+            <label>Texto del material (10 a 20.000 caracteres)
+                <textarea id="text-input" rows="10"></textarea>
+            </label>
+            <div class="row">
+                <span id="text-count" class="muted">0 caracteres</span>
+                <button type="button" id="btn-sample-text" class="secondary">Cargar ejemplo</button>
+            </div>
+            <div class="row">
+                <button type="button" id="btn-process-text" class="secondary">Ver extracción (opcional)</button>
+                <button type="button" id="btn-analyze-text">Analizar texto</button>
+            </div>
+        </div>
+
+        <div id="tab-pdf" class="tab-panel" hidden>
+            <label>Archivo PDF (máximo 10 MB)
+                <input id="pdf-input" type="file" accept="application/pdf,.pdf">
+            </label>
+            <p id="pdf-info" class="muted"></p>
+            <div class="row">
+                <button type="button" id="btn-process-pdf" class="secondary">Ver extracción (opcional)</button>
+                <button type="button" id="btn-analyze-pdf">Analizar PDF</button>
+            </div>
+        </div>
+
+        <div id="extraction" hidden></div>
+    </section>
+
+    <!-- 2. Diagnóstico -->
+    <section>
+        <h2>2. Diagnóstico</h2>
+        <div class="row">
+            <label class="grow">Recuperar un diagnóstico previo por <code>analysis_id</code>
+                <input id="analysis-id-input" type="text" placeholder="uuid" autocomplete="off">
+            </label>
+            <button type="button" id="btn-load-analysis" class="secondary">Recuperar</button>
+        </div>
+        <div id="diagnosis"><p class="muted">Todavía no hay diagnóstico.</p></div>
+    </section>
+
+    <!-- 3. Barreras y adaptaciones -->
+    <section>
+        <h2>3. Barreras → propuestas de adaptación</h2>
+        <p class="muted">
+            Elegí el tipo de adaptación por barrera. El fragmento es opcional, salvo en barreras globales
+            sin texto citado (el backend responde 422 si falta).
+        </p>
+        <div id="barriers"><p class="muted">Sin barreras para mostrar.</p></div>
+    </section>
+
+    <!-- 4. Revisión docente -->
+    <section>
+        <h2>4. Revisión docente</h2>
+        <div class="row">
+            <span class="muted grow">Propuestas del diagnóstico (<code>GET /adaptations?analysis_id=</code>).</span>
+            <button type="button" id="btn-refresh-proposals" class="secondary">Actualizar</button>
+        </div>
+        <div id="proposals"><p class="muted">Sin propuestas todavía.</p></div>
+    </section>
+
+    <!-- 5. Registro de decisiones -->
+    <section>
+        <h2>5. Registro de decisiones</h2>
+        <div class="row">
+            <span class="muted grow">Historial para el informe (<code>GET /adaptations/decisions</code>).</span>
+            <button type="button" id="btn-refresh-decisions" class="secondary">Actualizar</button>
+        </div>
+        <div id="decisions"><p class="muted">Sin decisiones todavía.</p></div>
+    </section>
+
+    <!-- Registro de requests -->
+    <section id="log">
+        <div class="row">
+            <h2 class="grow">Registro de requests</h2>
+            <button type="button" id="btn-clear-log" class="secondary">Limpiar</button>
+        </div>
+        <div id="log-entries"><p class="muted">Todavía no se hizo ninguna llamada.</p></div>
+    </section>
+</main>
+
+<div id="busy" hidden>
+    <span id="busy-text">Procesando…</span>
+</div>
+
+<script src="config.js"></script>
+<script src="app.js"></script>
+</body>
+</html>

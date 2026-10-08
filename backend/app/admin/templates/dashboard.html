@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>InnovaLab · Conexiones de IA</title>
+    <style>
+        body { font-family: system-ui, sans-serif; max-width: 1100px; margin: 2rem auto; padding: 0 1rem; color: #1a1a1a; }
+        h1 { font-size: 1.4rem; }
+        table { width: 100%; border-collapse: collapse; margin-top: 1rem; }
+        th, td { text-align: left; padding: 0.5rem 0.6rem; border-bottom: 1px solid #ddd; font-size: 0.9rem; vertical-align: top; }
+        th { background: #f5f5f5; }
+        .badge { display: inline-block; padding: 0.15rem 0.5rem; border-radius: 999px; font-size: 0.75rem; font-weight: 600; }
+        .badge-active { background: #d7f3df; color: #1a6b34; }
+        .badge-standby { background: #e8e8e8; color: #555; }
+        .badge-near-limit { background: #fdecc8; color: #8a5b00; }
+        .badge-exhausted { background: #fbdadb; color: #a4262c; }
+        .badge-disabled { background: #eee; color: #999; }
+        .bar-track { background: #eee; border-radius: 4px; height: 6px; width: 100%; margin-top: 0.25rem; }
+        .bar-fill { background: #6b6bd6; height: 6px; border-radius: 4px; }
+        form.inline { display: inline; }
+        details.edit-form { margin-top: 0.4rem; }
+        fieldset { margin-top: 1.5rem; }
+        label { display: block; margin-top: 0.5rem; font-size: 0.85rem; }
+        input[type=text], input[type=password], input[type=number], select, textarea { width: 100%; padding: 0.35rem; box-sizing: border-box; font: inherit; }
+        textarea { font-family: ui-monospace, monospace; font-size: 0.8rem; }
+        button { margin-top: 0.6rem; padding: 0.4rem 0.9rem; cursor: pointer; }
+        .danger { background: #fbdadb; border: 1px solid #a4262c; color: #a4262c; }
+        .muted { color: #777; font-size: 0.85rem; }
+        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 0 1rem; }
+        code { font-size: 0.8rem; }
+    </style>
+</head>
+<body>
+    <p>
+        <a href="/admin/diagramas">Diagramas de arquitectura →</a>
+        {% if test_web_url %}
+        &nbsp;·&nbsp; <a href="{{ test_web_url }}" target="_blank" rel="noopener">Web de pruebas: flujo completo texto y PDF →</a>
+        {% endif %}
+    </p>
+    <h1>Conexiones de IA</h1>
+    <p class="muted">
+        Cada conexión es un proveedor + modelo + API key. Se usa la de <strong>menor prioridad</strong>
+        disponible; si alcanza su umbral, el proveedor la limita (429) o falla, se pasa automáticamente
+        a la siguiente, aunque sea de otro proveedor.
+    </p>
+
+    <datalist id="provider-options">
+        {% for p in presets %}<option value="{{ p.id }}">{{ p.label }}</option>{% endfor %}
+    </datalist>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Prioridad</th>
+                <th>Conexión</th>
+                <th>Proveedor / Modelo</th>
+                <th>Estado</th>
+                <th>RPM</th>
+                <th>TPM</th>
+                <th>RPD</th>
+                <th>Uso</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for k in keys %}
+            <tr>
+                <td>{{ k.priority }}</td>
+                <td>{{ k.label }}{% if k.managed_by_env %} <span class="badge badge-standby" title="Se restaura desde .env (AI_API_KEY) en cada arranque">.env</span>{% endif %}<br><code>{{ k.masked_key }}</code></td>
+                <td>{{ k.provider }}<br><code>{{ k.model }}</code></td>
+                <td><span class="badge badge-{{ k.status }}">{{ k.status }}</span></td>
+                <td>{{ k.minute_request_count }}{% if k.rpm_threshold %} / {{ k.rpm_threshold }}{% endif %}</td>
+                <td>{{ k.minute_token_count }}{% if k.tpm_threshold %} / {{ k.tpm_threshold }}{% endif %}</td>
+                <td>{{ k.request_count }}{% if k.rpd_threshold %} / {{ k.rpd_threshold }}{% endif %}</td>
+                <td>
+                    {{ k.usage_pct }}%
+                    <div class="bar-track"><div class="bar-fill" style="width: {{ [k.usage_pct, 100] | min }}%;"></div></div>
+                </td>
+                <td>
+                    <details class="edit-form">
+                        <summary>Editar</summary>
+                        <form method="post" action="/admin/keys/{{ k.id }}/update">
+                            <label>Nombre
+                                <input type="text" name="label" value="{{ k.label }}" required>
+                            </label>
+                            <label>Proveedor
+                                <input type="text" name="provider" value="{{ k.provider }}" list="provider-options" required>
+                            </label>
+                            <label>Base URL (vacío para Gemini nativo)
+                                <input type="text" name="base_url" value="{{ k.base_url }}">
+                            </label>
+                            <label>Modelo
+                                <input type="text" name="model" value="{{ k.model }}" required>
+                            </label>
+                            <label>Prioridad (menor = se usa primero)
+                                <input type="number" name="priority" value="{{ k.priority }}" required>
+                            </label>
+                            <label>Nueva API key (dejar vacío para no cambiarla)
+                                <input type="password" name="key_value" placeholder="••••••••">
+                            </label>
+                            <label>Parámetros extra (JSON)
+                                <textarea name="extra_params" rows="2">{{ k.extra_params }}</textarea>
+                            </label>
+                            <div class="grid">
+                                <label>RPM (opcional)
+                                    <input type="number" name="rpm_threshold" value="{{ k.rpm_threshold or '' }}">
+                                </label>
+                                <label>TPM (opcional)
+                                    <input type="number" name="tpm_threshold" value="{{ k.tpm_threshold or '' }}">
+                                </label>
+                                <label>RPD (opcional)
+                                    <input type="number" name="rpd_threshold" value="{{ k.rpd_threshold or '' }}">
+                                </label>
+                                <label>TPD (opcional)
+                                    <input type="number" name="tpd_threshold" value="{{ k.tpd_threshold or '' }}">
+                                </label>
+                            </div>
+                            <label>
+                                <input type="checkbox" name="enabled" {% if k.enabled %}checked{% endif %} style="width:auto;display:inline-block;">
+                                Habilitada
+                            </label>
+                            <button type="submit">Guardar</button>
+                        </form>
+                    </details>
+                    <form class="inline" method="post" action="/admin/keys/{{ k.id }}/delete"
+                          onsubmit="return confirm('¿Borrar esta conexión?');">
+                        <button type="submit" class="danger">Borrar</button>
+                    </form>
+                </td>
+            </tr>
+        {% else %}
+            <tr><td colspan="9" class="muted">Todavía no hay ninguna conexión de IA cargada.</td></tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <fieldset>
+        <legend>Agregar conexión de IA</legend>
+        <form method="post" action="/admin/keys" id="create-form">
+            <label>Plantilla
+                <select id="preset-select">
+                    {% for p in presets %}<option value="{{ p.id }}">{{ p.label }}</option>{% endfor %}
+                </select>
+            </label>
+            <p class="muted" id="preset-notes"></p>
+            <div class="grid">
+                <label>Nombre
+                    <input type="text" name="label" placeholder="Ej: Groq principal" required>
+                </label>
+                <label>Proveedor
+                    <input type="text" name="provider" list="provider-options" required>
+                </label>
+                <label>Modelo
+                    <input type="text" name="model" required>
+                </label>
+                <label>Prioridad (menor = se usa primero)
+                    <input type="number" name="priority" value="100" required>
+                </label>
+            </div>
+            <label>Base URL (vacío para Gemini nativo; cualquier API compatible con OpenAI)
+                <input type="text" name="base_url" placeholder="https://.../v1">
+            </label>
+            <label>API key
+                <input type="password" name="key_value" required>
+            </label>
+            <label>Parámetros extra (JSON, opcional). Se envían tal cual al proveedor.
+                <textarea name="extra_params" rows="2" placeholder='{"reasoning_effort": "low"}'></textarea>
+            </label>
+            <div class="grid">
+                <label>RPM — requests/minuto
+                    <input type="number" name="rpm_threshold">
+                </label>
+                <label>TPM — tokens/minuto
+                    <input type="number" name="tpm_threshold">
+                </label>
+                <label>RPD — requests/día
+                    <input type="number" name="rpd_threshold">
+                </label>
+                <label>TPD — tokens/día
+                    <input type="number" name="tpd_threshold">
+                </label>
+            </div>
+            <p class="muted">Los umbrales sugeridos por cada plantilla son orientativos: verificá los límites reales en la consola del proveedor.</p>
+            <button type="submit">Agregar</button>
+        </form>
+    </fieldset>
+
+    <script>
+        const PRESETS = {{ presets_json | tojson }};
+        const form = document.getElementById("create-form");
+        const select = document.getElementById("preset-select");
+        const notes = document.getElementById("preset-notes");
+
+        function applyPreset(id) {
+            const p = PRESETS.find((x) => x.id === id);
+            if (!p) return;
+            form.provider.value = p.id;
+            form.base_url.value = p.base_url || "";
+            form.model.value = p.model || "";
+            form.rpm_threshold.value = p.rpm ?? "";
+            form.tpm_threshold.value = p.tpm ?? "";
+            form.rpd_threshold.value = p.rpd ?? "";
+            form.tpd_threshold.value = p.tpd ?? "";
+            form.extra_params.value = Object.keys(p.extra_params).length ? JSON.stringify(p.extra_params) : "";
+            notes.textContent = p.notes;
+        }
+
+        select.addEventListener("change", () => applyPreset(select.value));
+        applyPreset(select.value);
+    </script>
+</body>
+</html>

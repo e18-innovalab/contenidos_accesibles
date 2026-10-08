@@ -1,0 +1,130 @@
+Biología - 2do año
+Cuadernillo de la Unidad 4: Los ecosistemas y sus relaciones
+
+Presentación
+En esta unidad vamos a estudiar cómo se organizan los seres vivos en la naturaleza y cómo se relacionan entre sí y con su ambiente. Vamos a trabajar con conceptos como ecosistema, población, comunidad, cadena alimentaria y flujo de energía. Al final del cuadernillo vas a encontrar actividades para resolver en clase y en casa. Te recomendamos leer cada apartado con tranquilidad, marcar las palabras que no conozcas y consultarlas en el glosario de la última página.
+
+Parte 1: ¿Qué es un ecosistema?
+
+Un ecosistema es un sistema formado por los seres vivos que habitan en un lugar determinado y por el ambiente físico en el que viven. Los seres vivos forman el componente biótico del ecosistema: plantas, animales, hongos, bacterias y otros microorganismos. El ambiente físico forma el componente abiótico: el agua, el suelo, el aire, la luz, la temperatura y los minerales.
+
+Ambos componentes están en permanente interacción. Por ejemplo, las plantas toman agua y minerales del suelo, dióxido de carbono del aire y energía de la luz del sol para fabricar su alimento. A su vez, cuando las hojas caen y se descomponen, devuelven nutrientes al suelo. De esta manera, los seres vivos dependen del ambiente, pero también lo modifican.
+
+Los ecosistemas pueden tener tamaños muy distintos. Un bosque, una laguna o un pastizal son ecosistemas, pero también lo es un charco de agua o un tronco caído, dentro del cual viven insectos, hongos y bacterias. Incluso el planeta entero puede pensarse como un gran ecosistema, al que llamamos biosfera.
+
+Además, los ecosistemas pueden ser naturales o artificiales. Los naturales se forman sin intervención humana directa, como la selva misionera o los Esteros del Iberá. Los artificiales son creados y mantenidos por las personas, como un campo de cultivo, una plaza o una pecera.
+
+Parte 2: Niveles de organización
+
+Para estudiar los ecosistemas, los biólogos utilizan distintos niveles de organización. Cada nivel incluye al anterior.
+
+- Individuo u organismo: es un ser vivo en particular, por ejemplo, un carpincho.
+- Población: es el conjunto de individuos de la misma especie que viven en un mismo lugar al mismo tiempo, por ejemplo, todos los carpinchos de una laguna.
+- Comunidad: es el conjunto de poblaciones de distintas especies que conviven en un lugar, por ejemplo, los carpinchos, los yacarés, las garzas, los juncos y los peces de la laguna.
+- Ecosistema: es la comunidad junto con el ambiente físico en el que vive.
+
+Conocer estos niveles nos permite formular preguntas diferentes. Si estudiamos una población, podemos preguntarnos cuántos individuos hay y si su número aumenta o disminuye. Si estudiamos una comunidad, nos interesa saber qué relaciones se establecen entre las especies.
+
+Parte 3: Relaciones entre los seres vivos
+
+En toda comunidad, los organismos establecen relaciones entre sí. Estas relaciones pueden darse entre individuos de la misma especie, y se denominan intraespecíficas, o entre individuos de distintas especies, y se denominan interespecíficas, siendo estas últimas objeto de particular atención en el estudio de la dinámica de las comunidades en tanto que de ellas dependen en gran medida los procesos de regulación poblacional, la estructura trófica y la estabilidad del sistema frente a perturbaciones de origen natural o antrópico, razón por la cual la ecología de comunidades ha desarrollado numerosas clasificaciones que, si bien no siempre coinciden entre los distintos autores, permiten organizar la enorme diversidad de interacciones observables en la naturaleza.
+
+Relaciones intraespecíficas
+- Cooperación: los individuos colaboran para obtener un beneficio común. Por ejemplo, los lobos cazan en grupo.
+- Competencia: los individuos compiten por un recurso escaso, como el alimento, el territorio o la pareja.
+- Sociedades: algunos animales forman grupos organizados con división de tareas, como las abejas y las hormigas.
+
+Relaciones interespecíficas
+- Depredación: un organismo, el depredador, caza y se alimenta de otro, la presa. Por ejemplo, el puma caza guanacos.
+- Competencia interespecífica: dos especies distintas usan el mismo recurso. Por ejemplo, el zorro y el gato montés pueden competir por los mismos roedores.
+- Parasitismo: un organismo, el parásito, vive a expensas de otro, el hospedador, y lo perjudica, aunque generalmente no lo mata. Por ejemplo, las pulgas en un perro.
+- Mutualismo: ambas especies se benefician. Por ejemplo, las abejas se alimentan del néctar de las flores y, al mismo tiempo, transportan el polen, lo que permite la reproducción de las plantas.
+- Comensalismo: una especie se beneficia y la otra no se ve afectada. Por ejemplo, algunas aves construyen sus nidos en los árboles sin causarles daño.
+
+Parte 4: Cadenas y redes alimentarias
+
+Todos los seres vivos necesitan energía para vivir. La principal fuente de energía de casi todos los ecosistemas es el Sol. Sin embargo, no todos los organismos pueden aprovechar esa energía de la misma manera.
+
+Según la forma en que obtienen su alimento, los organismos se clasifican en:
+
+- Productores: son los organismos autótrofos, es decir, que fabrican su propio alimento a partir de la energía del Sol mediante la fotosíntesis. Por ejemplo, las plantas y las algas.
+- Consumidores: son organismos heterótrofos, que se alimentan de otros seres vivos. Los consumidores primarios, o herbívoros, se alimentan de productores. Los consumidores secundarios se alimentan de consumidores primarios. Los consumidores terciarios se alimentan de consumidores secundarios.
+- Descomponedores: son hongos y bacterias que se alimentan de restos de organismos muertos y de desechos. Al hacerlo, transforman la materia orgánica en sustancias simples que vuelven al suelo y pueden ser usadas nuevamente por los productores.
+
+Una cadena alimentaria es una representación de quién se alimenta de quién en un ecosistema. Se dibuja con flechas que van desde el organismo que es comido hacia el que lo come. La flecha indica el sentido en que pasa la materia y la energía. Por ejemplo:
+
+pasto → liebre → zorro → puma
+
+En la naturaleza, las cadenas alimentarias no están aisladas. Un mismo organismo puede alimentarse de varias especies y ser alimento de varias otras. Cuando unimos varias cadenas alimentarias que comparten organismos, obtenemos una red alimentaria o trama trófica, que representa de forma más realista las relaciones de alimentación en un ecosistema.
+
+Parte 5: El flujo de energía y el ciclo de la materia
+
+La energía y la materia se comportan de manera diferente en los ecosistemas.
+
+La energía fluye en una sola dirección: entra al ecosistema como luz solar, los productores la transforman en energía química y luego pasa de un nivel a otro a través de la alimentación. En cada paso, gran parte de la energía se pierde en forma de calor, porque los organismos la usan para moverse, crecer, mantener su temperatura y realizar sus funciones vitales. Se estima que solo alrededor del 10 % de la energía de un nivel pasa al nivel siguiente. Por esta razón, las cadenas alimentarias no suelen tener más de cuatro o cinco eslabones.
+
+La materia, en cambio, circula en ciclos. Los elementos como el carbono, el nitrógeno y el agua pasan del ambiente a los seres vivos y de los seres vivos al ambiente una y otra vez. Los descomponedores cumplen un papel fundamental en este proceso, porque sin ellos los nutrientes quedarían atrapados en los restos de los organismos muertos y no podrían ser reutilizados.
+
+Parte 6: Los seres humanos y los ecosistemas
+
+Las personas también formamos parte de los ecosistemas y los modificamos con nuestras actividades. Algunas de estas modificaciones pueden tener consecuencias negativas:
+
+- La deforestación, es decir, la tala de bosques para obtener madera o ampliar la superficie agrícola, destruye el hábitat de muchas especies.
+- La contaminación del agua, el suelo y el aire afecta la salud de los seres vivos, incluidas las personas.
+- La introducción de especies exóticas, que no son propias de un lugar, puede alterar las relaciones de la comunidad. Por ejemplo, el castor, introducido en Tierra del Fuego, transformó los bosques y los ríos de la isla porque no tiene depredadores naturales allí.
+- La caza y la pesca excesivas pueden reducir las poblaciones de algunas especies hasta ponerlas en peligro de extinción.
+
+Sin embargo, también existen acciones para proteger los ecosistemas. Las áreas protegidas, como los parques nacionales, conservan ambientes naturales y las especies que los habitan. El reciclaje, el uso responsable del agua y la energía, y la educación ambiental son otras formas de cuidar el ambiente. Cada uno de nosotros puede contribuir con pequeñas acciones cotidianas.
+
+Parte 7: Algunos ecosistemas de la Argentina
+
+Nuestro país tiene una enorme variedad de ecosistemas, porque se extiende a lo largo de miles de kilómetros de norte a sur y tiene grandes diferencias de altura, clima y tipos de suelo.
+
+- La selva paranaense, en Misiones, es uno de los ecosistemas con mayor biodiversidad. Tiene un clima cálido y húmedo, con lluvias durante todo el año. Allí viven el yaguareté, el tucán y cientos de especies de árboles, helechos y orquídeas.
+- Los pastizales pampeanos ocupan gran parte de Buenos Aires, La Pampa, Córdoba y Santa Fe. Su vegetación natural está formada por pastos, aunque hoy la mayor parte fue reemplazada por cultivos y ganadería.
+- La estepa patagónica es un ambiente seco y ventoso, con arbustos bajos y pastos duros. Allí viven el guanaco, el choique y el zorro gris.
+- Los bosques andino-patagónicos, al oeste de la Patagonia, tienen árboles como la lenga, el coihue y el alerce, algunos de los cuales pueden vivir más de dos mil años.
+- Los humedales, como los Esteros del Iberá o el Delta del Paraná, son zonas cubiertas de agua de manera permanente o temporaria. Regulan las inundaciones, filtran el agua y son refugio de muchas aves, peces y mamíferos.
+
+Conocer estos ecosistemas nos ayuda a valorarlos y a entender por qué es importante conservarlos.
+
+Actividades
+
+Actividad 1 (individual)
+Leé la Parte 1 y respondé:
+a) ¿Qué diferencia hay entre el componente biótico y el componente abiótico de un ecosistema?
+b) Nombrá tres ejemplos de cada uno que puedas observar en la plaza más cercana a tu casa.
+
+Actividad 2 (individual)
+Ordená de menor a mayor los siguientes niveles de organización y escribí un ejemplo de cada uno usando organismos de los Esteros del Iberá: comunidad, individuo, ecosistema, población.
+
+Actividad 3 (en parejas)
+Leé la Parte 3, elaborá un cuadro con todas las relaciones intraespecíficas e interespecíficas mencionadas, indicá para cada una si los organismos se benefician, se perjudican o no se ven afectados, buscá un ejemplo nuevo que no figure en el texto para cada relación, justificá por qué corresponde a esa categoría y compará tu cuadro con el de otra pareja para detectar diferencias y discutirlas.
+
+Actividad 4 (individual)
+Con los siguientes organismos, armá dos cadenas alimentarias y luego unilas en una red alimentaria: pasto, maíz, ratón, liebre, lechuza, zorro, serpiente, hongos.
+Marcá en tu red cuáles son los productores, los consumidores primarios, los consumidores secundarios y los descomponedores.
+
+Actividad 5 (individual)
+Explicá con tus palabras por qué se dice que la energía "fluye" y la materia "circula" en los ecosistemas.
+
+Actividad 6 (grupal)
+En grupos de cuatro integrantes, elijan uno de los problemas ambientales de la Parte 6. Investiguen un caso real en Argentina, describan qué ecosistema se ve afectado, qué especies sufren las consecuencias y qué acciones se están llevando a cabo o podrían llevarse a cabo para solucionarlo. Presenten la información en un afiche o en una presentación digital de no más de seis diapositivas.
+
+Criterios de evaluación
+- Uso correcto de los conceptos trabajados en la unidad.
+- Claridad en las explicaciones.
+- Presentación ordenada y a tiempo.
+- Participación en las actividades grupales.
+
+Fechas de entrega
+- Actividades 1 a 5: jueves 18.
+- Actividad 6: presentación oral el martes 23.
+
+Glosario
+Autótrofo: organismo que fabrica su propio alimento.
+Heterótrofo: organismo que se alimenta de otros seres vivos.
+Fotosíntesis: proceso por el cual las plantas y las algas fabrican su alimento usando la luz del sol, el agua y el dióxido de carbono.
+Hábitat: lugar donde vive un organismo.
+Especie exótica: especie que vive en un lugar distinto de su lugar de origen, generalmente porque fue trasladada por los seres humanos.
+Trófico: relacionado con la alimentación.

@@ -1,0 +1,24 @@
+Unidad 3: Estequiometría
+
+¿Qué es un mol?
+Un mol es una unidad que usamos en química para contar partículas muy pequeñas, como átomos o moléculas. Un mol contiene 6,02 × 10²³ partículas. Este número se llama número de Avogadro.
+
+Masa molar
+La masa molar es la masa de un mol de una sustancia. Se expresa en gramos por mol (g/mol). Por ejemplo, la masa molar del agua (H₂O) es 18 g/mol, porque:
+- el hidrógeno (H) tiene una masa atómica de 1 g/mol, y hay dos átomos: 2 × 1 = 2;
+- el oxígeno (O) tiene una masa atómica de 16 g/mol, y hay un átomo: 16;
+- en total: 2 + 16 = 18 g/mol.
+
+Ecuación química balanceada
+En una reacción química, la cantidad de átomos de cada elemento es la misma antes y después de la reacción. Por eso balanceamos las ecuaciones. Ejemplo:
+
+2 H₂ + O₂ → 2 H₂O
+
+Esta ecuación indica que 2 moles de hidrógeno reaccionan con 1 mol de oxígeno y forman 2 moles de agua.
+
+Ejercicios
+1. Calculá la masa molar del dióxido de carbono (CO₂). Datos: C = 12 g/mol; O = 16 g/mol.
+2. ¿Cuántos moles hay en 36 g de agua?
+3. Según la ecuación del ejemplo, ¿cuántos moles de agua se forman a partir de 4 moles de hidrógeno?
+
+Mostrá todos los pasos del cálculo en cada ejercicio.

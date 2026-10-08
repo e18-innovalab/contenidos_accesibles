@@ -1,0 +1,23 @@
+# Entorno virtual
+venv/
+.venv/
+env/
+
+# Variables de entorno secretas
+.env
+
+# Caché de Python
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+
+# Archivos temporales de subida
+uploads/
+temp/
+
+# Base de datos local (API keys de Gemini y contadores de uso)
+*.db
+*.db-journal
+*.db-wal
+*.db-shm
