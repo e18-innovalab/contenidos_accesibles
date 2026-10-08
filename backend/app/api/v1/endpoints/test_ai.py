@@ -1,5 +1,6 @@
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, Depends, HTTPException
 
+from app.core.rate_limit import limit_ai_usage
 from app.services.key_rotation_service import AllKeysExhaustedError
 from app.services.llm.base import LLMUnavailableError
 from app.services.llm_service import llm_service
@@ -11,11 +12,13 @@ router = APIRouter()
     "/test-connection",
     summary="Validar conexión con el proveedor de IA",
     response_description="Conexión usada y respuesta del modelo",
+    dependencies=[Depends(limit_ai_usage)],
 )
 @router.post(
     "/test-gemini",
     summary="Validar conexión con el proveedor de IA (obsoleto: usar /ai/test-connection)",
     deprecated=True,
+    dependencies=[Depends(limit_ai_usage)],
 )
 async def test_ai_connection():
     """

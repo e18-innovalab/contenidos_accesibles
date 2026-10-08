@@ -228,6 +228,19 @@ La conexión de IA principal sale de `AI_API_KEY`: en cada arranque se crea o ac
 
 Con `ENVIRONMENT=production` (o `staging`), `/docs`, `/redoc` y `/api/v1/openapi.json` piden usuario y contraseña (HTTP Basic Auth con `DOCS_USERNAME` / `DOCS_PASSWORD`). Son credenciales propias para poder compartir Swagger con Frontend/QA sin dar acceso a `/admin`. Si falta `DOCS_PASSWORD`, la app no arranca. Los endpoints de la API siguen públicos y en `development` (localhost) la documentación queda abierta.
 
+### Rate limit de IA
+
+Como la API es pública, los endpoints que consumen IA real (`POST /analysis/sample`, `POST /analysis/pdf`, `POST /adaptations` y `POST /ai/test-connection`) tienen un límite en memoria con ventanas deslizantes de 1 minuto y 24 horas. Al superarlo responden `429` con el header `Retry-After`. Las llamadas con `?mock=true` no cuentan.
+
+| Variable | Default | Alcance |
+| :--- | :--- | :--- |
+| `AI_RATE_LIMIT_PER_IP_MINUTE` | `5` | Por IP, último minuto |
+| `AI_RATE_LIMIT_PER_IP_DAY` | `50` | Por IP, últimas 24 h |
+| `AI_RATE_LIMIT_GLOBAL_MINUTE` | `20` | Todas las IP, último minuto |
+| `AI_RATE_LIMIT_GLOBAL_DAY` | `500` | Todas las IP, últimas 24 h |
+
+`0` desactiva ese límite. El global protege la cuota aunque se falsee la IP (detrás del proxy, la IP sale de `X-Forwarded-For`). Los contadores se reinician con cada deploy.
+
 ---
 
 ## 🧪 Web de pruebas (Render)

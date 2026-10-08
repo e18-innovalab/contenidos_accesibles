@@ -1,5 +1,6 @@
-from fastapi import APIRouter, BackgroundTasks, HTTPException, Query, status
+from fastapi import APIRouter, BackgroundTasks, Depends, HTTPException, Query, status
 
+from app.core.rate_limit import limit_ai_usage
 from app.db import adaptation_repository
 from app.schemas.adaptation import (
     AdaptationProposal,
@@ -25,6 +26,7 @@ router = APIRouter()
     status_code=status.HTTP_201_CREATED,
     summary="Proponer una adaptación con IA para una barrera del diagnóstico",
     response_description="Original + propuesta + explicación del cambio, en estado 'pendiente'",
+    dependencies=[Depends(limit_ai_usage)],
 )
 async def create_adaptation(
     payload: AdaptationRequest,

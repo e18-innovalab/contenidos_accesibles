@@ -5,6 +5,7 @@ from datetime import datetime, timezone
 from fastapi import (
     APIRouter,
     BackgroundTasks,
+    Depends,
     File,
     HTTPException,
     Query,
@@ -15,6 +16,7 @@ from fastapi import (
 from fastapi.exceptions import RequestValidationError
 from pydantic import ValidationError
 
+from app.core.rate_limit import limit_ai_usage
 from app.db import analysis_repository
 from app.schemas.analysis import AccessibilityAnalysisResponse, AnalysisSampleRequest
 from app.services.accessibility_service import EmptyDocumentError, analyze_document
@@ -76,6 +78,7 @@ async def _read_sample_payload(request: Request) -> AnalysisSampleRequest:
     summary="Diagnóstico de accesibilidad de un texto educativo",
     response_description="Diagnóstico estructurado con puntaje, dimensiones y barreras detectadas",
     openapi_extra={"requestBody": _SAMPLE_REQUEST_BODY},
+    dependencies=[Depends(limit_ai_usage)],
 )
 async def analyze_sample(
     request: Request,
@@ -141,6 +144,7 @@ _PDF_MAGIC_HEADER = b"%PDF-"
     response_model=AccessibilityAnalysisResponse,
     summary="Diagnóstico integral de un archivo PDF (Extracción + Reglas Visuales + IA)",
     response_description="Diagnóstico estructurado completo a partir de un archivo PDF",
+    dependencies=[Depends(limit_ai_usage)],
 )
 async def analyze_pdf_document(
     background_tasks: BackgroundTasks,

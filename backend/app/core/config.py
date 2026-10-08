@@ -82,6 +82,14 @@ class Settings(BaseSettings):
             return v
         raise ValueError(f"Formato no válido para BACKEND_CORS_ORIGINS: {v}")
 
+    # --- Rate limit de los endpoints que consumen IA real (app/core/rate_limit.py) ---
+    # Ventanas deslizantes en memoria; las llamadas con ?mock=true no cuentan.
+    # 0 desactiva ese límite. El global protege la cuota aunque se falsee la IP.
+    AI_RATE_LIMIT_PER_IP_MINUTE: int = Field(default=5, ge=0)
+    AI_RATE_LIMIT_PER_IP_DAY: int = Field(default=50, ge=0)
+    AI_RATE_LIMIT_GLOBAL_MINUTE: int = Field(default=20, ge=0)
+    AI_RATE_LIMIT_GLOBAL_DAY: int = Field(default=500, ge=0)
+
     # --- Web de pruebas (web/, Static Site en Render) ---
     # URL pública de la web de pruebas. Si está definida, /admin muestra el enlace
     # y su origen se suma a CORS sin tener que repetirlo en BACKEND_CORS_ORIGINS.
