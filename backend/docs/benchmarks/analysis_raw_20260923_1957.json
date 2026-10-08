@@ -1,0 +1,1019 @@
+[
+  {
+    "sample": "01_consigna_simple",
+    "mode": "default",
+    "run": 1,
+    "word_count": 88,
+    "response": {
+      "estimated_score": 98,
+      "summary": "El material presenta una actividad clara y bien estructurada sobre el ciclo del agua. Las instrucciones son concisas, el lenguaje es directo y se proporcionan todos los detalles necesarios para que los estudiantes comprendan la tarea y los requisitos de entrega.",
+      "dimensions": [
+        {
+          "category": "comprension",
+          "status": "correcta",
+          "comment": "El lenguaje utilizado es simple, directo y apropiado para el nivel. No se detectan oraciones excesivamente largas, vocabulario rebuscado ni tecnicismos sin definir en las instrucciones."
+        },
+        {
+          "category": "estructura",
+          "status": "correcta",
+          "comment": "La actividad está excelentemente organizada con pasos numerados, un objetivo claro y una sección explícita sobre qué entregar y la fecha límite. Las consignas son breves y cada una indica una acción principal."
+        },
+        {
+          "category": "accesibilidad_visual",
+          "status": "correcta",
+          "comment": "No se detectaron imágenes en el material."
+        }
+      ],
+      "strengths": [
+        "Objetivo de aprendizaje claramente enunciado.",
+        "Instrucciones presentadas en pasos numerados, facilitando el seguimiento.",
+        "Lenguaje simple y directo, sin ambigüedades.",
+        "Especificación clara del producto esperado ('Qué tenés que entregar').",
+        "Inclusión de la fecha de entrega.",
+        "Ofrecimiento de canales de consulta para dudas.",
+        "Uso consistente del voseo, lo que favorece la cercanía con el estudiante en el contexto rioplatense."
+      ],
+      "barriers": [],
+      "warnings": [],
+      "metadata": {
+        "model": "gemini-2.5-flash",
+        "latency_ms": 7980,
+        "prompt_tokens": 851,
+        "output_tokens": 347,
+        "thinking_tokens": 1150,
+        "total_tokens": 2348,
+        "analyzed_word_count": 88,
+        "is_truncated": false,
+        "unverified_fragments": 0
+      }
+    },
+    "error": null
+  },
+  {
+    "sample": "01_consigna_simple",
+    "mode": "0",
+    "run": 1,
+    "word_count": 88,
+    "response": {
+      "estimated_score": 95,
+      "summary": "Este material presenta una actividad clara y bien estructurada sobre el ciclo del agua. Las consignas son directas y el lenguaje es accesible, lo que facilita la comprensión y la realización de la tarea por parte de los estudiantes.",
+      "dimensions": [
+        {
+          "category": "comprension",
+          "status": "correcta",
+          "comment": "El lenguaje utilizado es claro, directo y apropiado para el nivel, sin tecnicismos innecesarios ni oraciones complejas."
+        },
+        {
+          "category": "estructura",
+          "status": "correcta",
+          "comment": "Las consignas están organizadas en pasos numerados, se especifica el producto esperado y la fecha de entrega, lo que facilita la planificación y ejecución de la actividad."
+        },
+        {
+          "category": "accesibilidad_visual",
+          "status": "correcta",
+          "comment": "No se detectaron imágenes en el material."
+        }
+      ],
+      "strengths": [
+        "Las consignas están presentadas en pasos numerados, lo que facilita seguir la secuencia de la actividad.",
+        "Se especifica claramente el objetivo de la actividad.",
+        "El producto final esperado está explícito, lo que ayuda a los estudiantes a saber qué deben entregar.",
+        "Se proporciona información sobre dónde y cuándo consultar dudas, ofreciendo apoyo al estudiante.",
+        "El vocabulario es sencillo y adecuado para el nivel, evitando tecnicismos no definidos."
+      ],
+      "barriers": [],
+      "warnings": [],
+      "metadata": {
+        "model": "gemini-2.5-flash",
+        "latency_ms": 2367,
+        "prompt_tokens": 851,
+        "output_tokens": 313,
+        "thinking_tokens": null,
+        "total_tokens": 1164,
+        "analyzed_word_count": 88,
+        "is_truncated": false,
+        "unverified_fragments": 0
+      }
+    },
+    "error": null
+  },
+  {
+    "sample": "02_consigna_multiaccion",
+    "mode": "default",
+    "run": 1,
+    "word_count": 153,
+    "response": null,
+    "error": "ServerError: 503 UNAVAILABLE. {'error': {'code': 503, 'message': 'This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again later.', 'status': 'UNAVAILABLE'}}"
+  },
+  {
+    "sample": "02_consigna_multiaccion",
+    "mode": "0",
+    "run": 1,
+    "word_count": 153,
+    "response": {
+      "estimated_score": 55,
+      "summary": "Este material presenta una consigna extensa para un trabajo práctico de Lengua y Literatura. Solicita a los estudiantes realizar múltiples acciones relacionadas con el cuento 'La casa tomada' de Julio Cortázar, incluyendo análisis, redacción de un texto argumentativo y una exposición oral. La consigna es compleja debido a la cantidad de tareas y la forma en que están presentadas.",
+      "dimensions": [
+        {
+          "category": "comprension",
+          "status": "para_revisar",
+          "comment": "La consigna contiene una oración muy larga y densa que dificulta la comprensión de las múltiples acciones solicitadas."
+        },
+        {
+          "category": "estructura",
+          "status": "barrera_detectada",
+          "comment": "La consigna principal agrupa demasiadas acciones en una sola oración, sin una estructura clara que guíe al estudiante paso a paso."
+        },
+        {
+          "category": "accesibilidad_visual",
+          "status": "correcta",
+          "comment": "No se detectaron imágenes en el material."
+        }
+      ],
+      "strengths": [
+        "El material especifica claramente el cuento a trabajar y el marco teórico ('lo fantástico como género y sus diferencias con lo maravilloso y lo extraño según la conceptualización todoroviana') que los estudiantes deben aplicar."
+      ],
+      "barriers": [
+        {
+          "category": "estructura",
+          "severity": "barrera_detectada",
+          "issue": "Consigna con múltiples acciones simultáneas en una misma oración",
+          "original_text": "Luego de haber realizado la lectura del cuento 'La casa tomada' de Julio Cortázar, el cual deberá ser abordado teniendo en cuenta lo trabajado en las clases previas respecto de lo fantástico como género y sus diferencias con lo maravilloso y lo extraño según la conceptualización todoroviana, se solicita que los alumnos identifiquen el narrador, caractericen a los personajes, analicen la construcción del espacio y su progresiva reducción, relacionen dicho proceso con posibles lecturas sociopolíticas del contexto de producción, redacten un texto argumentativo de no menos de dos carillas y no más de tres donde se fundamente una hipótesis de lectura propia citando al menos dos fuentes críticas, y finalmente preparen una exposición oral grupal de diez minutos que será evaluada conjuntamente con el escrito, no siendo aceptadas entregas fuera de término salvo casos debidamente justificados, ni trabajos que no respeten el formato indicado oportunamente.",
+          "explanation": "Esta única oración contiene una gran cantidad de acciones y requisitos (identificar, caracterizar, analizar, relacionar, redactar, preparar, citar, respetar formato, etc.), lo que puede abrumar a los estudiantes y dificultar la identificación de las tareas principales y secundarias.",
+          "recommendation": "Divida la consigna en pasos numerados o con viñetas, separando cada acción o requisito. Esto ayudará a los estudiantes a procesar la información de manera más efectiva y a organizar su trabajo.",
+          "suggested_rewrite": "Para este trabajo práctico, te pedimos que realices las siguientes actividades:\n1. Leé el cuento 'La casa tomada' de Julio Cortázar, aplicando los conceptos de lo fantástico, lo maravilloso y lo extraño trabajados en clase (según Todorov).\n2. Identificá el narrador del cuento.\n3. Caracterizá a los personajes.\n4. Analizá la construcción del espacio y cómo se reduce progresivamente.\n5. Relacioná este proceso de reducción del espacio con posibles lecturas sociopolíticas del contexto en que se escribió el cuento.\n6. Redactá un texto argumentativo (entre dos y tres carillas) donde presentes una hipótesis de lectura propia y la fundamentes, citando al menos dos fuentes críticas.\n7. Prepará una exposición oral grupal de diez minutos. Esta exposición será evaluada junto con el texto escrito.\n\nConsideraciones importantes:\n* No se aceptarán entregas fuera de término, salvo casos justificados.\n* El trabajo debe respetar el formato indicado oportunamente.",
+          "fragment_found": true,
+          "source": "gemini"
+        },
+        {
+          "category": "comprension",
+          "severity": "para_revisar",
+          "issue": "Oración muy larga (más de 30 palabras)",
+          "original_text": "Luego de haber realizado la lectura del cuento 'La casa tomada' de Julio Cortázar, el cual deberá ser abordado teniendo en cuenta lo trabajado en las clases previas respecto de lo fantástico como género y sus diferencias con lo maravilloso y lo extraño según la conceptualización todoroviana, se solicita que los alumnos identifiquen el narrador, caractericen a los personajes, analicen la construcción del espacio y su progresiva reducción, relacionen dicho proceso con posibles lecturas sociopolíticas del contexto de producción, redacten un texto argumentativo de no menos de dos carillas y no más de tres donde se fundamente una hipótesis de lectura propia citando al menos dos fuentes críticas, y finalmente preparen una exposición oral grupal de diez minutos que será evaluada conjuntamente con el escrito, no siendo aceptadas entregas fuera de término salvo casos debidamente justificados, ni trabajos que no respeten el formato indicado oportunamente.",
+          "explanation": "La única oración de la consigna es extremadamente larga (más de 100 palabras) y contiene múltiples subordinadas, lo que dificulta seguir el hilo de la información y comprender todos los requisitos de una sola vez.",
+          "recommendation": "Divida la información en oraciones más cortas y directas. Esto facilitará la lectura y la comprensión de cada requisito por separado.",
+          "suggested_rewrite": "Para este trabajo práctico, te pedimos que realices las siguientes actividades:\n1. Leé el cuento 'La casa tomada' de Julio Cortázar, aplicando los conceptos de lo fantástico, lo maravilloso y lo extraño trabajados en clase (según Todorov).\n2. Identificá el narrador del cuento.\n3. Caracterizá a los personajes.\n4. Analizá la construcción del espacio y cómo se reduce progresivamente.\n5. Relacioná este proceso de reducción del espacio con posibles lecturas sociopolíticas del contexto en que se escribió el cuento.\n6. Redactá un texto argumentativo (entre dos y tres carillas) donde presentes una hipótesis de lectura propia y la fundamentes, citando al menos dos fuentes críticas.\n7. Prepará una exposición oral grupal de diez minutos. Esta exposición será evaluada junto con el texto escrito.\n\nConsideraciones importantes:\n* No se aceptarán entregas fuera de término, salvo casos justificados.\n* El trabajo debe respetar el formato indicado oportunamente.",
+          "fragment_found": true,
+          "source": "gemini"
+        },
+        {
+          "category": "estructura",
+          "severity": "para_revisar",
+          "issue": "Falta de criterios de entrega o producto esperado explícito",
+          "original_text": "redacten un texto argumentativo de no menos de dos carillas y no más de tres donde se fundamente una hipótesis de lectura propia citando al menos dos fuentes críticas, y finalmente preparen una exposición oral grupal de diez minutos que será evaluada conjuntamente con el escrito, no siendo aceptadas entregas fuera de término salvo casos debidamente justificados, ni trabajos que no respeten el formato indicado oportunamente.",
+          "explanation": "Aunque se menciona la extensión del texto y la duración de la exposición, los criterios específicos de evaluación para el texto argumentativo (más allá de la hipótesis y las fuentes) y para la exposición oral no están detallados, lo que puede generar incertidumbre en los estudiantes sobre qué se espera exactamente de su trabajo.",
+          "recommendation": "Agregue una sección clara con los criterios de evaluación para el texto argumentativo y la exposición oral. Esto ayudará a los estudiantes a enfocar sus esfuerzos y a comprender cómo será valorado su trabajo.",
+          "suggested_rewrite": "Para el texto argumentativo:\n* Extensión: entre dos y tres carillas.\n* Contenido: Presentar una hipótesis de lectura propia y fundamentarla.\n* Fuentes: Citar al menos dos fuentes críticas.\n\nPara la exposición oral:\n* Duración: diez minutos.\n* Formato: Grupal.\n* Criterios de evaluación: [Aquí se podrían añadir criterios como claridad, organización, uso de recursos, etc.]",
+          "fragment_found": true,
+          "source": "gemini"
+        }
+      ],
+      "warnings": [],
+      "metadata": {
+        "model": "gemini-2.5-flash",
+        "latency_ms": 17855,
+        "prompt_tokens": 916,
+        "output_tokens": 1788,
+        "thinking_tokens": null,
+        "total_tokens": 2704,
+        "analyzed_word_count": 153,
+        "is_truncated": false,
+        "unverified_fragments": 0
+      }
+    },
+    "error": null
+  },
+  {
+    "sample": "03_texto_tecnico_quimica",
+    "mode": "default",
+    "run": 1,
+    "word_count": 230,
+    "response": null,
+    "error": "ServerError: 503 UNAVAILABLE. {'error': {'code': 503, 'message': 'This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again later.', 'status': 'UNAVAILABLE'}}"
+  },
+  {
+    "sample": "03_texto_tecnico_quimica",
+    "mode": "0",
+    "run": 1,
+    "word_count": 230,
+    "response": null,
+    "error": "ServerError: 503 UNAVAILABLE. {'error': {'code': 503, 'message': 'This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again later.', 'status': 'UNAVAILABLE'}}"
+  },
+  {
+    "sample": "04_material_500_palabras",
+    "mode": "default",
+    "run": 1,
+    "word_count": 511,
+    "response": null,
+    "error": "ServerError: 503 UNAVAILABLE. {'error': {'code': 503, 'message': 'This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again later.', 'status': 'UNAVAILABLE'}}"
+  },
+  {
+    "sample": "04_material_500_palabras",
+    "mode": "0",
+    "run": 1,
+    "word_count": 511,
+    "response": {
+      "estimated_score": 65,
+      "summary": "El material introduce el concepto de integración regional a través del caso del Mercosur, detallando su origen, objetivos y desafíos. Presenta información relevante sobre aspectos económicos y no económicos del bloque. Las actividades propuestas requieren comprensión lectora, análisis y producción escrita.",
+      "dimensions": [
+        {
+          "category": "comprension",
+          "status": "para_revisar",
+          "comment": "Algunas oraciones son extensas y contienen tecnicismos que, aunque propios de la disciplina, podrían beneficiarse de una explicación más directa o de un apoyo adicional para facilitar la comprensión."
+        },
+        {
+          "category": "estructura",
+          "status": "barrera_detectada",
+          "comment": "Las consignas de las actividades presentan múltiples acciones encadenadas, lo que puede dificultar la organización y ejecución de la tarea por parte de los estudiantes."
+        },
+        {
+          "category": "accesibilidad_visual",
+          "status": "correcta",
+          "comment": "No se detectaron imágenes en el material."
+        }
+      ],
+      "strengths": [
+        "El lenguaje de la introducción es claro y accesible, facilitando el primer acercamiento al tema.",
+        "La información está organizada con títulos y subtítulos que guían la lectura.",
+        "Se utilizan listas para presentar los objetivos del bloque, lo que mejora la legibilidad."
+      ],
+      "barriers": [
+        {
+          "category": "estructura",
+          "severity": "barrera_detectada",
+          "issue": "Consigna con múltiples acciones simultáneas",
+          "original_text": "Releé el apartado \"¿Qué es el Mercosur?\", identificá el contexto histórico de su creación, explicá qué significa \"inserción competitiva en los mercados globales\", relacionalo con lo visto en la Unidad 1 sobre globalización y redactá una conclusión personal que integre todo lo anterior.",
+          "explanation": "Esta consigna agrupa cinco acciones diferentes en una sola oración, lo que puede ser abrumador y dificultar que los estudiantes identifiquen y organicen cada paso requerido para completar la tarea.",
+          "recommendation": "Desglosar las consignas con múltiples acciones en pasos numerados o con viñetas para que cada acción sea clara y se pueda abordar de forma secuencial.",
+          "suggested_rewrite": "1. Releé el apartado \"¿Qué es el Mercosur?\".\n2. Identificá el contexto histórico de su creación.\n3. Explicá qué significa \"inserción competitiva en los mercados globales\".\n4. Relacioná este concepto con lo visto en la Unidad 1 sobre globalización.\n5. Redactá una conclusión personal que integre todos los puntos anteriores.",
+          "fragment_found": true,
+          "source": "gemini"
+        },
+        {
+          "category": "comprension",
+          "severity": "para_revisar",
+          "issue": "Oración muy larga y compleja",
+          "original_text": "El Mercado Común del Sur (Mercosur) fue creado en 1991 mediante la firma del Tratado de Asunción por Argentina, Brasil, Paraguay y Uruguay, en un contexto signado por la apertura de las economías latinoamericanas y la reconfiguración del orden internacional posterior a la Guerra Fría, en el cual los procesos de regionalización aparecían como una estrategia de inserción competitiva en los mercados globales que permitiría, a su vez, ampliar la escala productiva de las economías nacionales y fortalecer la capacidad de negociación del bloque frente a terceros actores.",
+          "explanation": "Esta oración tiene más de 70 palabras y contiene varias subordinadas encadenadas, lo que dificulta la comprensión del mensaje principal y la relación entre las ideas para algunos estudiantes. Además, incluye tecnicismos como 'reconfiguración del orden internacional', 'procesos de regionalización' e 'inserción competitiva en los mercados globales' sin una explicación inmediata.",
+          "recommendation": "Dividir la oración en dos o más frases más cortas y directas. Considerar la posibilidad de definir o simplificar los tecnicismos la primera vez que aparecen, o brindar un ejemplo.",
+          "suggested_rewrite": "El Mercado Común del Sur (Mercosur) fue creado en 1991. Argentina, Brasil, Paraguay y Uruguay firmaron el Tratado de Asunción en un momento de apertura económica en Latinoamérica y cambios en el orden mundial después de la Guerra Fría. En este contexto, la integración regional como el Mercosur se veía como una forma de competir mejor en los mercados globales, aumentar la producción de los países miembros y fortalecer su capacidad de negociación con otros países o bloques.",
+          "fragment_found": true,
+          "source": "gemini"
+        },
+        {
+          "category": "comprension",
+          "severity": "para_revisar",
+          "issue": "Tecnicismos no definidos",
+          "original_text": "la armonización de las legislaciones en las áreas pertinentes.",
+          "explanation": "El término 'armonización de las legislaciones' puede no ser claro para todos los estudiantes, especialmente si no están familiarizados con el lenguaje jurídico o político.",
+          "recommendation": "Explicar brevemente el significado de 'armonización de las legislaciones' o proporcionar un ejemplo concreto para facilitar la comprensión.",
+          "suggested_rewrite": "la armonización de las legislaciones en las áreas pertinentes (es decir, que las leyes de los países miembros sean similares en ciertos temas).",
+          "fragment_found": true,
+          "source": "gemini"
+        },
+        {
+          "category": "comprension",
+          "severity": "para_revisar",
+          "issue": "Ambigüedad en la referencia",
+          "original_text": "No todos estos objetivos se cumplieron por completo. Por ejemplo, el AEC tiene muchas excepciones, y las asimetrías entre las economías de los socios generan tensiones que no siempre fueron resueltas, lo cual no implica que el bloque no haya obtenido logros significativos en otras dimensiones no estrictamente comerciales.",
+          "explanation": "La frase 'lo cual no implica que el bloque no haya obtenido logros significativos' utiliza una doble negación que puede dificultar la comprensión rápida del mensaje. Además, la referencia 'lo cual' podría ser más explícita.",
+          "recommendation": "Reformular la frase para evitar la doble negación y hacer la referencia más directa.",
+          "suggested_rewrite": "No todos estos objetivos se cumplieron por completo. Por ejemplo, el AEC tiene muchas excepciones, y las diferencias entre las economías de los socios generan tensiones que no siempre fueron resueltas. Sin embargo, el bloque sí obtuvo logros significativos en otras dimensiones no estrictamente comerciales.",
+          "fragment_found": true,
+          "source": "gemini"
+        }
+      ],
+      "warnings": [],
+      "metadata": {
+        "model": "gemini-2.5-flash",
+        "latency_ms": 50481,
+        "prompt_tokens": 1410,
+        "output_tokens": 1420,
+        "thinking_tokens": null,
+        "total_tokens": 2830,
+        "analyzed_word_count": 511,
+        "is_truncated": false,
+        "unverified_fragments": 0
+      }
+    },
+    "error": null
+  },
+  {
+    "sample": "05_material_2000_palabras",
+    "mode": "default",
+    "run": 1,
+    "word_count": 2025,
+    "response": null,
+    "error": "ServerError: 503 UNAVAILABLE. {'error': {'code': 503, 'message': 'This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again later.', 'status': 'UNAVAILABLE'}}"
+  },
+  {
+    "sample": "05_material_2000_palabras",
+    "mode": "0",
+    "run": 1,
+    "word_count": 2025,
+    "response": {
+      "estimated_score": 85,
+      "summary": "El material presenta una unidad sobre ecosistemas y sus relaciones, abordando conceptos clave de biología de manera estructurada. Incluye una presentación, desarrollo de contenidos en partes temáticas, actividades prácticas y un glosario. El lenguaje es generalmente claro y directo, aunque una consigna es excesivamente compleja.",
+      "dimensions": [
+        {
+          "category": "comprension",
+          "status": "para_revisar",
+          "comment": "El lenguaje es mayormente claro y los tecnicismos se definen, pero una oración es excesivamente larga y compleja, dificultando su comprensión."
+        },
+        {
+          "category": "estructura",
+          "status": "correcta",
+          "comment": "La estructura general del cuadernillo es clara, con títulos, subtítulos y una buena organización de los contenidos. Las consignas son mayormente claras y bien separadas."
+        },
+        {
+          "category": "accesibilidad_visual",
+          "status": "correcta",
+          "comment": "No se detectaron imágenes en el material."
+        }
+      ],
+      "strengths": [
+        "El material está bien estructurado con títulos y subtítulos que facilitan la navegación.",
+        "Incluye un glosario que define los términos técnicos, lo cual es un excelente apoyo para la comprensión.",
+        "Las explicaciones son claras y utilizan ejemplos concretos para ilustrar los conceptos.",
+        "Las actividades están bien diferenciadas por tipo (individual, en parejas, grupal) y se especifican los criterios de evaluación y fechas de entrega."
+      ],
+      "barriers": [
+        {
+          "category": "comprension",
+          "severity": "barrera_detectada",
+          "issue": "Oración muy larga y con muchas subordinadas encadenadas",
+          "original_text": "En toda comunidad, los organismos establecen relaciones entre sí. Estas relaciones pueden darse entre individuos de la misma especie, y se denominan intraespecíficas, o entre individuos de distintas especies, y se denominan interespecíficas, siendo estas últimas objeto de particular atención en el estudio de la dinámica de las comunidades en tanto que de ellas dependen en gran medida los procesos de regulación poblacional, la estructura trófica y la estabilidad del sistema frente a perturbaciones de origen natural o antrópico, razón por la cual la ecología de comunidades ha desarrollado numerosas clasificaciones que, si bien no siempre coinciden entre los distintos autores, permiten organizar la enorme diversidad de interacciones observables en la naturaleza.",
+          "explanation": "Esta oración es extremadamente larga (más de 90 palabras) y contiene múltiples subordinadas encadenadas, lo que dificulta seguir el hilo de la idea principal y comprender la relación entre las diferentes partes de la información.",
+          "recommendation": "Dividir la oración en varias más cortas y directas para facilitar la comprensión de las ideas sobre las relaciones interespecíficas y su importancia en la ecología de comunidades.",
+          "suggested_rewrite": "En toda comunidad, los organismos establecen relaciones entre sí. Estas relaciones pueden ser intraespecíficas (entre individuos de la misma especie) o interespecíficas (entre individuos de distintas especies). Las relaciones interespecíficas son muy importantes para estudiar cómo cambian las comunidades, ya que influyen en la regulación de las poblaciones, la estructura alimentaria y la estabilidad del ecosistema ante problemas naturales o causados por el ser humano. Por esta razón, la ecología de comunidades ha creado muchas clasificaciones para organizar la gran variedad de interacciones que se observan en la naturaleza, aunque no siempre coinciden entre los distintos autores.",
+          "fragment_found": true,
+          "source": "gemini"
+        },
+        {
+          "category": "estructura",
+          "severity": "para_revisar",
+          "issue": "Consigna con múltiples acciones simultáneas sin separar en pasos",
+          "original_text": "Leé la Parte 3, elaborá un cuadro con todas las relaciones intraespecíficas e interespecíficas mencionadas, indicá para cada una si los organismos se benefician, se perjudican o no se ven afectados, buscá un ejemplo nuevo que no figure en el texto para cada relación, justificá por qué corresponde a esa categoría y compará tu cuadro con el de otra pareja para detectar diferencias y discutirlas.",
+          "explanation": "La consigna de la Actividad 3 agrupa seis acciones distintas en una sola oración, lo que puede resultar abrumador y confuso para los estudiantes al intentar identificar todos los pasos que deben seguir.",
+          "recommendation": "Desglosar la consigna en una lista de pasos numerados o con viñetas para que cada acción sea clara y fácil de seguir.",
+          "suggested_rewrite": "Actividad 3 (en parejas)\n1. Leé la Parte 3.\n2. Elaborá un cuadro con todas las relaciones intraespecíficas e interespecíficas mencionadas.\n3. Para cada relación, indicá si los organismos se benefician, se perjudican o no se ven afectados.\n4. Buscá un ejemplo nuevo para cada relación que no esté en el texto.\n5. Justificá por qué tu ejemplo corresponde a esa categoría.\n6. Compará tu cuadro con el de otra pareja para detectar diferencias y discutirlas.",
+          "fragment_found": true,
+          "source": "gemini"
+        }
+      ],
+      "warnings": [],
+      "metadata": {
+        "model": "gemini-2.5-flash",
+        "latency_ms": 6224,
+        "prompt_tokens": 3577,
+        "output_tokens": 1116,
+        "thinking_tokens": null,
+        "total_tokens": 4693,
+        "analyzed_word_count": 2025,
+        "is_truncated": false,
+        "unverified_fragments": 0
+      }
+    },
+    "error": null
+  },
+  {
+    "sample": "01_consigna_simple",
+    "mode": "default",
+    "run": 2,
+    "word_count": 88,
+    "response": {
+      "estimated_score": 95,
+      "summary": "Este material presenta una actividad clara y bien estructurada sobre el ciclo del agua. Las instrucciones son directas, el lenguaje es sencillo y las expectativas de entrega están explícitamente definidas, lo que favorece la autonomía del estudiante.",
+      "dimensions": [
+        {
+          "category": "comprension",
+          "status": "correcta",
+          "comment": "El lenguaje utilizado es claro, directo y apropiado para el nivel, sin oraciones complejas ni vocabulario rebuscado. Los tecnicismos propios de la disciplina se presentan como parte de la tarea a identificar, no como conceptos a definir en la instrucción."
+        },
+        {
+          "category": "estructura",
+          "status": "correcta",
+          "comment": "Las consignas están organizadas en pasos numerados, el objetivo es explícito y se detallan claramente el producto esperado y la fecha de entrega. La jerarquía visual es adecuada y facilita la comprensión de la tarea."
+        },
+        {
+          "category": "accesibilidad_visual",
+          "status": "correcta",
+          "comment": "No se detectaron imágenes en el material."
+        }
+      ],
+      "strengths": [
+        "Uso de lenguaje claro y directo, con voseo apropiado para el contexto.",
+        "Consignas organizadas en pasos numerados, cada uno con una única acción.",
+        "Definición explícita del objetivo de la actividad.",
+        "Claridad en el producto esperado y la fecha de entrega.",
+        "Disponibilidad de canales de consulta para dudas."
+      ],
+      "barriers": [],
+      "warnings": [],
+      "metadata": {
+        "model": "gemini-2.5-flash",
+        "latency_ms": 11765,
+        "prompt_tokens": 851,
+        "output_tokens": 333,
+        "thinking_tokens": 1787,
+        "total_tokens": 2971,
+        "analyzed_word_count": 88,
+        "is_truncated": false,
+        "unverified_fragments": 0
+      }
+    },
+    "error": null
+  },
+  {
+    "sample": "01_consigna_simple",
+    "mode": "0",
+    "run": 2,
+    "word_count": 88,
+    "response": {
+      "estimated_score": 95,
+      "summary": "Este material presenta una actividad clara y bien estructurada sobre el ciclo del agua. Las consignas son directas y el lenguaje es accesible, lo que facilita la comprensión y la realización de la tarea por parte de los estudiantes.",
+      "dimensions": [
+        {
+          "category": "comprension",
+          "status": "correcta",
+          "comment": "El lenguaje utilizado es claro, directo y apropiado para el nivel, sin tecnicismos innecesarios ni oraciones complejas."
+        },
+        {
+          "category": "estructura",
+          "status": "correcta",
+          "comment": "Las consignas están organizadas en pasos numerados, se especifica claramente el producto esperado y la fecha de entrega, lo que facilita la planificación y ejecución de la actividad."
+        },
+        {
+          "category": "accesibilidad_visual",
+          "status": "correcta",
+          "comment": "No se detectaron imágenes en el material."
+        }
+      ],
+      "strengths": [
+        "Las consignas están numeradas, lo que facilita seguir los pasos de la actividad.",
+        "El objetivo de la actividad está claramente enunciado al inicio.",
+        "Se especifica el producto final esperado ('Qué tenés que entregar'), lo que ayuda a los estudiantes a saber qué se espera de ellos.",
+        "Se proporciona información sobre dónde y cuándo consultar dudas, ofreciendo apoyo al estudiante.",
+        "El vocabulario es sencillo y directo, adecuado para el nivel."
+      ],
+      "barriers": [],
+      "warnings": [],
+      "metadata": {
+        "model": "gemini-2.5-flash",
+        "latency_ms": 2174,
+        "prompt_tokens": 851,
+        "output_tokens": 313,
+        "thinking_tokens": null,
+        "total_tokens": 1164,
+        "analyzed_word_count": 88,
+        "is_truncated": false,
+        "unverified_fragments": 0
+      }
+    },
+    "error": null
+  },
+  {
+    "sample": "02_consigna_multiaccion",
+    "mode": "default",
+    "run": 2,
+    "word_count": 153,
+    "response": {
+      "estimated_score": 45,
+      "summary": "El material presenta una única consigna para un Trabajo Práctico de Lengua y Literatura sobre el cuento \"La casa tomada\" de Julio Cortázar. Se solicita a los estudiantes realizar múltiples tareas de análisis, redacción y exposición oral, considerando aspectos teóricos previos y criterios de entrega.",
+      "dimensions": [
+        {
+          "category": "comprension",
+          "status": "barrera_detectada",
+          "comment": "La consigna principal es una única oración extremadamente larga y compleja, lo que dificulta la comprensión de las múltiples acciones solicitadas y sus condiciones."
+        },
+        {
+          "category": "estructura",
+          "status": "barrera_detectada",
+          "comment": "La consigna agrupa una gran cantidad de acciones, requisitos y condiciones en un solo bloque de texto, sin una estructura clara que guíe al estudiante paso a paso."
+        },
+        {
+          "category": "accesibilidad_visual",
+          "status": "correcta",
+          "comment": "No se detectaron imágenes en el material."
+        }
+      ],
+      "strengths": [
+        "El tema y el autor del trabajo práctico están claramente identificados.",
+        "La terminología específica de la disciplina (lo fantástico, Todorov) se menciona en el contexto de lo trabajado en clase, lo cual es adecuado."
+      ],
+      "barriers": [
+        {
+          "category": "estructura",
+          "severity": "barrera_detectada",
+          "issue": "Consigna con múltiples acciones simultáneas y estructura de oración compleja.",
+          "original_text": "Luego de haber realizado la lectura del cuento \"La casa tomada\" de Julio Cortázar, el cual deberá ser abordado teniendo en cuenta lo trabajado en las clases previas respecto de lo fantástico como género y sus diferencias con lo maravilloso y lo extraño según la conceptualización todoroviana, se solicita que los alumnos identifiquen el narrador, caractericen a los personajes, analicen la construcción del espacio y su progresiva reducción, relacionen dicho proceso con posibles lecturas sociopolíticas del contexto de producción, redacten un texto argumentativo de no menos de dos carillas y no más de tres donde se fundamente una hipótesis de lectura propia citando al menos dos fuentes críticas, y finalmente preparen una exposición oral grupal de diez minutos que será evaluada conjuntamente con el escrito, no siendo aceptadas entregas fuera de término salvo casos debidamente justificados, ni trabajos que no respeten el formato indicado oportunamente.",
+          "explanation": "La consigna principal es una única oración de más de 100 palabras que encadena una gran cantidad de acciones, requisitos y condiciones. Esta complejidad sintáctica y la falta de una estructura clara dificultan enormemente la comprensión de las tareas solicitadas y la identificación de los pasos a seguir, así como los criterios de evaluación y entrega.",
+          "recommendation": "Dividir la consigna en pasos numerados o con viñetas, separando cada acción, sus requisitos y las condiciones de entrega en enunciados más cortos y directos. Considere también crear una sección aparte para los criterios de evaluación y formato.",
+          "suggested_rewrite": "Para este Trabajo Práctico N° 4 de Lengua y Literatura, se solicita lo siguiente:\n\n1.  **Realizar la lectura** del cuento \"La casa tomada\" de Julio Cortázar. Para ello, considerar lo trabajado en clases previas respecto de lo fantástico como género y sus diferencias con lo maravilloso y lo extraño, según la conceptualización de Todorov.\n2.  **Identificar** el narrador del cuento.\n3.  **Caracterizar** a los personajes.\n4.  **Analizar** la construcción del espacio y su progresiva reducción.\n5.  **Relacionar** dicho proceso con posibles lecturas sociopolíticas del contexto de producción.\n6.  **Redactar** un texto argumentativo (de no menos de dos carillas y no más de tres) donde se fundamente una hipótesis de lectura propia, citando al menos dos fuentes críticas.\n7.  **Preparar** una exposición oral grupal de diez minutos.\n\n**Consideraciones importantes:**\n*   La exposición oral será evaluada conjuntamente con el escrito.\n*   No se aceptarán entregas fuera de término, salvo casos debidamente justificados.\n*   Los trabajos deben respetar el formato indicado oportunamente.",
+          "fragment_found": true,
+          "source": "gemini"
+        }
+      ],
+      "warnings": [],
+      "metadata": {
+        "model": "gemini-2.5-flash",
+        "latency_ms": 23457,
+        "prompt_tokens": 916,
+        "output_tokens": 936,
+        "thinking_tokens": 3761,
+        "total_tokens": 5613,
+        "analyzed_word_count": 153,
+        "is_truncated": false,
+        "unverified_fragments": 0
+      }
+    },
+    "error": null
+  },
+  {
+    "sample": "02_consigna_multiaccion",
+    "mode": "0",
+    "run": 2,
+    "word_count": 153,
+    "response": {
+      "estimated_score": 55,
+      "summary": "Este material presenta una consigna para un trabajo práctico de Lengua y Literatura sobre el cuento \"La casa tomada\". La actividad requiere múltiples acciones por parte de los estudiantes, desde el análisis del texto hasta la producción de un escrito argumentativo y una exposición oral. La consigna es extensa y compleja, lo que podría dificultar su comprensión y la planificación de la tarea.",
+      "dimensions": [
+        {
+          "category": "comprension",
+          "status": "barrera_detectada",
+          "comment": "La consigna principal es una oración muy larga con múltiples subordinadas y acciones encadenadas, lo que dificulta la identificación de las tareas clave y los requisitos."
+        },
+        {
+          "category": "estructura",
+          "status": "barrera_detectada",
+          "comment": "La consigna agrupa demasiadas acciones en un solo bloque de texto, sin pasos numerados ni una jerarquía visual clara, lo que puede abrumar a los estudiantes y dificultar la organización de su trabajo."
+        },
+        {
+          "category": "accesibilidad_visual",
+          "status": "correcta",
+          "comment": "No se detectaron imágenes en el material."
+        }
+      ],
+      "strengths": [
+        "El material especifica el cuento y el autor a trabajar, lo cual es claro.",
+        "Menciona el marco teórico ('lo fantástico como género y sus diferencias con lo maravilloso y lo extraño según la conceptualización todoroviana') que se espera que los estudiantes apliquen, lo que orienta el análisis."
+      ],
+      "barriers": [
+        {
+          "category": "estructura",
+          "severity": "barrera_detectada",
+          "issue": "Consigna con múltiples acciones simultáneas en una misma oración",
+          "original_text": "Luego de haber realizado la lectura del cuento \"La casa tomada\" de Julio Cortázar, el cual deberá ser abordado teniendo en cuenta lo trabajado en las clases previas respecto de lo fantástico como género y sus diferencias con lo maravilloso y lo extraño según la conceptualización todoroviana, se solicita que los alumnos identifiquen el narrador, caractericen a los personajes, analicen la construcción del espacio y su progresiva reducción, relacionen dicho proceso con posibles lecturas sociopolíticas del contexto de producción, redacten un texto argumentativo de no menos de dos carillas y no más de tres donde se fundamente una hipótesis de lectura propia citando al menos dos fuentes críticas, y finalmente preparen una exposición oral grupal de diez minutos que será evaluada conjuntamente con el escrito, no siendo aceptadas entregas fuera de término salvo casos debidamente justificados, ni trabajos que no respeten el formato indicado oportunamente.",
+          "explanation": "Esta única oración contiene la totalidad de las instrucciones y requisitos del trabajo práctico, incluyendo el contexto teórico, siete acciones principales, criterios de extensión, requisitos de citación, modalidad de entrega y evaluación, y condiciones de aceptación. La extensión y la cantidad de información dificultan la comprensión de lo que se espera en cada paso.",
+          "recommendation": "Divida la consigna en pasos numerados o con viñetas, separando claramente cada acción y sus requisitos. Utilice subtítulos para organizar la información por tipo (ej. 'Análisis del cuento', 'Producción escrita', 'Exposición oral', 'Criterios de entrega').",
+          "suggested_rewrite": "Para este trabajo práctico sobre \"La casa tomada\" de Julio Cortázar, te pedimos que realices las siguientes actividades, aplicando lo trabajado en clase sobre lo fantástico como género y sus diferencias con lo maravilloso y lo extraño (según Todorov):\n\n1.  **Análisis del cuento:**\n    *   Identificá el narrador.\n    *   Caracterizá a los personajes.\n    *   Analizá la construcción del espacio y su progresiva reducción.\n    *   Relacioná este proceso con posibles lecturas sociopolíticas del contexto de producción.\n\n2.  **Texto argumentativo:**\n    *   Redactá un texto argumentativo de 2 a 3 carillas.\n    *   Fundamentá una hipótesis de lectura propia.\n    *   Citá al menos dos fuentes críticas.\n\n3.  **Exposición oral:**\n    *   Prepará una exposición oral grupal de diez minutos.\n    *   La exposición será evaluada conjuntamente con el escrito.\n\n**Consideraciones importantes:**\n*   No se aceptarán entregas fuera de término, salvo casos debidamente justificados.\n*   El trabajo debe respetar el formato indicado oportunamente.",
+          "fragment_found": true,
+          "source": "gemini"
+        },
+        {
+          "category": "comprension",
+          "severity": "para_revisar",
+          "issue": "Oración muy larga",
+          "original_text": "Luego de haber realizado la lectura del cuento \"La casa tomada\" de Julio Cortázar, el cual deberá ser abordado teniendo en cuenta lo trabajado en las clases previas respecto de lo fantástico como género y sus diferencias con lo maravilloso y lo extraño según la conceptualización todoroviana, se solicita que los alumnos identifiquen el narrador, caractericen a los personajes, analicen la construcción del espacio y su progresiva reducción, relacionen dicho proceso con posibles lecturas sociopolíticas del contexto de producción, redacten un texto argumentativo de no menos de dos carillas y no más de tres donde se fundamente una hipótesis de lectura propia citando al menos dos fuentes críticas, y finalmente preparen una exposición oral grupal de diez minutos que será evaluada conjuntamente con el escrito, no siendo aceptadas entregas fuera de término salvo casos debidamente justificados, ni trabajos que no respeten el formato indicado oportunamente.",
+          "explanation": "La única oración de la consigna tiene más de 100 palabras y encadena múltiples ideas y requisitos, lo que dificulta su procesamiento y retención. Esto puede generar que los estudiantes pasen por alto alguna instrucción importante.",
+          "recommendation": "Divida la información en oraciones más cortas y directas. Cada idea o requisito principal debería presentarse en una oración separada para facilitar la lectura y la comprensión.",
+          "suggested_rewrite": "Para este trabajo práctico, leerás el cuento \"La casa tomada\" de Julio Cortázar. Deberás aplicar lo trabajado en clases previas sobre lo fantástico como género, y sus diferencias con lo maravilloso y lo extraño según Todorov. Luego, se te solicita que realices varias actividades: identificar el narrador, caracterizar a los personajes, analizar la construcción del espacio y su progresiva reducción, y relacionar este proceso con posibles lecturas sociopolíticas del contexto de producción. Además, redactarás un texto argumentativo de dos a tres carillas, donde fundamentarás una hipótesis de lectura propia, citando al menos dos fuentes críticas. Finalmente, prepararás una exposición oral grupal de diez minutos. Esta exposición será evaluada junto con el escrito. Tené en cuenta que no se aceptarán entregas fuera de término, salvo casos justificados, ni trabajos que no respeten el formato indicado.",
+          "fragment_found": true,
+          "source": "gemini"
+        },
+        {
+          "category": "estructura",
+          "severity": "para_revisar",
+          "issue": "Falta de pasos numerados o criterios de entrega explícitos",
+          "original_text": "se solicita que los alumnos identifiquen el narrador, caractericen a los personajes, analicen la construcción del espacio y su progresiva reducción, relacionen dicho proceso con posibles lecturas sociopolíticas del contexto de producción, redacten un texto argumentativo de no menos de dos carillas y no más de tres donde se fundamente una hipótesis de lectura propia citando al menos dos fuentes críticas, y finalmente preparen una exposición oral grupal de diez minutos que será evaluada conjuntamente con el escrito, no siendo aceptadas entregas fuera de término salvo casos debidamente justificados, ni trabajos que no respeten el formato indicado oportunamente.",
+          "explanation": "Aunque se mencionan varias acciones y requisitos (identificar, caracterizar, analizar, relacionar, redactar, preparar, extensión, citación, evaluación, plazos, formato), no están presentados de manera estructurada. La ausencia de numeración o viñetas dificulta que los estudiantes puedan chequear fácilmente si cumplen con todos los puntos.",
+          "recommendation": "Organice las acciones y los criterios en una lista clara y numerada o con viñetas. Esto ayudará a los estudiantes a visualizar cada tarea y a planificar su trabajo de forma más efectiva.",
+          "suggested_rewrite": "Se solicita que realices las siguientes acciones:\n1.  Identificar el narrador.\n2.  Caracterizar a los personajes.\n3.  Analizar la construcción del espacio y su progresiva reducción.\n4.  Relacionar dicho proceso con posibles lecturas sociopolíticas del contexto de producción.\n5.  Redactar un texto argumentativo (2-3 carillas) que fundamente una hipótesis de lectura propia, citando al menos dos fuentes críticas.\n6.  Preparar una exposición oral grupal de diez minutos.\n\n**Criterios de entrega y evaluación:**\n*   La exposición oral será evaluada conjuntamente con el escrito.\n*   No se aceptarán entregas fuera de término, salvo casos debidamente justificados.\n*   El trabajo debe respetar el formato indicado oportunamente.",
+          "fragment_found": true,
+          "source": "gemini"
+        },
+        {
+          "category": "comprension",
+          "severity": "para_revisar",
+          "issue": "Nominalizaciones excesivas",
+          "original_text": "Luego de haber realizado la lectura del cuento \"La casa tomada\" de Julio Cortázar, el cual deberá ser abordado teniendo en cuenta lo trabajado en las clases previas respecto de lo fantástico como género y sus diferencias con lo maravilloso y lo extraño según la conceptualización todoroviana, se solicita que los alumnos identifiquen el narrador, caractericen a los personajes, analicen la construcción del espacio y su progresiva reducción, relacionen dicho proceso con posibles lecturas sociopolíticas del contexto de producción, redacten un texto argumentativo de no menos de dos carillas y no más de tres donde se fundamente una hipótesis de lectura propia citando al menos dos fuentes críticas, y finalmente preparen una exposición oral grupal de diez minutos que será evaluada conjuntamente con el escrito, no siendo aceptadas entregas fuera de término salvo casos debidamente justificados, ni trabajos que no respeten el formato indicado oportunamente.",
+          "explanation": "Frases como 'Luego de haber realizado la lectura' o 'se solicita que los alumnos identifiquen' son construcciones más formales y menos directas que sus equivalentes verbales. Esto añade una capa de complejidad al lenguaje que podría simplificarse.",
+          "recommendation": "Utilice verbos de acción directos para indicar lo que los estudiantes deben hacer, en lugar de nominalizaciones o construcciones pasivas. Esto hará la consigna más clara y concisa.",
+          "suggested_rewrite": "Después de leer el cuento \"La casa tomada\" de Julio Cortázar, y considerando lo trabajado en clase sobre lo fantástico como género (y sus diferencias con lo maravilloso y lo extraño según Todorov), te pedimos que:\n*   Identifiques el narrador.\n*   Caracterices a los personajes.\n*   Analices la construcción del espacio y su progresiva reducción.\n*   Relaciones este proceso con posibles lecturas sociopolíticas del contexto de producción.\n*   Redactes un texto argumentativo de 2 a 3 carillas, donde fundamentes una hipótesis de lectura propia y cites al menos dos fuentes críticas.\n*   Prepares una exposición oral grupal de diez minutos. Esta será evaluada junto con el escrito. Recordá que no se aceptarán entregas fuera de término (salvo justificación) ni trabajos que no respeten el formato indicado.",
+          "fragment_found": true,
+          "source": "gemini"
+        }
+      ],
+      "warnings": [],
+      "metadata": {
+        "model": "gemini-2.5-flash",
+        "latency_ms": 12639,
+        "prompt_tokens": 916,
+        "output_tokens": 2542,
+        "thinking_tokens": null,
+        "total_tokens": 3458,
+        "analyzed_word_count": 153,
+        "is_truncated": false,
+        "unverified_fragments": 0
+      }
+    },
+    "error": null
+  },
+  {
+    "sample": "03_texto_tecnico_quimica",
+    "mode": "default",
+    "run": 2,
+    "word_count": 230,
+    "response": {
+      "estimated_score": 95,
+      "summary": "Este material educativo presenta los conceptos básicos de estequiometría de manera muy clara y organizada. Define los términos técnicos clave, como 'mol' y 'masa molar', con explicaciones sencillas y ejemplos concretos. Las consignas de los ejercicios son directas y las instrucciones generales son explícitas, lo que facilita la comprensión y la realización de las tareas.",
+      "dimensions": [
+        {
+          "category": "comprension",
+          "status": "correcta",
+          "comment": "El lenguaje utilizado es claro y conciso. Los tecnicismos se definen adecuadamente la primera vez que aparecen, y las oraciones son de longitud apropiada, sin ambigüedades ni construcciones complejas."
+        },
+        {
+          "category": "estructura",
+          "status": "correcta",
+          "comment": "El material está muy bien estructurado con títulos claros y una jerarquía visual que facilita la lectura. Las consignas de los ejercicios son directas y la instrucción sobre la presentación de los cálculos es explícita."
+        },
+        {
+          "category": "accesibilidad_visual",
+          "status": "correcta",
+          "comment": "No se detectaron imágenes en el material."
+        }
+      ],
+      "strengths": [
+        "Uso de títulos claros y jerarquías para organizar el contenido, facilitando la navegación.",
+        "Definición explícita de tecnicismos ('mol', 'masa molar', 'número de Avogadro') la primera vez que aparecen, con explicaciones sencillas.",
+        "Uso de ejemplos concretos y paso a paso (como el cálculo de la masa molar del agua) para ilustrar conceptos abstractos.",
+        "Oraciones cortas y vocabulario accesible, evitando complejidades innecesarias.",
+        "Consignas de ejercicios numeradas y directas, que solicitan una única acción principal.",
+        "Instrucción clara y explícita sobre la necesidad de mostrar los pasos del cálculo en cada ejercicio."
+      ],
+      "barriers": [],
+      "warnings": [],
+      "metadata": {
+        "model": "gemini-2.5-flash",
+        "latency_ms": 13210,
+        "prompt_tokens": 1085,
+        "output_tokens": 428,
+        "thinking_tokens": 2065,
+        "total_tokens": 3578,
+        "analyzed_word_count": 230,
+        "is_truncated": false,
+        "unverified_fragments": 0
+      }
+    },
+    "error": null
+  },
+  {
+    "sample": "03_texto_tecnico_quimica",
+    "mode": "0",
+    "run": 2,
+    "word_count": 230,
+    "response": {
+      "estimated_score": 95,
+      "summary": "El material presenta los conceptos básicos de estequiometría de manera clara y concisa. Define términos clave como 'mol', 'masa molar' y 'ecuación química balanceada' con ejemplos pertinentes. Las consignas de los ejercicios son directas y bien estructuradas.",
+      "dimensions": [
+        {
+          "category": "comprension",
+          "status": "correcta",
+          "comment": "El lenguaje es sencillo, las oraciones son cortas y los tecnicismos se definen adecuadamente. No se detectan ambigüedades ni construcciones complejas."
+        },
+        {
+          "category": "estructura",
+          "status": "correcta",
+          "comment": "El material está bien organizado con títulos claros y párrafos concisos. Las consignas son directas y especifican la acción principal de forma explícita."
+        },
+        {
+          "category": "accesibilidad_visual",
+          "status": "correcta",
+          "comment": "No se detectaron imágenes en el material."
+        }
+      ],
+      "strengths": [
+        "Definiciones claras y concisas de los conceptos clave.",
+        "Uso de ejemplos numéricos para ilustrar los conceptos (masa molar, ecuación balanceada).",
+        "Lenguaje directo y sencillo, adecuado para el nivel.",
+        "Consignas de ejercicios claras y separadas.",
+        "La instrucción final sobre mostrar los pasos del cálculo es explícita y útil."
+      ],
+      "barriers": [],
+      "warnings": [],
+      "metadata": {
+        "model": "gemini-2.5-flash",
+        "latency_ms": 2633,
+        "prompt_tokens": 1085,
+        "output_tokens": 316,
+        "thinking_tokens": null,
+        "total_tokens": 1401,
+        "analyzed_word_count": 230,
+        "is_truncated": false,
+        "unverified_fragments": 0
+      }
+    },
+    "error": null
+  },
+  {
+    "sample": "04_material_500_palabras",
+    "mode": "default",
+    "run": 2,
+    "word_count": 511,
+    "response": null,
+    "error": "ServerError: 503 UNAVAILABLE. {'error': {'code': 503, 'message': 'This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again later.', 'status': 'UNAVAILABLE'}}"
+  },
+  {
+    "sample": "04_material_500_palabras",
+    "mode": "0",
+    "run": 2,
+    "word_count": 511,
+    "response": {
+      "estimated_score": 65,
+      "summary": "El material introduce el concepto de integración regional a través del caso del Mercosur, detallando su origen, objetivos y desafíos. Presenta información sobre aspectos económicos y no económicos del bloque. Las actividades propuestas buscan que los estudiantes identifiquen información, la relacionen con conceptos previos y elaboren conclusiones y ejemplos.",
+      "dimensions": [
+        {
+          "category": "comprension",
+          "status": "para_revisar",
+          "comment": "Algunas oraciones son extensas y contienen tecnicismos que, aunque propios de la disciplina, podrían beneficiarse de una explicación más directa o de apoyos adicionales para facilitar la comprensión."
+        },
+        {
+          "category": "estructura",
+          "status": "barrera_detectada",
+          "comment": "La consigna de la actividad 2 es excesivamente larga y agrupa múltiples acciones, lo que dificulta su seguimiento y la identificación de los pasos esperados."
+        },
+        {
+          "category": "accesibilidad_visual",
+          "status": "correcta",
+          "comment": "No se detectaron imágenes en el material."
+        }
+      ],
+      "strengths": [
+        "El lenguaje de la introducción es claro y cercano, facilitando el acceso al tema.",
+        "El material utiliza títulos y subtítulos que organizan la información de manera lógica.",
+        "Las consignas de las actividades 1, 3 y 4 son claras y directas, especificando la acción principal."
+      ],
+      "barriers": [
+        {
+          "category": "estructura",
+          "severity": "barrera_detectada",
+          "issue": "Consigna con múltiples acciones simultáneas",
+          "original_text": "Releé el apartado \"¿Qué es el Mercosur?\", identificá el contexto histórico de su creación, explicá qué significa \"inserción competitiva en los mercados globales\", relacionalo con lo visto en la Unidad 1 sobre globalización y redactá una conclusión personal que integre todo lo anterior.",
+          "explanation": "Esta consigna agrupa cinco acciones distintas en una sola oración, lo que puede abrumar a los estudiantes y dificultarles el seguimiento de cada paso requerido. La acción principal se pierde en la extensión de la frase.",
+          "recommendation": "Divida la consigna en pasos numerados o con viñetas para que cada acción sea clara y fácil de seguir. Esto ayuda a los estudiantes a organizar su trabajo y a asegurarse de que han completado todas las partes de la tarea.",
+          "suggested_rewrite": "2. A partir del apartado \"¿Qué es el Mercosur?\":\na. Identificá el contexto histórico de su creación.\nb. Explicá qué significa \"inserción competitiva en los mercados globales\".\nc. Relacioná este concepto con lo visto en la Unidad 1 sobre globalización.\nd. Redactá una conclusión personal que integre todos los puntos anteriores.",
+          "fragment_found": true,
+          "source": "gemini"
+        },
+        {
+          "category": "comprension",
+          "severity": "para_revisar",
+          "issue": "Oración muy larga y compleja",
+          "original_text": "El Mercado Común del Sur (Mercosur) fue creado en 1991 mediante la firma del Tratado de Asunción por Argentina, Brasil, Paraguay y Uruguay, en un contexto signado por la apertura de las economías latinoamericanas y la reconfiguración del orden internacional posterior a la Guerra Fría, en el cual los procesos de regionalización aparecían como una estrategia de inserción competitiva en los mercados globales que permitiría, a su vez, ampliar la escala productiva de las economías nacionales y fortalecer la capacidad de negociación del bloque frente a terceros actores.",
+          "explanation": "Esta oración es excesivamente larga (más de 70 palabras) y contiene múltiples subordinadas encadenadas, lo que dificulta la comprensión de la idea principal y de las relaciones entre los diferentes conceptos. La densidad de información puede ser un obstáculo para algunos estudiantes.",
+          "recommendation": "Considere dividir esta oración en dos o tres más cortas y directas. Puede mantener la riqueza de la información, pero presentándola de forma más digerible. También podría destacar las ideas clave con negritas o cursivas.",
+          "suggested_rewrite": "El Mercado Común del Sur (Mercosur) fue creado en 1991. Argentina, Brasil, Paraguay y Uruguay firmaron el Tratado de Asunción en un momento clave: las economías latinoamericanas se abrían y el orden internacional cambiaba después de la Guerra Fría. En este contexto, la regionalización se veía como una estrategia para que los países se insertaran de forma competitiva en los mercados globales. Esto les permitiría ampliar su producción y fortalecer su capacidad de negociación como bloque.",
+          "fragment_found": true,
+          "source": "gemini"
+        },
+        {
+          "category": "comprension",
+          "severity": "para_revisar",
+          "issue": "Tecnicismos sin definición explícita",
+          "original_text": "el establecimiento de un arancel externo común (AEC);",
+          "explanation": "Aunque el término 'arancel externo común' es un tecnicismo propio del tema, no se ofrece una breve explicación o sinónimo la primera vez que aparece, lo que podría dificultar la comprensión para estudiantes menos familiarizados con la economía.",
+          "recommendation": "Añada una breve explicación o un sinónimo entre paréntesis la primera vez que se menciona un tecnicismo, o incluya un glosario si hay varios términos complejos.",
+          "suggested_rewrite": "el establecimiento de un arancel externo común (AEC), que es un impuesto que todos los países miembros cobran por igual a los productos que vienen de fuera del bloque;",
+          "fragment_found": true,
+          "source": "gemini"
+        },
+        {
+          "category": "comprension",
+          "severity": "para_revisar",
+          "issue": "Tecnicismos sin definición explícita",
+          "original_text": "la coordinación de políticas macroeconómicas y sectoriales;",
+          "explanation": "Los términos 'políticas macroeconómicas' y 'sectoriales' son específicos del ámbito económico y, aunque relevantes, no se definen, lo que podría generar dudas en estudiantes sin conocimientos previos en la materia.",
+          "recommendation": "Considere añadir una breve aclaración sobre qué implican estas políticas o dar un ejemplo concreto para hacer el concepto más accesible.",
+          "suggested_rewrite": "la coordinación de políticas macroeconómicas (relacionadas con la economía general del país, como la inflación) y sectoriales (enfocadas en áreas específicas, como la agricultura o la industria);",
+          "fragment_found": true,
+          "source": "gemini"
+        },
+        {
+          "category": "comprension",
+          "severity": "para_revisar",
+          "issue": "Tecnicismos sin definición explícita",
+          "original_text": "la armonización de las legislaciones en las áreas pertinentes.",
+          "explanation": "El concepto de 'armonización de legislaciones' puede no ser inmediatamente claro para todos los estudiantes, ya que es un término técnico del derecho y la política internacional.",
+          "recommendation": "Ofrezca una explicación sencilla de lo que significa 'armonización de legislaciones' para asegurar que todos los estudiantes comprendan este objetivo del Mercosur.",
+          "suggested_rewrite": "la armonización de las legislaciones en las áreas pertinentes (es decir, que las leyes de los países miembros sean similares en ciertos temas importantes para el bloque).",
+          "fragment_found": true,
+          "source": "gemini"
+        }
+      ],
+      "warnings": [],
+      "metadata": {
+        "model": "gemini-2.5-flash",
+        "latency_ms": 8684,
+        "prompt_tokens": 1410,
+        "output_tokens": 1603,
+        "thinking_tokens": null,
+        "total_tokens": 3013,
+        "analyzed_word_count": 511,
+        "is_truncated": false,
+        "unverified_fragments": 0
+      }
+    },
+    "error": null
+  },
+  {
+    "sample": "05_material_2000_palabras",
+    "mode": "default",
+    "run": 2,
+    "word_count": 2025,
+    "response": null,
+    "error": "ServerError: 503 UNAVAILABLE. {'error': {'code': 503, 'message': 'This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again later.', 'status': 'UNAVAILABLE'}}"
+  },
+  {
+    "sample": "05_material_2000_palabras",
+    "mode": "0",
+    "run": 2,
+    "word_count": 2025,
+    "response": null,
+    "error": "ServerError: 503 UNAVAILABLE. {'error': {'code': 503, 'message': 'This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again later.', 'status': 'UNAVAILABLE'}}"
+  },
+  {
+    "sample": "01_consigna_simple",
+    "mode": "default",
+    "run": 3,
+    "word_count": 88,
+    "response": {
+      "estimated_score": 95,
+      "summary": "Este material presenta una actividad clara y bien estructurada sobre el ciclo del agua. Las consignas son concisas, el lenguaje es accesible y las expectativas de entrega están explícitamente definidas, lo que facilita la comprensión y la realización de la tarea por parte de los estudiantes.",
+      "dimensions": [
+        {
+          "category": "comprension",
+          "status": "correcta",
+          "comment": "El lenguaje utilizado es claro, conciso y directo, sin oraciones complejas ni vocabulario rebuscado. Los tecnicismos son propios de la disciplina y se espera que sean abordados en el texto de referencia, por lo que no representan una barrera en este contexto."
+        },
+        {
+          "category": "estructura",
+          "status": "correcta",
+          "comment": "Las consignas están numeradas, son breves y especifican claramente las acciones a realizar. Se detalla explícitamente el producto esperado y la fecha de entrega, lo que favorece la autonomía del estudiante."
+        },
+        {
+          "category": "accesibilidad_visual",
+          "status": "correcta",
+          "comment": "No se detectaron imágenes en el material."
+        }
+      ],
+      "strengths": [
+        "Uso de voseo que establece un registro cercano y familiar para el estudiante.",
+        "Consignas numeradas que facilitan el seguimiento de los pasos.",
+        "Lenguaje claro y conciso en todas las instrucciones.",
+        "Producto esperado explícito ('Qué tenés que entregar') que reduce la incertidumbre.",
+        "Fecha de entrega claramente indicada.",
+        "Canales de consulta explícitos para resolver dudas."
+      ],
+      "barriers": [
+        {
+          "category": "estructura",
+          "severity": "para_revisar",
+          "issue": "Consigna con múltiples acciones en una misma oración",
+          "original_text": "Elegí una etapa y explicala con tus palabras en dos o tres oraciones.",
+          "explanation": "Aunque la consigna es comprensible, separar las acciones de 'elegir' y 'explicar' en pasos distintos podría facilitar aún más la planificación de la tarea para algunos estudiantes, especialmente aquellos que requieren instrucciones más desglosadas.",
+          "recommendation": "Considere desglosar las consignas que implican más de una acción en pasos más pequeños y secuenciales para una mayor claridad.",
+          "suggested_rewrite": "4. Elegí una de las etapas del ciclo del agua (evaporación, condensación, precipitación o escurrimiento).\n5. Explicá la etapa elegida con tus palabras en dos o tres oraciones.",
+          "fragment_found": true,
+          "source": "gemini"
+        }
+      ],
+      "warnings": [],
+      "metadata": {
+        "model": "gemini-2.5-flash",
+        "latency_ms": 17926,
+        "prompt_tokens": 851,
+        "output_tokens": 573,
+        "thinking_tokens": 2280,
+        "total_tokens": 3704,
+        "analyzed_word_count": 88,
+        "is_truncated": false,
+        "unverified_fragments": 0
+      }
+    },
+    "error": null
+  },
+  {
+    "sample": "01_consigna_simple",
+    "mode": "0",
+    "run": 3,
+    "word_count": 88,
+    "response": null,
+    "error": "ClientError: 429 RESOURCE_EXHAUSTED. {'error': {'code': 429, 'message': 'You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \\n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 20, model: gemini-2.5-flash\\nPlease retry in 45.481522983s.', 'status': 'RESOURCE_EXHAUSTED', 'details': [{'@type': 'type.googleapis.com/google.rpc.Help', 'links': [{'description': 'Learn more about Gemini API quotas', 'url': 'https://ai.google.dev/gemini-api/docs/rate-limits'}]}, {'@type': 'type.googleapis.com/google.rpc.QuotaFailure', 'violations': [{'quotaMetric': 'generativelanguage.googleapis.com/generate_content_free_tier_requests', 'quotaId': 'GenerateRequestsPerDayPerProjectPerModel-FreeTier', 'quotaDimensions': {'model': 'gemini-2.5-flash', 'location': 'global'}, 'quotaValue': '20'}]}, {'@type': 'type.googleapis.com/google.rpc.RetryInfo', 'retryDelay': '45s'}]}}"
+  },
+  {
+    "sample": "02_consigna_multiaccion",
+    "mode": "default",
+    "run": 3,
+    "word_count": 153,
+    "response": null,
+    "error": "ClientError: 429 RESOURCE_EXHAUSTED. {'error': {'code': 429, 'message': 'You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \\n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 20, model: gemini-2.5-flash\\nPlease retry in 40.121970742s.', 'status': 'RESOURCE_EXHAUSTED', 'details': [{'@type': 'type.googleapis.com/google.rpc.Help', 'links': [{'description': 'Learn more about Gemini API quotas', 'url': 'https://ai.google.dev/gemini-api/docs/rate-limits'}]}, {'@type': 'type.googleapis.com/google.rpc.QuotaFailure', 'violations': [{'quotaMetric': 'generativelanguage.googleapis.com/generate_content_free_tier_requests', 'quotaId': 'GenerateRequestsPerDayPerProjectPerModel-FreeTier', 'quotaDimensions': {'location': 'global', 'model': 'gemini-2.5-flash'}, 'quotaValue': '20'}]}, {'@type': 'type.googleapis.com/google.rpc.RetryInfo', 'retryDelay': '40s'}]}}"
+  },
+  {
+    "sample": "02_consigna_multiaccion",
+    "mode": "0",
+    "run": 3,
+    "word_count": 153,
+    "response": null,
+    "error": "ClientError: 429 RESOURCE_EXHAUSTED. {'error': {'code': 429, 'message': 'You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \\n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 20, model: gemini-2.5-flash\\nPlease retry in 34.787622414s.', 'status': 'RESOURCE_EXHAUSTED', 'details': [{'@type': 'type.googleapis.com/google.rpc.Help', 'links': [{'description': 'Learn more about Gemini API quotas', 'url': 'https://ai.google.dev/gemini-api/docs/rate-limits'}]}, {'@type': 'type.googleapis.com/google.rpc.QuotaFailure', 'violations': [{'quotaMetric': 'generativelanguage.googleapis.com/generate_content_free_tier_requests', 'quotaId': 'GenerateRequestsPerDayPerProjectPerModel-FreeTier', 'quotaDimensions': {'location': 'global', 'model': 'gemini-2.5-flash'}, 'quotaValue': '20'}]}, {'@type': 'type.googleapis.com/google.rpc.RetryInfo', 'retryDelay': '34s'}]}}"
+  },
+  {
+    "sample": "03_texto_tecnico_quimica",
+    "mode": "default",
+    "run": 3,
+    "word_count": 230,
+    "response": {
+      "estimated_score": 95,
+      "summary": "El material presenta conceptos fundamentales de estequiometría de manera clara y concisa. Define los términos clave, ofrece ejemplos ilustrativos y propone ejercicios prácticos. La organización del contenido es lógica y facilita la comprensión.",
+      "dimensions": [
+        {
+          "category": "comprension",
+          "status": "correcta",
+          "comment": "El lenguaje es claro y directo, con oraciones concisas. Los tecnicismos propios de la disciplina se definen explícitamente o se explican con ejemplos, lo que favorece la comprensión de los conceptos."
+        },
+        {
+          "category": "estructura",
+          "status": "correcta",
+          "comment": "El material está muy bien organizado con títulos y subtítulos claros. Los conceptos se presentan de forma secuencial, y las consignas de los ejercicios son directas, numeradas y fáciles de seguir."
+        },
+        {
+          "category": "accesibilidad_visual",
+          "status": "correcta",
+          "comment": "No se detectaron imágenes en el material."
+        }
+      ],
+      "strengths": [
+        "Uso de títulos y subtítulos claros para organizar el contenido y facilitar la navegación.",
+        "Definición explícita de los términos técnicos clave (mol, masa molar, número de Avogadro) la primera vez que aparecen.",
+        "Inclusión de ejemplos concretos y detallados para ilustrar los conceptos (cálculo de la masa molar del agua, ecuación química balanceada).",
+        "Consignas de ejercicios numeradas y directas, que especifican claramente la acción esperada.",
+        "Oraciones cortas y lenguaje sencillo que favorecen la comprensión de la información.",
+        "Desglose de cálculos complejos en pasos simples y numerados (ejemplo de masa molar), lo que ayuda a seguir el razonamiento."
+      ],
+      "barriers": [],
+      "warnings": [],
+      "metadata": {
+        "model": "gemini-2.5-flash",
+        "latency_ms": 10875,
+        "prompt_tokens": 1085,
+        "output_tokens": 395,
+        "thinking_tokens": 1176,
+        "total_tokens": 2656,
+        "analyzed_word_count": 230,
+        "is_truncated": false,
+        "unverified_fragments": 0
+      }
+    },
+    "error": null
+  },
+  {
+    "sample": "03_texto_tecnico_quimica",
+    "mode": "0",
+    "run": 3,
+    "word_count": 230,
+    "response": null,
+    "error": "ClientError: 429 RESOURCE_EXHAUSTED. {'error': {'code': 429, 'message': 'You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \\n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 20, model: gemini-2.5-flash\\nPlease retry in 13.499639881s.', 'status': 'RESOURCE_EXHAUSTED', 'details': [{'@type': 'type.googleapis.com/google.rpc.Help', 'links': [{'description': 'Learn more about Gemini API quotas', 'url': 'https://ai.google.dev/gemini-api/docs/rate-limits'}]}, {'@type': 'type.googleapis.com/google.rpc.QuotaFailure', 'violations': [{'quotaMetric': 'generativelanguage.googleapis.com/generate_content_free_tier_requests', 'quotaId': 'GenerateRequestsPerDayPerProjectPerModel-FreeTier', 'quotaDimensions': {'model': 'gemini-2.5-flash', 'location': 'global'}, 'quotaValue': '20'}]}, {'@type': 'type.googleapis.com/google.rpc.RetryInfo', 'retryDelay': '13s'}]}}"
+  },
+  {
+    "sample": "04_material_500_palabras",
+    "mode": "default",
+    "run": 3,
+    "word_count": 511,
+    "response": null,
+    "error": "ClientError: 429 RESOURCE_EXHAUSTED. {'error': {'code': 429, 'message': 'You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \\n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 20, model: gemini-2.5-flash\\nPlease retry in 8.156649617s.', 'status': 'RESOURCE_EXHAUSTED', 'details': [{'@type': 'type.googleapis.com/google.rpc.Help', 'links': [{'description': 'Learn more about Gemini API quotas', 'url': 'https://ai.google.dev/gemini-api/docs/rate-limits'}]}, {'@type': 'type.googleapis.com/google.rpc.QuotaFailure', 'violations': [{'quotaMetric': 'generativelanguage.googleapis.com/generate_content_free_tier_requests', 'quotaId': 'GenerateRequestsPerDayPerProjectPerModel-FreeTier', 'quotaDimensions': {'location': 'global', 'model': 'gemini-2.5-flash'}, 'quotaValue': '20'}]}, {'@type': 'type.googleapis.com/google.rpc.RetryInfo', 'retryDelay': '8s'}]}}"
+  },
+  {
+    "sample": "04_material_500_palabras",
+    "mode": "0",
+    "run": 3,
+    "word_count": 511,
+    "response": null,
+    "error": "ClientError: 429 RESOURCE_EXHAUSTED. {'error': {'code': 429, 'message': 'You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \\n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 20, model: gemini-2.5-flash\\nPlease retry in 2.833151968s.', 'status': 'RESOURCE_EXHAUSTED', 'details': [{'@type': 'type.googleapis.com/google.rpc.Help', 'links': [{'description': 'Learn more about Gemini API quotas', 'url': 'https://ai.google.dev/gemini-api/docs/rate-limits'}]}, {'@type': 'type.googleapis.com/google.rpc.QuotaFailure', 'violations': [{'quotaMetric': 'generativelanguage.googleapis.com/generate_content_free_tier_requests', 'quotaId': 'GenerateRequestsPerDayPerProjectPerModel-FreeTier', 'quotaDimensions': {'location': 'global', 'model': 'gemini-2.5-flash'}, 'quotaValue': '20'}]}, {'@type': 'type.googleapis.com/google.rpc.RetryInfo', 'retryDelay': '2s'}]}}"
+  },
+  {
+    "sample": "05_material_2000_palabras",
+    "mode": "default",
+    "run": 3,
+    "word_count": 2025,
+    "response": null,
+    "error": "ClientError: 429 RESOURCE_EXHAUSTED. {'error': {'code': 429, 'message': 'You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \\n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 20, model: gemini-2.5-flash\\nPlease retry in 57.395731808s.', 'status': 'RESOURCE_EXHAUSTED', 'details': [{'@type': 'type.googleapis.com/google.rpc.Help', 'links': [{'description': 'Learn more about Gemini API quotas', 'url': 'https://ai.google.dev/gemini-api/docs/rate-limits'}]}, {'@type': 'type.googleapis.com/google.rpc.QuotaFailure', 'violations': [{'quotaMetric': 'generativelanguage.googleapis.com/generate_content_free_tier_requests', 'quotaId': 'GenerateRequestsPerDayPerProjectPerModel-FreeTier', 'quotaDimensions': {'location': 'global', 'model': 'gemini-2.5-flash'}, 'quotaValue': '20'}]}, {'@type': 'type.googleapis.com/google.rpc.RetryInfo', 'retryDelay': '57s'}]}}"
+  },
+  {
+    "sample": "05_material_2000_palabras",
+    "mode": "0",
+    "run": 3,
+    "word_count": 2025,
+    "response": null,
+    "error": "ClientError: 429 RESOURCE_EXHAUSTED. {'error': {'code': 429, 'message': 'You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \\n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 20, model: gemini-2.5-flash\\nPlease retry in 51.995294535s.', 'status': 'RESOURCE_EXHAUSTED', 'details': [{'@type': 'type.googleapis.com/google.rpc.Help', 'links': [{'description': 'Learn more about Gemini API quotas', 'url': 'https://ai.google.dev/gemini-api/docs/rate-limits'}]}, {'@type': 'type.googleapis.com/google.rpc.QuotaFailure', 'violations': [{'quotaMetric': 'generativelanguage.googleapis.com/generate_content_free_tier_requests', 'quotaId': 'GenerateRequestsPerDayPerProjectPerModel-FreeTier', 'quotaDimensions': {'location': 'global', 'model': 'gemini-2.5-flash'}, 'quotaValue': '20'}]}, {'@type': 'type.googleapis.com/google.rpc.RetryInfo', 'retryDelay': '51s'}]}}"
+  }
+]
