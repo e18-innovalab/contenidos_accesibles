@@ -2,11 +2,17 @@
 # El backend sigue en Railway (railway.json); esta web solo consume su API.
 # Después del primer deploy, definir en el backend TEST_WEB_URL=<url de este sitio>
 # para habilitar CORS y el enlace desde /admin.
+# El archivo vive en backend/ (monorepo): al crear el Blueprint, indicar
+# "Blueprint Path" = backend/render.yaml. Las rutas son relativas a la raíz del repo.
 services:
   - type: web
     name: innovalab-web-pruebas
     runtime: static
-    rootDir: web
+    rootDir: backend/web
+    # Solo redeploya cuando cambia la web, no con commits de otras carpetas
+    buildFilter:
+      paths:
+        - backend/web/**
     buildCommand: echo "Sitio estático, sin build"
     staticPublishPath: .
     headers:

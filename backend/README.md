@@ -147,7 +147,11 @@ FastAPI autogenera dos interfaces de documentación interactiva:
 - Obtener una API Key gratuita de Gemini en [Google AI Studio](https://aistudio.google.com/).
 
 ### 2. Clonar el repositorio y configurar el entorno
+El backend vive en la carpeta `backend/` del monorepo: todos los comandos de esta guía se corren desde ahí.
 ```powershell
+git clone https://github.com/e18-innovalab/contenidos_accesibles.git
+cd contenidos_accesibles/backend
+
 # 1. Crear el entorno virtual
 py -m venv venv
 
@@ -206,7 +210,10 @@ El repo ya incluye la configuración necesaria:
 
 Pasos en el dashboard de Railway:
 
-1. **New Project → Deploy from GitHub repo** → elegir este repo (rama `main`).
+1. **New Project → Deploy from GitHub repo** → elegir `e18-innovalab/contenidos_accesibles` (rama `main`). En **Settings** del servicio, por ser un monorepo:
+   - **Root Directory**: `/backend`
+   - **Config File Path**: `/backend/railway.json` (Railway no lo busca dentro del Root Directory)
+   - **Watch Paths**: `/backend/**`, para no redeployar con cambios de frontend, diseño u otras carpetas
 2. **Volume**: agregar un Volume al servicio montado en `/data`.
 3. **Variables**:
    ```env
@@ -257,7 +264,7 @@ Cada llamada queda en un registro con el request, la respuesta JSON y el `curl` 
 
 **Deploy (Static Site gratuito, no se duerme):**
 
-1. En Render: **New → Blueprint** → elegir este repo. Toma `render.yaml` y crea el sitio `innovalab-web-pruebas` desde `web/`. (Alternativa manual: **New → Static Site**, *Root Directory* `web`, *Publish Directory* `.`, sin build command.)
+1. En Render: **New → Blueprint** → elegir `e18-innovalab/contenidos_accesibles` con *Blueprint Path* `backend/render.yaml`. Crea el sitio `innovalab-web-pruebas` desde `backend/web/`. (Alternativa manual: **New → Static Site**, *Root Directory* `backend/web`, *Publish Directory* `.`, sin build command.)
 2. En Railway, agregar la variable del backend con la URL que asignó Render:
    ```env
    TEST_WEB_URL=https://<sitio>.onrender.com
