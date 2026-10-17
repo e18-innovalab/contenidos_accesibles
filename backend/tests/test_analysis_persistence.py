@@ -5,7 +5,9 @@ from pathlib import Path
 
 import pymupdf
 import pytest
+from docx import Document
 from fastapi.testclient import TestClient
+from pptx import Presentation
 
 from app.db import analysis_repository
 from app.db.database import init_db
@@ -29,6 +31,24 @@ def _create_sample_pdf_bytes(text: str = "Guía de Ciencias Naturales\n1. Leé e
     pdf_bytes = doc.tobytes()
     doc.close()
     return pdf_bytes
+
+
+def _create_sample_docx_bytes(text: str = "Guía de Ciencias Naturales\nLos ecosistemas acuáticos.") -> bytes:
+    doc = Document()
+    doc.add_heading("Guía de Ciencias Naturales", level=1)
+    doc.add_paragraph(text)
+    buf = io.BytesIO()
+    doc.save(buf)
+    return buf.getvalue()
+
+
+def _create_sample_pptx_bytes(text: str = "Presentación de Historia") -> bytes:
+    prs = Presentation()
+    slide = prs.slides.add_slide(prs.slide_layouts[0])
+    slide.shapes.title.text = text
+    buf = io.BytesIO()
+    prs.save(buf)
+    return buf.getvalue()
 
 
 def test_sample_analysis_persisted_with_id_and_ttl(client):
@@ -182,6 +202,50 @@ def test_no_pdf_file_persisted(client):
 
     pdfs_after = list(backend_root.glob("*.pdf")) + list((backend_root / "app").glob("**/*.pdf"))
     assert set(pdfs_before) == set(pdfs_after)
+
+
+def test_no_docx_file_persisted(client):
+    # Criterio de aceptación: el archivo original .docx subido nunca se persiste en disco
+    backend_root = Path(__file__).resolve().parent.parent
+    docx_before = list(backend_root.glob("*.docx")) + list((backend_root / "app").glob("**/*.docx"))
+
+    docx_bytes = _create_sample_docx_bytes("Material sobre fotosíntesis sin persistencia en disco.")
+    res = client.post(
+        "/api/v1/analysis/file?mock=true",
+        files={
+            "file": (
+                "efimero.docx",
+                docx_bytes,
+                "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+            )
+        },
+    )
+    assert res.status_code == 200
+
+    docx_after = list(backend_root.glob("*.docx")) + list((backend_root / "app").glob("**/*.docx"))
+    assert set(docx_before) == set(docx_after)
+
+
+def test_no_pptx_file_persisted(client):
+    # Criterio de aceptación: el archivo original .pptx subido nunca se persiste en disco
+    backend_root = Path(__file__).resolve().parent.parent
+    pptx_before = list(backend_root.glob("*.pptx")) + list((backend_root / "app").glob("**/*.pptx"))
+
+    pptx_bytes = _create_sample_pptx_bytes("Presentación sobre fotosíntesis sin persistencia en disco.")
+    res = client.post(
+        "/api/v1/analysis/file?mock=true",
+        files={
+            "file": (
+                "efimero.pptx",
+                pptx_bytes,
+                "application/vnd.openxmlformats-officedocument.presentationml.presentation",
+            )
+        },
+    )
+    assert res.status_code == 200
+
+    pptx_after = list(backend_root.glob("*.pptx")) + list((backend_root / "app").glob("**/*.pptx"))
+    assert set(pptx_before) == set(pptx_after)
 
 
 def test_background_cleanup_on_new_analysis(client):

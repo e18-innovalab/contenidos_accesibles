@@ -61,10 +61,14 @@ def _upload(client, content: bytes, filename="material.pdf", content_type="appli
     return file_id
 
 
-@pytest.mark.parametrize("content,filename,content_type,source", [
-    (_pdf(), "material.pdf", "application/pdf", "pdf"),
-    (_docx(), "clase.docx", DOCX_TYPE, "docx"),
-])
+@pytest.mark.parametrize(
+    "content,filename,content_type,source",
+    [
+        (_pdf(), "material.pdf", "application/pdf", "pdf"),
+        (_docx(), "clase.docx", DOCX_TYPE, "docx"),
+    ],
+    ids=["pdf", "docx"],
+)
 def test_diagnostico_por_file_id_igual_que_por_multipart(client, content, filename, content_type, source):
     file_id = _upload(client, content, filename, content_type)
     by_id = client.post(f"/api/v1/analysis/files/{file_id}?mock=true")
