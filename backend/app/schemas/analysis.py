@@ -124,6 +124,12 @@ class RulesMetrics(BaseModel):
     visual_only_references: int = Field(
         default=0, description="Referencias exclusivas a elementos visuales o espaciales."
     )
+    body_font_size_pt: float | None = Field(
+        default=None, description="Tamaño de letra predominante del archivo, en pt. None en el texto pegado."
+    )
+    small_text_passages: int = Field(
+        default=0, description="Pasajes largos escritos con letra muy chica (notas, epígrafes)."
+    )
 
 
 class ScorePenalty(BaseModel):

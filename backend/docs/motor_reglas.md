@@ -21,6 +21,8 @@ El diagnóstico combina dos fuentes:
 | Referencias exclusivamente visuales (Tarea #25) | `accesibilidad_visual` | referencias a posición espacial ("a la derecha") o color sin texto alternativo (WCAG 1.3.3) | — |
 | Imágenes | `accesibilidad_visual` | hay imágenes sin texto alternativo conocido (en PDF no se puede verificar, cuentan todas; en Word y PowerPoint solo las que no lo tienen ni están marcadas como decorativas) | — |
 | PDF escaneado | `accesibilidad_visual` | — | sin capa de texto seleccionable |
+| Letra chica en el cuerpo (Issue #79, solo archivos) | `accesibilidad_visual` | — | tamaño predominante del texto < 9 pt |
+| Pasaje largo en letra chica (Issue #79, solo archivos) | `accesibilidad_visual` | párrafo o bloque con 20+ palabras en < 8 pt (notas, epígrafes) | — |
 
 - Las palabras se cuentan con el mismo criterio que `DocumentService` (`\b\w+\b`).
 - Se listan como máximo **3 barreras por regla** (las más extensas/relevantes). El total aparece en el comentario de la dimensión.
@@ -39,6 +41,20 @@ El diagnóstico combina dos fuentes:
   - decimales (`3.5`);
   - marcadores de lista (`1. Leé…`);
   - puntos seguidos de minúscula (`etc. y…`).
+
+### Legibilidad visual del archivo (Issue #79)
+
+Las reglas viven en `app/services/legibility_rules.py` y los datos tipográficos los arma `app/services/legibility_extractor.py`, que hace su propia pasada sobre el archivo ya abierto (no modifica la extracción de texto ni la detección de títulos). El resultado queda en `ExtractedDocument.legibility`. No aplican al texto pegado (`source_type == "text"`, que no tiene tipografía) ni al PDF escaneado (ya tiene su propia barrera). No consumen tokens.
+
+- **Tamaño del cuerpo**: el tamaño predominante ponderado por caracteres, entre los fragmentos con tamaño conocido. Si no se pudo medir ninguno, se usa `structure.body_font_size`.
+  - **PDF**: tamaño de cada span de PyMuPDF.
+  - **Word**: tamaño del run; si no lo define, el del estilo de carácter, el del estilo de párrafo (y sus estilos base) y por último `docDefaults` (Word usa 10 pt si no está). Incluye celdas de tabla.
+  - **PowerPoint**: tamaño del run o del párrafo, multiplicado por la reducción automática del cuadro (`normAutofit fontScale`). Incluye grupos y tablas; se saltean las diapositivas ocultas.
+- **Pasaje**: un bloque de texto del PDF o un párrafo de Word/PowerPoint. Cuenta como "letra chica" si tiene **20 palabras o más** en menos de **8 pt**: así no se marcan números de página, fuentes ni pies de foto cortos.
+- Si todo el cuerpo ya está en letra chica, no se lista además cada pasaje: alcanza con la barrera del cuerpo.
+- Las barreras de esta regla no tienen `anchor`: una barrera de la IA sobre el mismo texto (por ejemplo, de comprensión) habla de otro problema y no debe ocultarla.
+- En los pasajes, `original_text` es el comienzo del pasaje, y la página o diapositiva va en `issue` (Word no informa páginas). En el cuerpo, `original_text` es un resumen entre corchetes y `fragment_found` es `null`, como en el resto de las barreras de documento completo.
+- Umbrales: `MIN_BODY_FONT_PT` (9) en `legibility_rules.py`; `SMALL_PASSAGE_PT` (8) y `MIN_SMALL_PASSAGE_WORDS` (20) en `legibility_extractor.py`.
 
 ## Unión con la IA
 
@@ -65,6 +81,8 @@ rules_score = 100 − penalizaciones
   referencias_visuales     mín(16, 8 × referencias exclusivamente espaciales o de color)
   pdf_escaneado            40
   imagenes_sin_verificar   10   (solo si no es escaneado y hay imágenes sin texto alternativo conocido)
+  letra_chica_cuerpo       15   (cuerpo del texto < 9 pt)
+  letra_chica_pasajes      mín(15, 5 × pasajes de 20+ palabras en < 8 pt)   (no se suma si ya hay letra_chica_cuerpo)
 
 estimated_score = round(0,7 × puntaje_IA + 0,3 × rules_score)
 
@@ -99,6 +117,9 @@ Ningún fixture tiene párrafos de más de 150 palabras. Conviene sumar un mater
 - Si el material pegado viene con renglones cortados a mano (por ejemplo, copiado de un correo), cada renglón cuenta como párrafo: no se detectan muros de texto y las oraciones quedan partidas.
 - Un párrafo que continúa en la página siguiente del PDF se cuenta como dos.
 - Las reglas solo miden algunos aspectos objetivos: que no detecten nada no significa que el material sea accesible. Por eso pesan 30% y la IA 70%.
+- **Letra chica en PowerPoint**: el texto que hereda el tamaño del diseño o del patrón de diapositivas (lo habitual en los marcadores de posición) no se mide. Esos fragmentos no se cuentan, en lugar de suponer un tamaño.
+- **Letra chica en Word**: todos los pasajes figuran en la página 1, porque el archivo no guarda en qué página cae cada párrafo. El tamaño de los cuadros de texto y de los encabezados y pies de página no se mide.
+- **Letra chica en PDF**: un PDF que se generó achicando páginas (por ejemplo, dos por hoja) puede tener letra legible al imprimir aunque los puntos digan otra cosa: la regla mide el tamaño declarado en el archivo.
 
 ## Próximos pasos (producto final)
 
@@ -106,5 +127,5 @@ Ningún fixture tiene párrafos de más de 150 palabras. Conviene sumar un mater
 2. Posición exacta de cada barrera de reglas (`char_start`/`char_end`) para resaltarla en el Frontend y adaptarla en las Semanas 5 y 6.
 3. Índice de legibilidad en español (Fernández-Huerta / INFLESZ).
 4. Más reglas de texto: siglas sin desarrollar, pasajes largos en MAYÚSCULAS, enumeraciones en línea (`a) … b) …`) y material extenso sin títulos.
-5. Reglas del PDF: letra de menos de 9 pt, falta de etiquetas de estructura o idioma, bajo contraste.
+5. Reglas del PDF: falta de etiquetas de estructura o idioma, bajo contraste y tipografía poco legible (Issue #79, partes 2 y 3). La letra chica ya está implementada (Issue #79, parte 1).
 6. Umbrales configurables por nivel educativo (secundario o superior).

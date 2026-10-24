@@ -35,6 +35,7 @@ from app.services.document_service import (
     MIN_IMAGE_RENDER_PT,
     DocumentService,
 )
+from app.services.legibility_extractor import extract_docx_legibility, extract_pptx_legibility
 
 ZIP_MAGIC = b"PK\x03\x04"
 # Compound File Binary: .doc/.ppt antiguos y también .docx/.pptx protegidos con contraseña.
@@ -459,10 +460,12 @@ def _process_docx(file_bytes: bytes, filename: str) -> ExtractedDocument:
     default_style = document.styles.default(WD_STYLE_TYPE.PARAGRAPH)
     normal_size = default_style.font.size if default_style is not None else None
 
-    return _build_document(
+    extracted = _build_document(
         "docx", filename, blocks, _docx_page_count(file_bytes), images,
         _structure(headings, list_items, normal_size.pt if normal_size is not None else None),
     )
+    extracted.legibility = extract_docx_legibility(document)
+    return extracted
 
 
 def _docx_page_count(file_bytes: bytes) -> int:
@@ -626,9 +629,11 @@ def _process_pptx(file_bytes: bytes, filename: str) -> ExtractedDocument:
 
         blocks.extend(slide_blocks)
 
-    return _build_document(
+    extracted = _build_document(
         "pptx", filename, blocks, len(slides), images, _structure(headings, list_items, None),
     )
+    extracted.legibility = extract_pptx_legibility(presentation)
+    return extracted
 
 
 def _is_smartart(shape) -> bool:

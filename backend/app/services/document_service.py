@@ -1,6 +1,7 @@
 import re
 import pymupdf
 from app.schemas.document import DocumentStructure, ExtractedDocument, ExtractedImage, HeadingItem
+from app.services.legibility_extractor import extract_pdf_legibility
 
 # Límite máximo de palabras enviadas al análisis de Gemini en el escaneo inicial
 # Previene saturar cuotas de Tokens por Minuto (TPM) en la capa gratuita
@@ -515,6 +516,7 @@ class DocumentService:
                 is_scanned_pdf=is_scanned,
                 warnings=warnings,
                 structure=structure,
+                legibility=extract_pdf_legibility(doc),
                 extracted_images=extracted_images,
             )
 

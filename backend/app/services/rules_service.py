@@ -20,6 +20,7 @@ from app.schemas.analysis import (
     ScorePenalty,
 )
 from app.schemas.document import ExtractedDocument
+from app.services.legibility_rules import small_text_assessment
 
 # --- Umbrales de las reglas -------------------------------------------------
 LONG_SENTENCE_WORDS = 35  # más de 35 palabras: para_revisar
@@ -790,6 +791,9 @@ def run_rules(doc: ExtractedDocument) -> RulesResult:
     # Tarea #25: Referencias puramente visuales
     visual_ref_findings = _visual_reference_findings(doc.raw_text)
 
+    # Issue #79: legibilidad visual del archivo (letra chica). No aplica al texto pegado.
+    legibility = small_text_assessment(doc)
+
     metrics = RulesMetrics(
         analyzed_word_count=count_words(doc.raw_text),
         sentence_count=len(sentences),
@@ -805,6 +809,8 @@ def run_rules(doc: ExtractedDocument) -> RulesResult:
         multi_action_prompts=len(multi_action_findings),
         readability_score_szigriszt=ifsz,
         visual_only_references=len(visual_ref_findings),
+        body_font_size_pt=legibility.body_font_size,
+        small_text_passages=legibility.small_text_passages,
     )
 
     # Dimensión Comprensión
@@ -878,6 +884,13 @@ def run_rules(doc: ExtractedDocument) -> RulesResult:
             status=worst_vis,
             comment=f"{visual.comment} Se detectaron {len(visual_ref_findings)} referencia(s) que dependen de la posición o aspecto visual.",
         )
+    if legibility.barriers:
+        visual_barriers.extend(legibility.barriers)
+        visual = DimensionAssessment(
+            category="accesibilidad_visual",
+            status=worst_status(visual.status, legibility.status),
+            comment=" ".join([visual.comment, *legibility.comments]),
+        )
 
     findings = (
         _long_sentence_findings(sentences)
@@ -902,7 +915,7 @@ def run_rules(doc: ExtractedDocument) -> RulesResult:
             len(multi_action_findings),
             ifsz,
             len(visual_ref_findings),
-        ),
+        ) + legibility.penalties,
     )
 
 

@@ -40,6 +40,28 @@ class DocumentStructure(BaseModel):
     list_items_count: int = Field(default=0, ge=0, description="Cantidad de ítems de lista (viñetas o numeración) detectados.")
 
 
+class SmallTextPassage(BaseModel):
+    """Párrafo o bloque escrito con letra más chica que el umbral de legibilidad (issue #79)."""
+    text: str = Field(description="Texto del pasaje (recortado si es muy largo).")
+    page_number: int = Field(default=1, ge=1, description="Página (o diapositiva en PowerPoint). En Word siempre es 1.")
+    font_size: float = Field(description="Tamaño de letra predominante del pasaje, en puntos (pt).")
+    word_count: int = Field(ge=0, description="Palabras del pasaje escritas con letra chica.")
+
+
+class LegibilityStats(BaseModel):
+    """Datos tipográficos que usan las reglas de legibilidad visual. Solo para archivos (no texto pegado)."""
+    body_font_size: float | None = Field(
+        default=None,
+        description="Tamaño de letra predominante, ponderado por caracteres, de los fragmentos con tamaño conocido.",
+    )
+    measured_chars: int = Field(default=0, ge=0, description="Caracteres con tamaño de letra conocido.")
+    small_text_passages: list[SmallTextPassage] = Field(
+        default_factory=list,
+        description="Pasajes con letra más chica que el umbral (los primeros; ver small_text_passages_total).",
+    )
+    small_text_passages_total: int = Field(default=0, ge=0, description="Cantidad total de pasajes con letra chica.")
+
+
 class ExtractedDocument(BaseModel):
     """
     Contrato de datos común para la información extraída de cualquier material.
@@ -96,6 +118,10 @@ class ExtractedDocument(BaseModel):
     structure: DocumentStructure = Field(
         default_factory=DocumentStructure,
         description="Estructura inferida del documento (encabezados, jerarquía, listas)."
+    )
+    legibility: LegibilityStats | None = Field(
+        default=None,
+        description="Tamaños de letra del archivo para las reglas de legibilidad. None en el texto pegado.",
     )
     extracted_images: list["ExtractedImage"] = Field(
         default_factory=list,
