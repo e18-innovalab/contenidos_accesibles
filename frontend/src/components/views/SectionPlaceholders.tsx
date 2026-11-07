@@ -2,12 +2,12 @@ import { Home, Sparkles, Folder, Settings, ArrowRight } from 'lucide-react';
 import type { NavSectionId } from '../layout/Sidebar';
 
 interface SectionPlaceholderProps {
-  section: Exclude<NavSectionId, 'analisis'>;
+section: Exclude<NavSectionId, 'analisis' | 'inicio'>;
   onGoToAnalysis: () => void;
 }
 
 const SECTION_CONFIG: Record<
-  Exclude<NavSectionId, 'analisis'>,
+  Exclude<NavSectionId, 'analisis' | 'inicio'>,
   {
     icon: React.ComponentType<{ size?: number }>;
     title: string;
@@ -15,13 +15,6 @@ const SECTION_CONFIG: Record<
     showCta?: boolean;
   }
 > = {
-  inicio: {
-    icon: Home,
-    title: 'Te damos la bienvenida a VIA',
-    subtitle:
-      'Tu asistente de accesibilidad docente para diagnosticar, adaptar y transformar materiales educativos.',
-    showCta: true,
-  },
   transformar: {
     icon: Sparkles,
     title: 'Transformar material',
