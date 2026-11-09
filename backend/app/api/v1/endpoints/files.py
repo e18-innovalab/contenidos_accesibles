@@ -178,11 +178,42 @@ def complete_upload(file_id: str, owner: str = Depends(current_owner)):
     return _info(files.get_for_user(record["id"], owner))
 
 
+@router.get("", response_model=list[FileInfo], summary="Listar mis archivos vigentes",
+            dependencies=[Depends(require_permission("files:manage"))])
+def list_files(owner: str = Depends(current_owner)):
+    """Archivos vigentes del usuario (subidos y exportados), del más reciente al más antiguo (Issue #155)."""
+    return [_info(r) for r in files.list_for_user(owner)]
+
+
 @router.get("/{file_id}", response_model=FileInfo, summary="Consultar un archivo",
             dependencies=[Depends(require_permission("files:manage"))],
             responses={404: {"description": "No existe, venció o es de otro usuario."}})
 def get_file(file_id: str, owner: str = Depends(current_owner)):
     return _info(_owned_or_404(file_id, owner))
+
+
+@router.delete(
+    "/{file_id}",
+    dependencies=[Depends(require_permission("files:manage"))],
+    status_code=status.HTTP_204_NO_CONTENT,
+    summary="Eliminar un archivo",
+    responses={
+        404: {"description": "No existe, venció o es de otro usuario."},
+        502: {"description": "El almacenamiento no respondió: el archivo no se borró."},
+    },
+)
+def delete_file(file_id: str, owner: str = Depends(current_owner)):
+    """
+    Borra el archivo del almacenamiento y su registro, y revoca todos sus enlaces compartidos (Issue #155).
+    Si el almacenamiento no responde, no se borra nada y se puede reintentar.
+    """
+    record = _owned_or_404(file_id, owner)
+    try:
+        storage_service.get_storage().delete(record["object_key"])
+    except StorageError:
+        raise HTTPException(status_code=status.HTTP_502_BAD_GATEWAY, detail=_STORAGE_DOWN)
+    files.delete_with_shares(record["id"])
+    return Response(status_code=status.HTTP_204_NO_CONTENT)
 
 
 @router.get(
