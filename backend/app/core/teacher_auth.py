@@ -71,7 +71,9 @@ def _resolve_caller(request: Request) -> Caller:
 
     token = _bearer_token(request)
     if token is None:
-        raise _unauthorized("Iniciá sesión para usar la API.")
+        # TEMPORAL: el Front prueba sin login. Sin token entra como anónimo. REVERTIR.
+        return Caller(ANONYMOUS_OWNER)
+        #raise _unauthorized("Iniciá sesión para usar la API.") -REACTIVAR CUANDO ESTÉ CONECTADO
     try:
         if get_token_type(token) != TokenType.SESSION_TOKEN:
             raise TokenVerificationError(TokenVerificationErrorReason.INVALID_TOKEN_TYPE)
