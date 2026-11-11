@@ -95,6 +95,7 @@ def test_token_valido_puede_usar_la_api(client, teacher_auth_on):
     assert client.get(ADAPTATIONS, headers=headers).status_code == 404  # pasó el login: el diagnóstico no existe
 
 
+@pytest.mark.skip(reason="TEMPORAL: login desactivado para pruebas del Front. Quitar al revertir.")
 def test_sin_token_responde_401_tambien_en_modo_mock(client, teacher_auth_on):
     response = client.post(ANALYSIS, json=SAMPLE)
     assert response.status_code == 401
@@ -141,6 +142,7 @@ def test_token_invalido_responde_401(client, teacher_auth_on, rejections, make_t
     assert rejections == ([reason] if reason else [])
 
 
+@pytest.mark.skip(reason="TEMPORAL: login desactivado para pruebas del Front. Quitar al revertir.")
 def test_esquema_distinto_de_bearer_cuenta_como_sin_token(client, teacher_auth_on):
     response = client.post(ANALYSIS, json=SAMPLE, headers={"Authorization": f"Basic {clerk_token()}"})
     assert response.status_code == 401

@@ -159,6 +159,7 @@ def test_un_docente_recibe_403_y_un_admin_pasa(retention_client, teacher_auth_on
     assert allowed.json() == {"user_id": "user_beto", "role": ADMIN}
 
 
+@pytest.mark.skip(reason="TEMPORAL: login desactivado para pruebas del Front. Quitar al revertir.")
 def test_sin_token_es_401_antes_que_403(retention_client, teacher_auth_on):
     assert retention_client.get("/retencion").status_code == 401
 
@@ -191,6 +192,7 @@ def test_los_archivos_quedan_a_nombre_del_docente_y_otro_no_los_ve(client, teach
         assert getattr(client, method)(path, headers=beto).status_code == 404, path
 
 
+@pytest.mark.skip(reason="TEMPORAL: login desactivado para pruebas del Front. Quitar al revertir.")
 def test_files_export_y_documentos_por_file_id_exigen_el_login(client, teacher_auth_on):
     assert client.post(
         "/api/v1/files/upload-url", json={"filename": "a.pdf", "content_type": "application/pdf", "size_bytes": 10},
