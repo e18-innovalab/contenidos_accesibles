@@ -9,7 +9,9 @@ import { AppLayout } from './components/layout/AppLayout';
 import type { NavSectionId } from './components/layout/Sidebar';
 import type { AnalysisStage } from './components/layout/Topbar';
 import { SectionPlaceholder } from './components/views/SectionPlaceholders';
-import { HomeView } from './components/HomeView'; //IMPORTAR HOMEVIEW
+import { HomeView } from './components/HomeView';
+// 1. IMPORTAR TU VISTA DE LOGIN NUEVA
+import { LoginView } from './components/views/LoginView'; 
 import {
   analyzeFileById,
   analyzeSample,
@@ -30,7 +32,7 @@ function getSectionFromHash(): NavSectionId {
   const raw = window.location.hash.replace(/^#\/?/, '').split('/')[0];
   return VALID_SECTIONS.includes(raw as NavSectionId)
     ? (raw as NavSectionId)
-    : 'inicio'; // Por defecto iniciamos en 'inicio' si está vacío
+    : 'inicio';
 }
 
 interface UploadedFileCache {
@@ -40,6 +42,9 @@ interface UploadedFileCache {
 }
 
 export function App() {
+  // 2. ESTADO DE AUTENTICACIÓN (Ponelo en true si querés saltarte el login temporalmente mientras probás)
+  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
+
   const [activeSection, setActiveSection] = useState<NavSectionId>(getSectionFromHash);
   const [currentStage, setCurrentStage] = useState<AnalysisStage>('upload');
   const [loading, setLoading] = useState<boolean>(false);
@@ -138,6 +143,13 @@ export function App() {
     setCurrentStage('upload');
   }
 
+  // 3. SI NO ESTÁ AUTENTICADO, MOSTRAMOS ÚNICAMENTE EL LOGIN
+  // Le pasamos una función por prop para que al loguearse cambie el estado a true y entre a la app.
+  if (!isAuthenticated) {
+    return <LoginView onLoginSuccess={() => setIsAuthenticated(true)} />;
+  }
+
+  // 4. SI ESTÁ AUTENTICADO, SE RENDERIZA TODO TU CÓDIGO ORIGINAL EXACTAMENTE IGUAL
   return (
     <AppLayout
       activeSection={activeSection}
@@ -147,7 +159,6 @@ export function App() {
       hasResults={Boolean(results)}
       hasAdaptedVersion={false}
     >
-      {/* 2. RENDERIZADO CONDICIONAL SEGÚN LA SECCIÓN */}
       {activeSection === 'inicio' ? (
         <HomeView
           onGoToAnalysis={() => handleSelectSection('analisis')}
