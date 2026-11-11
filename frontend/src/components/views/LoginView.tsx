@@ -1,4 +1,6 @@
 import React, { useState } from 'react';
+import loginBanner from '../../assets/login-banner.png';
+import baLogo from '../../assets/BA.png';
 
 interface LoginViewProps {
   onLoginSuccess: () => void;
@@ -19,9 +21,10 @@ export const LoginView: React.FC<LoginViewProps> = ({ onLoginSuccess }) => {
       <div 
         style={{
           flex: '1',
-          backgroundImage: `../../assets/logginbanner.png`,
+          backgroundImage: `url(${loginBanner})`,
           backgroundSize: 'cover',
           backgroundPosition: 'center',
+          backgroundColor: '#e5edef'
         }}
         className="d-none d-lg-block"
       />
@@ -37,7 +40,16 @@ export const LoginView: React.FC<LoginViewProps> = ({ onLoginSuccess }) => {
         overflowY: 'auto'
       }}>
         
+        {/* Logo institucional de Buenos Aires Ciudad */}
+        <div style={{ display: 'flex', justifyContent: 'flex-start' }}>
+          <img 
+            src={baLogo} 
+            alt="Buenos Aires Ciudad" 
+            style={{ height: '42px', width: 'auto', objectFit: 'contain' }} 
+          />
+        </div>
 
+        {/* Tarjeta central */}
         <div style={{ 
           maxWidth: '440px', 
           width: '100%', 
