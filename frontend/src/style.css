@@ -113,7 +113,10 @@ body {
   flex-direction: column;
   padding: 1.75rem 0.75rem 1.5rem 0;
   z-index: 1000;
-  
+  position: sticky;
+  top: 0; /* Se queda pegada arriba del todo cuando llegas a ella */
+  height: 100vh; /* Opcional: hace que ocupe toda la altura de la pantalla */
+  overflow-y: auto; /* Permite hacer scroll interno si los elementos de la sidebar son muy largos */
 }
 
 .via-sidebar-header {
@@ -1079,7 +1082,7 @@ body {
 .via-section-tag {
   font-size: 0.75rem;
   font-weight: 700;
-  color: var(--via-text-muted);
+  color: #2488a6;
   letter-spacing: 0.08em;
   text-transform: uppercase;
 }
@@ -1098,7 +1101,7 @@ body {
   margin: 0;
 }
 
-/* Cards Grid */
+/* Cards Grid BOTONES */
 .via-home-cards-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
@@ -1113,6 +1116,11 @@ body {
   box-shadow: var(--via-shadow-card);
   display: flex;
   flex-direction: column;
+}
+
+.via-home-card .via-btn {
+  margin-right: auto; /* Empuja el botón hacia la izquierda si tuviera un flex container con stretch */
+  width: auto;        /* Si no querés que ocupen todo el ancho (via-btn-full), sacá esta línea */
 }
 
 .via-card-top {
@@ -1200,8 +1208,8 @@ body {
   width: 100%;
   margin-top: auto;
   justify-content: center;
-  padding: 0.75rem;
-  border-radius: var(--via-radius-sm);
+  padding: 0.95rem;
+  border-radius: 9999px ;
   font-weight: 600;
   display: flex;
   align-items: center;
@@ -1209,6 +1217,7 @@ body {
   cursor: pointer;
   border: none;
   transition: background-color 0.15s ease;
+  font-size: 0.815rem; /* O usa el valor en píxeles que prefieras, ej: 14px */
 }
 
 
@@ -1316,8 +1325,8 @@ body {
 .via-processing-icon-container {
   width: 64px;
   height: 64px;
-  background: var(--via-teal-soft);
-  color: var(--via-teal-700);
+  background: #1a73a9;
+  color: white;
   border-radius: 50%;
   display: flex;
   align-items: center;
