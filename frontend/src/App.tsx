@@ -9,6 +9,7 @@ import { AppLayout } from './components/layout/AppLayout';
 import type { NavSectionId } from './components/layout/Sidebar';
 import type { AnalysisStage } from './components/layout/Topbar';
 import { SectionPlaceholder } from './components/views/SectionPlaceholders';
+import { HomeView } from './components/HomeView'; //IMPORTAR HOMEVIEW
 import {
   analyzeFileById,
   analyzeSample,
@@ -29,7 +30,7 @@ function getSectionFromHash(): NavSectionId {
   const raw = window.location.hash.replace(/^#\/?/, '').split('/')[0];
   return VALID_SECTIONS.includes(raw as NavSectionId)
     ? (raw as NavSectionId)
-    : 'analisis';
+    : 'inicio'; // Por defecto iniciamos en 'inicio' si está vacío
 }
 
 interface UploadedFileCache {
@@ -146,7 +147,13 @@ export function App() {
       hasResults={Boolean(results)}
       hasAdaptedVersion={false}
     >
-      {activeSection !== 'analisis' ? (
+      {/* 2. RENDERIZADO CONDICIONAL SEGÚN LA SECCIÓN */}
+      {activeSection === 'inicio' ? (
+        <HomeView
+          onGoToAnalysis={() => handleSelectSection('analisis')}
+          onSelectSection={(section: NavSectionId) => handleSelectSection(section)}
+        />
+      ) : activeSection !== 'analisis' ? (
         <SectionPlaceholder
           section={activeSection}
           onGoToAnalysis={() => handleSelectSection('analisis')}

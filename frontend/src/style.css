@@ -113,6 +113,7 @@ body {
   flex-direction: column;
   padding: 1.75rem 0.75rem 1.5rem 0;
   z-index: 1000;
+  
 }
 
 .via-sidebar-header {
@@ -883,6 +884,566 @@ body {
   font-size: 0.8rem;
   font-weight: 600;
   color: var(--via-green-success);
+}
+/* ==========================================================================
+   VISTA DE INICIO (HOME) - Obelisco v2 & VIA Tokens
+   ========================================================================== */
+
+.via-home-container {
+  display: flex;
+  flex-direction: column;
+  gap: 2.5rem;
+  padding: 0.5rem 0 2rem 0;
+}
+
+/* 1. Hero Banner */
+.via-home-hero {
+  background: linear-gradient(135deg, var(--via-teal-900) 0%, var(--via-navy-900) 100%);
+  color: #ffffff;
+  border-radius: var(--via-radius-lg);
+  padding: 3rem 2.5rem;
+  box-shadow: var(--via-shadow-card);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: relative;
+  overflow: hidden;
+}
+
+.via-hero-content {
+  max-width: 55%;
+  z-index: 2;
+}
+
+/* Contenedor de la ilustración a la derecha */
+.via-hero-illustration {
+  position: relative;
+  width: 260px;
+  height: 220px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2;
+}
+
+/* Ondas de fondo concéntricas */
+.via-circle-wave {
+  position: absolute;
+  border-radius: 50%;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  pointer-events: none;
+}
+
+.via-wave-1 {
+  width: 220px;
+  height: 220px;
+}
+
+.via-wave-2 {
+  width: 300px;
+  height: 300px;
+}
+
+/* Estilo base de las tarjetas flotantes con sombra */
+.via-floating-card {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.25);
+}
+
+/* 1. Tarjeta central celeste */
+.via-card-main-teal {
+  position: absolute;
+  width: 115px;
+  height: 115px;
+  background-color: #5eead4; /* Tono turquesa / celeste claro */
+  color: #0f172a;
+  border-radius: 28px 28px 28px 12px; /* Esquina inferior izquierda ligeramente distinta */
+  z-index: 2;
+}
+
+/* 2. Tarjeta blanca superior izquierda (Documento) */
+.via-card-white {
+  position: absolute;
+  top: 30px;
+  left: 20px;
+  width: 52px;
+  height: 52px;
+  background-color: #ffffff;
+  border-radius: 14px;
+  z-index: 3;
+}
+
+/* 3. Tarjeta amarilla inferior derecha (Destellos) */
+.via-card-yellow {
+  position: absolute;
+  bottom: 25px;
+  right: 25px;
+  width: 48px;
+  height: 48px;
+  background-color: #fbbf24;
+  color: #0f172a;
+  border-radius: 12px;
+  z-index: 3;
+}
+
+/* Colores de los íconos internos */
+.via-text-blue {
+  color: #2563eb;
+}
+
+.via-text-dark {
+  color: #0f172a;
+}
+
+.via-badge-hero {
+  background: rgba(255, 255, 255, 0.12);
+  color: var(--via-teal-accent);
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  padding: 0.35rem 0.75rem;
+  border-radius: 9999px;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 1.25rem;
+}
+
+.via-hero-title {
+  font-family: var(--via-font-heading);
+  font-size: 2.125rem;
+  font-weight: 800;
+  line-height: 1.2;
+  margin: 0 0 1rem 0;
+  max-width: 650px;
+}
+
+.via-hero-subtitle {
+  font-size: 1rem;
+  color: var(--via-teal-soft);
+  max-width: 600px;
+  line-height: 1.5;
+  margin: 0 0 2rem 0;
+}
+
+.via-hero-actions {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+}
+
+/* Botón Amarillo GCBA */
+.via-btn-yellow {
+  background-color: var(--via-yellow-btn);
+  color: var(--via-navy-900);
+  font-weight: 700;
+  border: none;
+  padding: 0.75rem 1.25rem;
+  border-radius: 999px;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  cursor: pointer;
+  transition: background-color 0.15s ease;
+}
+
+.via-btn-yellow:hover {
+  background-color: var(--via-yellow-btn-hover);
+}
+
+.via-btn-hero-outline {
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  color: #ffffff;
+  background: transparent;
+  padding: 0.75rem 1.25rem;
+  border-radius: 999px;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  cursor: pointer;
+  transition: background-color 0.15s ease;
+}
+
+.via-btn-hero-outline:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+/* 2. Sección Header */
+.via-section-header {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.via-section-tag {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--via-text-muted);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.via-section-title {
+  font-family: var(--via-font-heading);
+  font-size: 1.625rem;
+  font-weight: 700;
+  color: var(--via-text-primary);
+  margin: 0.25rem 0 0.5rem 0;
+}
+
+.via-section-subtitle {
+  color: var(--via-text-secondary);
+  font-size: 0.95rem;
+  margin: 0;
+}
+
+/* Cards Grid */
+.via-home-cards-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 1.5rem;
+}
+
+.via-home-card {
+  background: var(--via-bg-surface);
+  border-radius: var(--via-radius-md);
+  padding: 2rem;
+  border: 1px solid var(--via-border-light);
+  box-shadow: var(--via-shadow-card);
+  display: flex;
+  flex-direction: column;
+}
+
+.via-card-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.25rem;
+}
+
+.via-card-icon-wrapper {
+  width: 44px;
+  height: 44px;
+  border-radius: var(--via-radius-sm);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.via-icon-blue {
+  background: var(--via-blue-active-bg);
+  color: var(--via-blue-primary);
+}
+
+.via-icon-teal {
+  background: var(--via-teal-soft);
+  color: var(--via-teal-700);
+}
+
+.via-badge-blue {
+  background: var(--via-blue-active-bg);
+  color: var(--via-blue-primary);
+  font-weight: 700;
+  font-size: 0.7rem;
+  padding: 0.25rem 0.65rem;
+  border-radius: 9999px;
+}
+
+.via-badge-teal {
+  background: var(--via-teal-soft);
+  color: var(--via-teal-700);
+  font-weight: 700;
+  font-size: 0.7rem;
+  padding: 0.25rem 0.65rem;
+  border-radius: 9999px;
+}
+
+.via-card-title {
+  font-family: var(--via-font-heading);
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--via-text-primary);
+  margin: 0 0 0.5rem 0;
+}
+
+.via-card-desc {
+  font-size: 0.875rem;
+  color: var(--via-text-secondary);
+  margin: 0 0 1.5rem 0;
+  line-height: 1.5;
+}
+
+.via-card-features {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 2rem 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.via-card-features li {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  font-size: 0.875rem;
+  color: var(--via-text-primary);
+}
+
+.via-check-icon {
+  color: var(--via-green-success);
+  flex-shrink: 0;
+}
+
+.via-btn-full {
+  width: 100%;
+  margin-top: auto;
+  justify-content: center;
+  padding: 0.75rem;
+  border-radius: var(--via-radius-sm);
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  cursor: pointer;
+  border: none;
+  transition: background-color 0.15s ease;
+}
+
+
+.via-btn-primary {
+  background-color: var(--via-blue-btn);
+  color: #ffffff;
+}
+
+.via-btn-primary:hover {
+  background-color: var(--via-blue-btn-hover);
+}
+
+.via-btn-teal {
+  background-color: var(--via-teal-900);
+  color: #ffffff;
+}
+
+.via-btn-teal:hover {
+  background-color: var(--via-teal-700);
+}
+
+/* 3. Footer Section */
+.via-home-footer-section {
+  background: var(--via-bg-surface);
+  border-radius: var(--via-radius-md);
+  padding: 2rem;
+  border: 1px solid var(--via-border-light);
+}
+
+.via-footer-grid {
+  display: grid;
+  grid-template-columns: 1fr 2fr;
+  gap: 2rem;
+  align-items: center;
+}
+
+.via-footer-title {
+  font-family: var(--via-font-heading);
+  font-size: 1.35rem;
+  font-weight: 700;
+  color: var(--via-text-primary);
+  margin: 0.25rem 0 0 0;
+}
+
+.via-footer-boxes {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+
+.via-mini-card {
+  background: var(--via-bg-canvas);
+  padding: 1.25rem;
+  border-radius: var(--via-radius-sm);
+  border: 1px solid var(--via-border-light);
+}
+
+.via-mini-card h4 {
+  font-family: var(--via-font-heading);
+  color: var(--via-blue-primary);
+  font-weight: 700;
+  font-size: 0.95rem;
+  margin: 0 0 0.35rem 0;
+}
+
+.via-mini-card p {
+  font-size: 0.825rem;
+  color: var(--via-text-secondary);
+  line-height: 1.4;
+  margin: 0;
+}
+
+@media (max-width: 768px) {
+  .via-footer-grid,
+  .via-footer-boxes {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ==========================================================================
+   PANTALLA DE PROCESAMIENTO / ESCANEO (Mock Frontend)
+   ========================================================================== */
+
+.via-processing-card-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 2rem 1rem;
+}
+
+.via-processing-card {
+  background: var(--via-bg-surface);
+  border-radius: var(--via-radius-lg);
+  border: 1px solid var(--via-border-light);
+  box-shadow: var(--via-shadow-card);
+  width: 100%;
+  max-width: 680px;
+  padding: 2.5rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.via-processing-icon-container {
+  width: 64px;
+  height: 64px;
+  background: var(--via-teal-soft);
+  color: var(--via-teal-700);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 1.25rem;
+}
+
+.via-pulse-icon {
+  animation: viaPulse 2s infinite ease-in-out;
+}
+
+@keyframes viaPulse {
+  0% { transform: scale(1); opacity: 1; }
+  50% { transform: scale(1.1); opacity: 0.7; }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+.via-processing-header {
+  margin-bottom: 2rem;
+}
+
+.via-processing-title {
+  font-family: var(--via-font-heading);
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--via-text-primary);
+  margin: 0.25rem 0 0.5rem 0;
+}
+
+.via-processing-subtitle {
+  font-size: 0.875rem;
+  color: var(--via-text-secondary);
+  margin: 0;
+}
+
+/* Lista de pasos */
+.via-steps-list {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  margin-bottom: 2rem;
+}
+
+.via-step-item {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem 1.25rem;
+  border-radius: var(--via-radius-md);
+  border: 1px solid var(--via-border-light);
+  background: var(--via-bg-canvas);
+  text-align: left;
+  transition: all 0.3s ease;
+}
+
+.via-step-item.active {
+  background: var(--via-blue-active-bg);
+  border-color: var(--via-blue-primary);
+}
+
+.via-step-item.completed {
+  background: var(--via-green-bg);
+  border-color: #a3e635;
+}
+
+.via-step-indicator {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.via-step-content {
+  flex: 1;
+}
+
+.via-step-content h4 {
+  font-family: var(--via-font-heading);
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--via-text-primary);
+  margin: 0 0 0.15rem 0;
+}
+
+.via-step-content p {
+  font-size: 0.8rem;
+  color: var(--via-text-secondary);
+  margin: 0;
+}
+
+.via-spinner {
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.via-step-dots {
+  font-weight: bold;
+  color: var(--via-blue-primary);
+  letter-spacing: 2px;
+  animation: pulseDots 1.5s infinite;
+}
+
+@keyframes pulseDots {
+  0%, 100% { opacity: 0.3; }
+  50% { opacity: 1; }
+}
+
+/* Barra de progreso inferior */
+.via-progress-bar-container {
+  width: 100%;
+  height: 6px;
+  background: var(--via-border-light);
+  border-radius: 9999px;
+  overflow: hidden;
+}
+
+.via-progress-bar-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--via-blue-primary), var(--via-teal-700));
+  transition: width 0.5s ease-in-out;
+  border-radius: 9999px;
 }
 
 /* ==========================================================================
