@@ -497,3 +497,15 @@ def test_barreras_repetidas_se_quitan_y_las_distintas_sobre_la_misma_cita_quedan
     assert [b["issue"] for b in _drop_repeated(barriers)] == [
         "Oración extensa", "Consigna con varias acciones", "Índice de legibilidad bajo", "Índice de legibilidad bajo",
     ]
+
+
+def test_multiaccion_soporta_encliticos_y_evita_falso_positivo_con_una():
+    from app.services.rules_service import _multi_action_findings
+
+    safe = "Elegí una etapa y explicala con tus palabras en dos o tres oraciones."
+    assert _multi_action_findings([(safe, len(safe.split()))]) == []
+
+    lab = "Prepará los tubos, rotulalos del 1 al 5, agregá el indicador y registrá el cambio."
+    findings = _multi_action_findings([(lab, len(lab.split()))])
+    assert len(findings) == 1
+    assert "4 acciones" in findings[0].barrier["issue"]

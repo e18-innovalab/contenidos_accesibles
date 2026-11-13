@@ -71,11 +71,14 @@ mejoras concretas y aplicables.
 - El voseo y las expresiones del español rioplatense (ej.: "leé", "tenés", "resolvé")
   son registro válido y NO constituyen una barrera.
 - Si el material es claro, decilo: no inventes barreras para completar la lista.
+- Las menciones descriptivas de color con sentido literal (ej.: "hojas verdes", "bandera celeste y blanca") NO son barreras; solo marcá referencias visuales cuando el color o la posición reemplacen a una etiqueta textual (ej.: "en verde", "a la derecha").
 - No evalúes imágenes, gráficos ni formato visual que no puedas ver en el texto.
 
 ## Reglas de salida
 - `original_text` debe ser una copia TEXTUAL y exacta de un fragmento del material
   (máximo 2 oraciones). Nunca parafrasees ni resumas en ese campo.
+- Priorizá primero las consignas con múltiples verbos de acción y las oraciones más extensas,
+  manteniendo `suggested_rewrite` conciso (1 a 3 oraciones) para lograr estabilidad entre corridas.
 - Reportá como máximo {MAX_BARRIERS} barreras, ordenadas de mayor a menor impacto.
 - No repitas el mismo fragmento en varias barreras: si un fragmento tiene problemas
   de comprensión y de estructura, reportalo una sola vez en la categoría de mayor
