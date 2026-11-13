@@ -214,6 +214,22 @@ class AltTextProposal(BaseModel):
     context_used: str = Field(
         default="", description="Fragmento del texto circundante tomado como contexto."
     )
+    relies_on_color: bool = Field(
+        default=False,
+        description="True si la imagen transmite información solo mediante color (leyendas, mapas, semáforos).",
+    )
+    color_dependency_detail: str | None = Field(
+        default=None,
+        description="Descripción breve de qué información depende del color en la imagen.",
+    )
+    has_untranscribed_text: bool = Field(
+        default=False,
+        description="True si la imagen contiene texto relevante que no aparece en el texto del documento.",
+    )
+    embedded_text_detail: str | None = Field(
+        default=None,
+        description="Resumen o transcripción del texto incrustado que falta en el documento.",
+    )
 
 
 class AccessibilityAnalysisResponse(BaseModel):

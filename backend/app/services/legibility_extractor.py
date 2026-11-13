@@ -33,7 +33,8 @@ from pptx.opc.constants import RELATIONSHIP_TYPE as RT
 from pptx.oxml.ns import qn as p_qn
 from pptx.shapes.group import GroupShape
 
-from app.schemas.document import LegibilityStats, LowContrastPassage, SmallTextPassage
+import math
+from app.schemas.document import ColorConfusionPair, LegibilityStats, LowContrastPassage, SmallTextPassage
 from app.services.legibility_typography import ParagraphFormat, TypographyCollector
 
 # Un pasaje cuenta como "letra chica" si tiene al menos MIN_SMALL_PASSAGE_WORDS palabras en menos
@@ -134,6 +135,87 @@ def _excerpt(texts: list[str]) -> str:
     return " ".join(words[:PASSAGE_EXCERPT_WORDS]) + ("…" if len(words) > PASSAGE_EXCERPT_WORDS else "")
 
 
+_CVD_MATRICES: dict[str, tuple[tuple[float, float, float], ...]] = {
+    "protanopia": (
+        (0.152286, 1.052583, -0.204868),
+        (0.114503, 0.786281, 0.099216),
+        (-0.003882, -0.048116, 1.051998),
+    ),
+    "deuteranopia": (
+        (0.367322, 0.860646, -0.227968),
+        (0.280085, 0.672501, 0.047413),
+        (-0.011820, 0.042940, 0.968881),
+    ),
+    "tritanopia": (
+        (1.255528, -0.076749, -0.178779),
+        (-0.078411, 0.930809, 0.147602),
+        (0.004733, 0.691367, 0.303900),
+    ),
+}
+_MIN_CHROMA = 40
+_MIN_COLOR_CHARS = 4
+_MIN_NORMAL_COLOR_DIST = 60.0
+_MAX_SIM_COLOR_DIST = 45.0
+_MAX_SIM_COLOR_RATIO = 0.42
+_MAX_CONFUSION_PAIRS = 5
+
+
+def _srgb_to_linear(channel: float) -> float:
+    c = channel / 255.0
+    return c / 12.92 if c <= 0.04045 else ((c + 0.055) / 1.055) ** 2.4
+
+
+def _linear_to_srgb(value: float) -> float:
+    v = max(0.0, min(1.0, value))
+    c = 12.92 * v if v <= 0.0031308 else 1.055 * (v ** (1.0 / 2.4)) - 0.055
+    return c * 255.0
+
+
+def _simulate_cvd(rgb: RGB, matrix: tuple[tuple[float, float, float], ...]) -> tuple[float, float, float]:
+    r, g, b = (_srgb_to_linear(ch) for ch in rgb)
+    return tuple(_linear_to_srgb(m[0] * r + m[1] * g + m[2] * b) for m in matrix)
+
+
+def _rgb_dist(a: tuple[float, float, float], b: tuple[float, float, float]) -> float:
+    return math.sqrt(sum((x - y) ** 2 for x, y in zip(a, b)))
+
+
+def _detect_colorblind_pairs(chromatic_colors: dict[RGB, list]) -> list[ColorConfusionPair]:
+    """Detecta pares de colores cromáticos usados en el texto que colapsan bajo daltonismo."""
+    candidates = [
+        (rgb, info) for rgb, info in chromatic_colors.items()
+        if info[0] >= _MIN_COLOR_CHARS
+    ]
+    candidates.sort(key=lambda item: item[1][0], reverse=True)
+    candidates = candidates[:12]
+
+    pairs: list[ColorConfusionPair] = []
+    for idx, (rgb_a, info_a) in enumerate(candidates):
+        for rgb_b, info_b in candidates[idx + 1:]:
+            normal_dist = _rgb_dist(rgb_a, rgb_b)
+            if normal_dist < _MIN_NORMAL_COLOR_DIST:
+                continue
+            deficiencies: list[str] = []
+            for name, mat in _CVD_MATRICES.items():
+                sim_dist = _rgb_dist(_simulate_cvd(rgb_a, mat), _simulate_cvd(rgb_b, mat))
+                if sim_dist < _MAX_SIM_COLOR_DIST and (sim_dist / normal_dist) < _MAX_SIM_COLOR_RATIO:
+                    deficiencies.append(name)
+            if deficiencies:
+                pairs.append(
+                    ColorConfusionPair(
+                        color_a=hex_color(rgb_a),
+                        color_b=hex_color(rgb_b),
+                        deficiencies=deficiencies,
+                        sample_a=info_a[2],
+                        sample_b=info_b[2],
+                        page_number=info_a[1],
+                    )
+                )
+                if len(pairs) >= _MAX_CONFUSION_PAIRS:
+                    return pairs
+    return pairs
+
+
 class _Collector:
     """Acumula tamaños y contraste por caracteres, y arma las listas de pasajes."""
 
@@ -144,6 +226,7 @@ class _Collector:
         self.contrast_chars = 0
         self.low_contrast: list[LowContrastPassage] = []
         self.low_contrast_total = 0
+        self.chromatic_colors: dict[RGB, list] = {}
         self.typography = TypographyCollector()
 
     def add_paragraph(
@@ -154,7 +237,22 @@ class _Collector:
         page_number = max(page_number, 1)
         self._small_text(fragments, page_number)
         self._contrast(fragments, page_number)
+        self._collect_chromatic_colors(fragments, page_number)
         self.typography.add_paragraph(fragments, page_number if has_pages else None, fmt)
+
+    def _collect_chromatic_colors(self, fragments: list[Fragment], page_number: int) -> None:
+        for fragment in fragments:
+            stripped = fragment.text.strip()
+            if not stripped or fragment.color is None:
+                continue
+            if (max(fragment.color) - min(fragment.color)) < _MIN_CHROMA:
+                continue
+            entry = self.chromatic_colors.get(fragment.color)
+            if entry is None:
+                sample = stripped if len(stripped) <= 80 else stripped[:77] + "..."
+                self.chromatic_colors[fragment.color] = [len(stripped), page_number, sample]
+            else:
+                entry[0] += len(stripped)
 
     def _small_text(self, fragments: list[Fragment], page_number: int) -> None:
         small_texts: list[str] = []
@@ -235,6 +333,7 @@ class _Collector:
             body_font_name=body_font,
             body_font_decorative=body_font_decorative,
             typography_issues=typography_issues,
+            colorblind_confusion_pairs=_detect_colorblind_pairs(self.chromatic_colors),
         )
 
 

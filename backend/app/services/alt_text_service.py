@@ -7,8 +7,8 @@ from app.services.llm_service import llm_service
 
 logger = logging.getLogger(__name__)
 
-SYSTEM_INSTRUCTION = """Sos un especialista en accesibilidad educativa digital y pautas WCAG 1.1.1 (Contenido no textual).
-Tu tarea es generar descripciones de texto alternativo pedagógicamente útiles para las imágenes extraídas de un material educativo.
+SYSTEM_INSTRUCTION = """Sos un especialista en accesibilidad educativa digital y pautas WCAG 1.1.1 (Contenido no textual) y 1.4.1 (Uso del color).
+Tu tarea es generar descripciones de texto alternativo pedagógicamente útiles para las imágenes extraídas de un material educativo y detectar señales de accesibilidad visual en la misma evaluación.
 
 Pautas obligatorias para cada propuesta:
 1. Describí de forma concisa y clara la función y el contenido educativo de la imagen basándote en la imagen y en su contexto circundante.
@@ -16,6 +16,8 @@ Pautas obligatorias para cada propuesta:
 3. Si es un gráfico, esquema o mapa conceptual, incluí los datos y relaciones clave que el estudiante debe aprender.
 4. Máximo 2 a 3 oraciones por propuesta.
 5. Devolvé una propuesta por cada imagen recibida, manteniendo el image_index correspondiente.
+6. Indicá en `relies_on_color=true` si la imagen transmite información únicamente mediante color (por ejemplo, leyendas de gráficos sin etiquetas/patrones, mapas cromáticos o semáforos) y detallalo brevemente en `color_dependency_detail`.
+7. Indicá en `has_untranscribed_text=true` si la imagen contiene texto relevante (rótulos, títulos, fórmulas, datos de ejes o cuadros) que no figura en el contexto textual cercano del documento, y resumilo en `embedded_text_detail`.
 """
 
 
@@ -26,6 +28,22 @@ class AltTextItem(BaseModel):
     pedagogical_purpose: str | None = Field(
         default=None,
         description="Propósito educativo o justificación didáctica del contenido visual.",
+    )
+    relies_on_color: bool = Field(
+        default=False,
+        description="True si la información de la imagen depende solo del color.",
+    )
+    color_dependency_detail: str | None = Field(
+        default=None,
+        description="Qué información de la imagen depende únicamente del color.",
+    )
+    has_untranscribed_text: bool = Field(
+        default=False,
+        description="True si la imagen contiene texto relevante ausente en el contexto textual del documento.",
+    )
+    embedded_text_detail: str | None = Field(
+        default=None,
+        description="Texto o datos visibles dentro de la imagen que no figuran en el documento.",
     )
 
 
@@ -53,6 +71,8 @@ class AltTextService:
         for img in images:
             loc = img.location_description.lower()
             snippet = img.context_text[:120] + ("..." if len(img.context_text) > 120 else "")
+            ctx_lower = img.context_text.lower()
+            mock_color = any(k in ctx_lower for k in ("leyenda", "semáforo", "rojo y verde", "solo color"))
             proposals.append(
                 AltTextProposal(
                     image_index=img.image_index,
@@ -64,6 +84,13 @@ class AltTextService:
                     ),
                     pedagogical_purpose="Facilitar la comprensión visual a estudiantes con discapacidad o lectores de pantalla.",
                     context_used=snippet,
+                    relies_on_color=mock_color,
+                    color_dependency_detail=(
+                        "[MOCK] Las categorías del gráfico se distinguen únicamente por color."
+                        if mock_color else None
+                    ),
+                    has_untranscribed_text=False,
+                    embedded_text_detail=None,
                 )
             )
         return proposals
@@ -133,6 +160,10 @@ class AltTextService:
                     suggested_alt_text=suggested,
                     pedagogical_purpose=purpose,
                     context_used=snippet,
+                    relies_on_color=bool(item.relies_on_color) if item else False,
+                    color_dependency_detail=item.color_dependency_detail if item else None,
+                    has_untranscribed_text=bool(item.has_untranscribed_text) if item else False,
+                    embedded_text_detail=item.embedded_text_detail if item else None,
                 )
             )
 

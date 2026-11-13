@@ -246,3 +246,48 @@ def test_pdf_escaneado_no_se_evalua_con_letra_chica():
         update={"is_scanned_pdf": True}
     )
     assert _legibility(rs.run_rules(doc)) == []
+
+
+def test_daltonismo_detecta_pares_rojo_verde_y_verde_marron():
+    from app.services.legibility_extractor import Fragment, _Collector
+
+    col = _Collector()
+    col.add_paragraph(
+        [
+            Fragment(text="Respuestas correctas ", size=12, color=(0, 128, 0), background=(255, 255, 255)),
+            Fragment(text="Respuestas incorrectas", size=12, color=(204, 0, 0), background=(255, 255, 255)),
+        ],
+        page_number=1,
+    )
+    stats = col.result()
+    assert len(stats.colorblind_confusion_pairs) == 1
+    pair = stats.colorblind_confusion_pairs[0]
+    assert "deuteranopia" in pair.deficiencies
+
+    doc = ExtractedDocument(
+        source_type="pdf",
+        filename="colores.pdf",
+        raw_text="Respuestas correctas Respuestas incorrectas",
+        text_for_analysis="Respuestas correctas Respuestas incorrectas",
+        word_count=4,
+        character_count=43,
+        page_count=1,
+        legibility=stats,
+    )
+    res = rs.run_rules(doc)
+    assert any("daltonismo" in f.barrier["issue"].lower() for f in res.findings)
+
+
+def test_daltonismo_no_marca_par_seguro_rojo_azul():
+    from app.services.legibility_extractor import Fragment, _Collector
+
+    col = _Collector()
+    col.add_paragraph(
+        [
+            Fragment(text="Texto en rojo ", size=12, color=(204, 0, 0), background=(255, 255, 255)),
+            Fragment(text="Texto en azul", size=12, color=(0, 0, 204), background=(255, 255, 255)),
+        ],
+        page_number=1,
+    )
+    stats = col.result()
+    assert stats.colorblind_confusion_pairs == []

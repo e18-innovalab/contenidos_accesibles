@@ -459,6 +459,92 @@ def _visual_reference_findings(raw_text: str) -> list[RuleFinding]:
     return findings
 
 
+# --- Issue #80: Información solo por color (WCAG 1.4.1) ----------------------
+
+_COLOR_NAMES = (
+    r"(?:rojo|roja|rojos|rojas|verde|verdes|azul|azules|amarillo|amarilla|amarillos|amarillas|"
+    r"naranja|naranjas|violeta|violetas|morado|morada|morados|moradas|"
+    r"marr[oó]n|marrones|celeste|celestes|gris|grises|negro|negra|negros|negras|"
+    r"rosa|rosado|rosada|fucsia)"
+)
+
+_COLOR_ONLY_PATTERNS = [
+    # "están en verde", "aparecen en rojo", "marcado en rojo", "escrito en azul"
+    re.compile(
+        rf"\b(?:est[aá]n|est[aá]|aparecen?|figuran?|se\s+(?:muestran?|ven?|indican?|se[nñ]alan?)|"
+        rf"marcad[oa]s?|indicad[oa]s?|escrit[oa]s?|se[nñ]alad[oa]s?|resaltad[oa]s?|"
+        rf"subrayad[oa]s?|destacad[oa]s?|coloread[oa]s?|pintad[oa]s?)\s+"
+        rf"(?:en|de|con)\s+(?:color\s+)?{_COLOR_NAMES}\b",
+        re.IGNORECASE,
+    ),
+    # "las incorrectas en rojo", "las correctas en verde", "los errores en rojo"
+    re.compile(
+        rf"\b(?:correct[oa]s?|incorrect[oa]s?|aciertos?|errores?|v[aá]lid[oa]s?|err[oó]ne[oa]s?|"
+        rf"positiv[oa]s?|negativ[oa]s?|respuestas?|opciones?|palabras?|casillas?|datos?)\s+"
+        rf"en\s+(?:color\s+)?{_COLOR_NAMES}\b",
+        re.IGNORECASE,
+    ),
+    # "los de color azul", "las de color verde", "elementos de color rojo"
+    re.compile(
+        rf"\b(?:los|las|aquell[oa]s|elementos?|items?|palabras?|respuestas?|opciones?|casillas?|"
+        rf"campos?|n[uú]meros?|frases?|oraciones?)\s+de\s+color\s+{_COLOR_NAMES}\b",
+        re.IGNORECASE,
+    ),
+    # Imperativos en voseo/tuteo: "pintá de rojo", "colorea de verde", "marcá en azul", "resaltá con amarillo"
+    re.compile(
+        rf"\b(?:pint[aá]|colore[aá]|marc[aá]|resalt[aá]|subray[aá]|rode[aá]|encerr[aá])\s+"
+        rf"(?:de|en|con)\s+(?:color\s+)?{_COLOR_NAMES}\b",
+        re.IGNORECASE,
+    ),
+    # "lo resaltado", "lo destacado", "los resaltados", "las destacadas"
+    re.compile(
+        r"\b(?:lo\s+(?:resaltado|destacado|subrayado|marcado|coloreado)|"
+        r"(?:los|las)\s+(?:resaltad[oa]s|destacad[oa]s))\b",
+        re.IGNORECASE,
+    ),
+]
+
+
+def _color_only_findings(raw_text: str) -> list[RuleFinding]:
+    """Detecta instrucciones o distinciones que dependen solo del color o resaltado (WCAG 1.4.1)."""
+    matches: list[str] = []
+    seen: set[str] = set()
+    for pattern in _COLOR_ONLY_PATTERNS:
+        for m in pattern.finditer(raw_text):
+            frag = m.group().strip()
+            key = frag.lower()
+            if key not in seen:
+                seen.add(key)
+                matches.append(frag)
+
+    findings: list[RuleFinding] = []
+    for frag in matches[:MAX_REPORTED_PER_RULE]:
+        findings.append(
+            RuleFinding(
+                barrier={
+                    "category": "accesibilidad_visual",
+                    "severity": "para_revisar",
+                    "issue": "Información transmitida solo mediante color (WCAG 1.4.1)",
+                    "original_text": frag,
+                    "explanation": (
+                        f"La expresión '{frag}' utiliza el color o resaltado visual como único medio para "
+                        "distinguir información o indicar una consigna. Estudiantes con daltonismo, baja visión "
+                        "o lectores de pantalla pueden perder esa distinción (WCAG 1.4.1)."
+                    ),
+                    "recommendation": (
+                        "Agregá etiquetas de texto, símbolos, íconos o patrones además del color "
+                        "(por ejemplo, '✓ Correcto' / '✗ Incorrecto', negrita o numeración)."
+                    ),
+                    "suggested_rewrite": None,
+                    "fragment_found": True,
+                    "source": "rules",
+                },
+                anchor=frag,
+            )
+        )
+    return findings
+
+
 def _images_without_alt_text(doc: ExtractedDocument) -> int:
     """Imágenes sin texto alternativo conocido. En PDF no se detecta, así que son todas."""
     return max(0, doc.image_count - doc.images_with_alt_text)
@@ -788,8 +874,14 @@ def run_rules(doc: ExtractedDocument) -> RulesResult:
     ifsz = calculate_szigriszt_pazos(doc.raw_text, sentences)
     readability_findings = _readability_findings(ifsz)
 
-    # Tarea #25: Referencias puramente visuales
+    # Tarea #25 + Issue #80: Referencias puramente visuales y solo color
     visual_ref_findings = _visual_reference_findings(doc.raw_text)
+    seen_anchors = {f.anchor.lower() for f in visual_ref_findings if f.anchor}
+    color_only_findings = [
+        f for f in _color_only_findings(doc.raw_text)
+        if not f.anchor or f.anchor.lower() not in seen_anchors
+    ]
+    all_visual_ref_findings = visual_ref_findings + color_only_findings
 
     # Issue #79: legibilidad visual del archivo (letra chica, contraste y tipografía). No aplica al texto pegado.
     legibility = legibility_assessment(doc)
@@ -808,7 +900,7 @@ def run_rules(doc: ExtractedDocument) -> RulesResult:
         list_items_count=doc.structure.list_items_count if hasattr(doc, "structure") else 0,
         multi_action_prompts=len(multi_action_findings),
         readability_score_szigriszt=ifsz,
-        visual_only_references=len(visual_ref_findings),
+        visual_only_references=len(all_visual_ref_findings),
         body_font_size_pt=legibility.body_font_size,
         small_text_passages=legibility.small_text_passages,
         low_contrast_passages=legibility.low_contrast_passages,
@@ -875,16 +967,16 @@ def run_rules(doc: ExtractedDocument) -> RulesResult:
 
     # Dimensión Visual
     visual, visual_barriers = visual_assessment(doc)
-    if visual_ref_findings:
-        visual_barriers.extend(f.barrier for f in visual_ref_findings)
+    if all_visual_ref_findings:
+        visual_barriers.extend(f.barrier for f in all_visual_ref_findings)
         worst_vis = worst_status(
             visual.status,
-            "barrera_detectada" if len(visual_ref_findings) >= 3 else "para_revisar",
+            "barrera_detectada" if len(all_visual_ref_findings) >= 3 else "para_revisar",
         )
         visual = DimensionAssessment(
             category="accesibilidad_visual",
             status=worst_vis,
-            comment=f"{visual.comment} Se detectaron {len(visual_ref_findings)} referencia(s) que dependen de la posición o aspecto visual.",
+            comment=f"{visual.comment} Se detectaron {len(all_visual_ref_findings)} referencia(s) que dependen de la posición o aspecto visual.",
         )
     if legibility.barriers:
         visual_barriers.extend(legibility.barriers)
@@ -916,7 +1008,7 @@ def run_rules(doc: ExtractedDocument) -> RulesResult:
             struct_penalties,
             len(multi_action_findings),
             ifsz,
-            len(visual_ref_findings),
+            len(all_visual_ref_findings),
         ) + legibility.penalties,
     )
 

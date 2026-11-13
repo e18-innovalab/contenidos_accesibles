@@ -340,10 +340,68 @@ def typography_assessment(doc: ExtractedDocument) -> LegibilityResult:
     return result
 
 
+COLORBLIND_PAIR_POINTS = 4
+MAX_COLORBLIND_PENALTY = 8
+_CVD_LABELS = {
+    "protanopia": "protanopía",
+    "deuteranopia": "deuteranopía",
+    "tritanopia": "tritanopía",
+}
+
+
+def colorblind_assessment(doc: ExtractedDocument) -> LegibilityResult:
+    """Detecta pares de colores usados en el texto que pueden confundirse con daltonismo (WCAG 1.4.1)."""
+    result = LegibilityResult()
+    stats = doc.legibility
+    if not _applies(doc) or not stats or not stats.colorblind_confusion_pairs:
+        return result
+
+    pairs = stats.colorblind_confusion_pairs
+    result.status = "para_revisar"
+    result.comments.append(
+        f"Se detectaron {len(pairs)} par(es) de colores en el texto que pueden confundirse con daltonismo."
+    )
+    for pair in pairs[:3]:
+        cvds = ", ".join(_CVD_LABELS.get(d, d) for d in pair.deficiencies)
+        original = pair.sample_a or f"{pair.color_a} / {pair.color_b}"
+        result.barriers.append({
+            "category": "accesibilidad_visual",
+            "severity": "para_revisar",
+            "issue": f"Combinación de colores problemática para daltonismo ({pair.color_a} y {pair.color_b}){_place(doc, pair.page_number)}",
+            "original_text": original,
+            "explanation": (
+                f"El documento utiliza los colores {pair.color_a} (ej. '{pair.sample_a}') y "
+                f"{pair.color_b} (ej. '{pair.sample_b}'), que pierden diferenciación bajo {cvds}. "
+                "Si se usan para distinguir categorías o respuestas, estudiantes con daltonismo pueden confundirlos (WCAG 1.4.1)."
+            ),
+            "recommendation": (
+                "No dependas solo de estos colores para diferenciar contenido: agregá etiquetas de texto, "
+                "símbolos, negrita, subrayado o patrones, o elegí pares con contraste tonal claro (ej. azul oscuro y naranja)."
+            ),
+            "suggested_rewrite": None,
+            "fragment_found": bool(pair.sample_a and _in_text(pair.sample_a, doc.raw_text)),
+            "source": "rules",
+        })
+
+    result.penalties.append(ScorePenalty(
+        rule="colores_daltonismo",
+        category="accesibilidad_visual",
+        count=len(pairs),
+        points=min(MAX_COLORBLIND_PENALTY, COLORBLIND_PAIR_POINTS * len(pairs)),
+        severe=False,
+    ))
+    return result
+
+
 def legibility_assessment(doc: ExtractedDocument) -> LegibilityResult:
     """Todas las reglas de legibilidad visual del archivo, unidas en un solo resultado."""
     combined = LegibilityResult()
-    for part in (small_text_assessment(doc), contrast_assessment(doc), typography_assessment(doc)):
+    for part in (
+        small_text_assessment(doc),
+        contrast_assessment(doc),
+        typography_assessment(doc),
+        colorblind_assessment(doc),
+    ):
         combined.barriers.extend(part.barriers)
         combined.penalties.extend(part.penalties)
         combined.comments.extend(part.comments)
