@@ -182,6 +182,56 @@ def _assign_barrier_ids(raw_barriers: list[dict]) -> list[BarrierReport]:
     ]
 
 
+def _vision_color_and_text_barriers(alt_text_proposals: list[AltTextProposal]) -> list[dict]:
+    """Convierte señales de color y texto incrustado de la IA de visión en barreras visuales (Issue #80)."""
+    barriers: list[dict] = []
+    for prop in alt_text_proposals:
+        loc = prop.location_description
+        if prop.relies_on_color:
+            detail = prop.color_dependency_detail or (
+                "La imagen distingue información únicamente mediante color (ej. leyenda o semáforo)."
+            )
+            barriers.append({
+                "category": "accesibilidad_visual",
+                "severity": "para_revisar",
+                "issue": f"Imagen con información dependiente solo del color ({loc})",
+                "original_text": prop.context_used or loc,
+                "explanation": (
+                    f"{detail} Cuando una imagen, gráfico o mapa usa solo el color para codificar "
+                    "categorías o estados, estudiantes con daltonismo o baja visión no pueden interpretarla (WCAG 1.4.1)."
+                ),
+                "recommendation": (
+                    "Agregá patrones, tramas, etiquetas de texto o símbolos además del color "
+                    "para diferenciar cada serie o categoría."
+                ),
+                "suggested_rewrite": None,
+                "fragment_found": False,
+                "source": "ai",
+            })
+        if prop.has_untranscribed_text:
+            detail = prop.embedded_text_detail or (
+                "La imagen incluye texto o rótulos relevantes que no figuran en el documento."
+            )
+            barriers.append({
+                "category": "accesibilidad_visual",
+                "severity": "para_revisar",
+                "issue": f"Imagen con texto incrustado ausente en el documento ({loc})",
+                "original_text": prop.context_used or loc,
+                "explanation": (
+                    f"{detail} Los lectores de pantalla no pueden leer texto dentro de una imagen "
+                    "si no está transcripto en el texto del material o en el texto alternativo (WCAG 1.4.5)."
+                ),
+                "recommendation": (
+                    "Escribí ese texto fuera de la imagen (en el cuerpo del documento) o incluilo "
+                    "completo dentro del texto alternativo."
+                ),
+                "suggested_rewrite": None,
+                "fragment_found": False,
+                "source": "ai",
+            })
+    return barriers
+
+
 def _build_response(
     doc: ExtractedDocument,
     ai: _AIPart,
@@ -200,25 +250,43 @@ def _build_response(
         now = datetime.now(timezone.utc)
         expires_at = (now + timedelta(hours=settings.ANALYSIS_TTL_HOURS)).strftime("%Y-%m-%dT%H:%M:%SZ")
 
+    proposals = alt_text_proposals or []
+    vision_barriers = _vision_color_and_text_barriers(proposals)
+    ai_barriers = ai.barriers + vision_barriers
+
     rule_barriers = [
-        f.barrier for f in rules.findings if not any(_ai_covers(b, f) for b in ai.barriers)
+        f.barrier for f in rules.findings if not any(_ai_covers(b, f) for b in ai_barriers)
     ]
     # Graves primero; dentro de cada severidad se respeta el orden de impacto de la IA.
-    barriers = sorted(_drop_repeated(ai.barriers + rule_barriers), key=lambda b: b["severity"] != "barrera_detectada")
+    barriers = sorted(_drop_repeated(ai_barriers + rule_barriers), key=lambda b: b["severity"] != "barrera_detectada")
     breakdown = compute_score(ai.score, rules)
 
     if doc.is_truncated:
         warnings = warnings + ["Las reglas automáticas evaluaron el material completo."]
+
+    dimensions = _merge_dimensions(ai.dimensions, rules.dimensions)
+    if vision_barriers:
+        for idx, dim in enumerate(dimensions):
+            if dim.category == "accesibilidad_visual":
+                dimensions[idx] = DimensionAssessment(
+                    category="accesibilidad_visual",
+                    status=worst_status(dim.status, "para_revisar"),
+                    comment=(
+                        f"{dim.comment} La IA de visión detectó {len(vision_barriers)} "
+                        "señal(es) de dependencia de color o texto incrustado en imágenes."
+                    ).strip(),
+                )
+                break
 
     return AccessibilityAnalysisResponse(
         analysis_id=analysis_id,
         expires_at=expires_at,
         estimated_score=breakdown.final_score,
         summary=ai.summary,
-        dimensions=_merge_dimensions(ai.dimensions, rules.dimensions),
+        dimensions=dimensions,
         strengths=ai.strengths,
         barriers=_assign_barrier_ids(barriers),
-        alt_text_proposals=alt_text_proposals or [],
+        alt_text_proposals=proposals,
         warnings=warnings,
         score_breakdown=breakdown,
         metadata=AnalysisMetadata(

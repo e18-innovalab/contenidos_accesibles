@@ -78,6 +78,10 @@ class LegibilityStats(BaseModel):
         default_factory=list,
         description="Problemas de tipografía detectados, uno por regla (cursiva, mayúsculas, subrayado, etc.).",
     )
+    colorblind_confusion_pairs: list["ColorConfusionPair"] = Field(
+        default_factory=list,
+        description="Pares de colores cromáticos en el texto que pueden confundirse con daltonismo (issue #80).",
+    )
 
 
 class TypographyIssue(BaseModel):
@@ -102,6 +106,19 @@ class LowContrastPassage(BaseModel):
     required_ratio: float = Field(description="Mínimo exigido: 4.5 para texto normal, 3 para texto grande.")
     is_large_text: bool = Field(description="True si el texto mide 18 pt o más, o 14 pt o más en negrita.")
     word_count: int = Field(ge=0, description="Palabras del pasaje con bajo contraste.")
+
+
+class ColorConfusionPair(BaseModel):
+    """Par de colores cromáticos usados en el texto que colapsan bajo daltonismo (issue #80)."""
+    color_a: str = Field(description="Primer color en hexadecimal (#RRGGBB).")
+    color_b: str = Field(description="Segundo color en hexadecimal (#RRGGBB).")
+    deficiencies: list[str] = Field(
+        default_factory=list,
+        description="Tipos de daltonismo afectados: protanopia, deuteranopia y/o tritanopia.",
+    )
+    sample_a: str = Field(default="", description="Fragmento de ejemplo en el primer color.")
+    sample_b: str = Field(default="", description="Fragmento de ejemplo en el segundo color.")
+    page_number: int = Field(default=1, ge=1, description="Página donde aparece el primer color.")
 
 
 class ExtractedDocument(BaseModel):
