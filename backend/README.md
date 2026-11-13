@@ -188,7 +188,9 @@ En local (`ENVIRONMENT=development`) quedan abiertas. En staging/production pide
 | `GET` | `/api/v1/export/report?analysis_id=&format=` | Descarga del informe en `pdf` (por defecto), `md` o `txt`. En PDF, los caracteres fuera de latin-1 salen como `?` (#87). Con `&delivery=link`, URL firmada (#62) | ✅ Operativo |
 | `POST` | `/api/v1/files/upload-url` | Pide una URL firmada `PUT` para subir un `.pdf`, `.docx` o `.pptx` (máx. 10 MB) directo al almacenamiento (#62) | ✅ Operativo |
 | `POST` | `/api/v1/files/{file_id}/complete` | Confirma la subida: verifica tamaño, tipo y firma del archivo | ✅ Operativo |
+| `GET` | `/api/v1/files` | Archivos vigentes del usuario (subidos y exportados), del más reciente al más antiguo (#155) | ✅ Operativo |
 | `GET` | `/api/v1/files/{file_id}` | Metadatos del archivo (estado, tamaño, vencimiento) | ✅ Operativo |
+| `DELETE` | `/api/v1/files/{file_id}` | Elimina el archivo del almacenamiento y revoca sus enlaces (#155) | ✅ Operativo |
 | `GET` | `/api/v1/files/{file_id}/download-url` | URL firmada `GET` de descarga, con el nombre original | ✅ Operativo |
 | `POST` | `/api/v1/files/{file_id}/shares` | Crea un enlace para compartir el archivo (`/s/{token}`), revocable y con vencimiento (#65) | ✅ Operativo |
 | `GET` | `/api/v1/files/{file_id}/shares` | Enlaces activos del archivo, con cuántas veces se abrieron | ✅ Operativo |
