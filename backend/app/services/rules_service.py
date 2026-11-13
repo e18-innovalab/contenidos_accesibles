@@ -251,6 +251,7 @@ _ACTION_VERBS = {
     "elaborar", "desarrollar", "buscar", "seleccionar", "copiar", "armar", "resolver",
     "realizar", "redactar", "preparar", "exponer", "resumir", "extraer", "indicar",
     "mencionar", "describir", "definir", "graficar", "enumerar", "diferenciar", "anotar",
+    "agregar", "registrar", "observar", "medir", "elegir", "rotular", "agitar", "pintar", "colorear", "investigar",
     # Imperativo voseo
     "leé", "escribí", "subrayá", "respondé", "analizá", "dibujá", "calculá",
     "compará", "sintetizá", "completá", "uní", "marcá", "explicá", "relacioná",
@@ -258,6 +259,7 @@ _ACTION_VERBS = {
     "elaborá", "desarrollá", "buscá", "seleccioná", "copiá", "armá", "resolvé",
     "realizá", "redactá", "prepará", "exponé", "resumí", "extraé", "indicá",
     "mencioná", "describí", "definí", "graficá", "enumerá", "diferenciá", "anotá",
+    "agregá", "registrá", "observá", "medí", "elegí", "rotulá", "agitá", "pintá", "coloreá", "investigá",
     # Imperativo tuteo
     "lee", "escribe", "subraya", "responde", "analiza", "dibuja", "calcula",
     "compara", "sintetiza", "completa", "une", "marca", "explica", "relaciona",
@@ -265,6 +267,7 @@ _ACTION_VERBS = {
     "elabora", "desarrolla", "busca", "selecciona", "copia", "arma", "resuelve",
     "realiza", "redacta", "prepara", "resume", "extrae", "indica",
     "menciona", "describe", "define", "grafica", "enumera", "diferencia", "anota",
+    "agrega", "registra", "observa", "mide", "elige", "rotula", "agita", "pinta", "colorea", "investiga",
     # Subjuntivo plural / ustedes / ellos
     "lean", "escriban", "subrayen", "respondan", "analicen", "dibujen", "calculen",
     "comparen", "sinteticen", "completen", "unan", "marquen", "expliquen", "relacionen",
@@ -272,14 +275,25 @@ _ACTION_VERBS = {
     "elaboren", "desarrollen", "busquen", "seleccionen", "copien", "armen", "resuelvan",
     "realicen", "redacten", "preparen", "expongan", "resuman", "extraigan", "indiquen",
     "mencionen", "describan", "definan", "grafiquen", "enumeren", "diferencien", "anoten",
+    "agreguen", "registren", "observen", "midan", "elijan", "rotulen", "agiten", "pinten", "coloreen", "investiguen",
     # Subjuntivo usted
     "lea", "escriba", "subraye", "responda", "analice", "dibuje", "calcule",
-    "compare", "sintetice", "complete", "una", "marque", "explique", "relacione",
+    "compare", "sintetice", "complete", "marque", "explique", "relacione",
     "identifique", "caracterice", "justifique", "clasifique", "ordene", "confeccione",
     "elabore", "desarrolle", "busque", "seleccione", "copie", "arme", "resuelva",
     "realice", "redacte", "prepare", "exponga", "resuma", "extraiga", "indique",
     "mencione", "describa", "defina", "grafique", "enumere", "diferencie", "anote",
+    "agregue", "registre", "observe", "mida", "elija", "rotule", "agite", "pinte", "coloree", "investigue",
 }
+
+_ENCLITIC_RE = re.compile(r"^(.{4,}?)(?:los|las|les|lo|la|le|nos|se)$")
+
+
+def _is_action_verb(token: str) -> bool:
+    if token in _ACTION_VERBS:
+        return True
+    m = _ENCLITIC_RE.match(token)
+    return bool(m and m.group(1) in _ACTION_VERBS)
 
 
 def _multi_action_findings(sentences: list[tuple[str, int]]) -> list[RuleFinding]:
@@ -287,7 +301,7 @@ def _multi_action_findings(sentences: list[tuple[str, int]]) -> list[RuleFinding
     findings = []
     for sentence, words in sentences:
         tokens = [w.lower() for w in _WORD_RE.findall(sentence)]
-        action_verbs_found = [w for w in tokens if w in _ACTION_VERBS]
+        action_verbs_found = [w for w in tokens if _is_action_verb(w)]
         count = len(action_verbs_found)
         if count >= MULTI_ACTION_WARN_THRESHOLD:
             severity = "barrera_detectada" if count >= MULTI_ACTION_SEVERE_THRESHOLD else "para_revisar"
