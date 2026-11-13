@@ -237,11 +237,12 @@
         <p class="muted">
             <code>GET /export/content</code> y <code>/export/report</code> con <code>delivery=link</code>: el archivo
             queda en el almacenamiento (R2 en producción) y se descarga con una URL firmada que vence a los 5 minutos.
+            Para lectores de pantalla se recomienda <strong>Word (.docx)</strong>, ya que el PDF generado no incluye etiquetado estructural (Tagged PDF / PDF/UA).
         </p>
         <div class="row">
             <label>Material adaptado
                 <select id="export-content-format">
-                    <option value="docx">Word (.docx)</option>
+                    <option value="docx">Word (.docx — recomendado)</option>
                     <option value="pdf">PDF</option>
                     <option value="md">Markdown</option>
                     <option value="txt">Texto</option>
