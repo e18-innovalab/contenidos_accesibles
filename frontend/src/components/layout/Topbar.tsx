@@ -1,4 +1,6 @@
-import { Menu, ChevronDown, GraduationCap } from 'lucide-react';
+import { useState, useRef, useEffect } from 'react';
+import { Menu, ChevronDown, GraduationCap, LogOut } from 'lucide-react';
+import { useUser, useClerk } from '@clerk/clerk-react';
 
 export type AnalysisStage = 'upload' | 'results' | 'adapted';
 
@@ -31,11 +33,6 @@ const STAGES: StageItem[] = [
   { id: 'adapted', label: 'VERSIÓN ADAPTADA' },
 ];
 
-const DEFAULT_USER: UserProfileInfo = {
-  name: 'Luciana Maccarini',
-  role: 'Docente',
-};
-
 export function Topbar({
   currentStage,
   onSelectStage,
@@ -43,15 +40,50 @@ export function Topbar({
   hasAdaptedVersion = false,
   showStages = true,
   sectionTitle,
-  user = DEFAULT_USER,
+  user,
   isSidebarOpen,
   onToggleSidebar,
 }: TopbarProps) {
+  const { user: clerkUser } = useUser();
+  const { signOut } = useClerk();
+  const [menuOpen, setMenuOpen] = useState(false);
+  const dropdownRef = useRef<HTMLDivElement>(null);
+
+  // Toma los datos reales de Clerk (o usa los recibidos por props como respaldo)
+  const displayName =
+    clerkUser?.fullName ||
+    clerkUser?.firstName ||
+    clerkUser?.primaryEmailAddress?.emailAddress ||
+    user?.name ||
+    'Docente';
+  const displayRole = user?.role || 'Docente';
+  const displayAvatar = clerkUser?.imageUrl || user?.avatarUrl;
+
+  // Cerrar el desplegable al hacer clic afuera
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+        setMenuOpen(false);
+      }
+    }
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
+
   function isStageEnabled(stageId: AnalysisStage): boolean {
     if (stageId === 'upload') return true;
-    if (stageId === 'results') return hasResults || currentStage === 'results' || currentStage === 'adapted';
-    if (stageId === 'adapted') return hasAdaptedVersion || currentStage === 'adapted';
+    if (stageId === 'results')
+      return hasResults || currentStage === 'results' || currentStage === 'adapted';
+    if (stageId === 'adapted')
+      return hasAdaptedVersion || currentStage === 'adapted';
     return false;
+  }
+
+  async function handleSignOut() {
+    setMenuOpen(false);
+    // Limpia el hash para volver limpio al inicio y cierra sesión en Clerk
+    window.location.hash = '';
+    await signOut();
   }
 
   return (
@@ -75,9 +107,6 @@ export function Topbar({
                 const isActive = currentStage === stage.id;
                 const enabled = isStageEnabled(stage.id);
 
-                // En Figma, las etapas futuras que aún no están habilitadas se muestran
-                // atenuadas o se revelan a medida que avanza el flujo. Mostramos las 3 etapas
-                // del flujo para dar visibilidad completa de los pasos (Criterio de aceptación #143).
                 return (
                   <li key={stage.id} className="via-stage-item">
                     <button
@@ -107,25 +136,58 @@ export function Topbar({
         )}
       </div>
 
-      <div className="via-topbar-right">
+      <div className="via-topbar-right" ref={dropdownRef} style={{ position: 'relative' }}>
         <button
           type="button"
           className="via-user-profile"
-          aria-label={`Perfil de ${user.name}, rol ${user.role}`}
+          onClick={() => setMenuOpen((prev) => !prev)}
+          aria-expanded={menuOpen}
+          aria-haspopup="menu"
+          aria-label={`Perfil de ${displayName}, rol ${displayRole}`}
         >
           <div className="via-user-avatar" aria-hidden="true">
-            {user.avatarUrl ? (
-              <img src={user.avatarUrl} alt={user.name} />
+            {displayAvatar ? (
+              <img src={displayAvatar} alt={displayName} />
             ) : (
               <GraduationCap size={20} strokeWidth={2.2} />
             )}
           </div>
           <div className="via-user-info">
-            <span className="via-user-name">{user.name}</span>
-            <span className="via-user-role">{user.role}</span>
+            <span className="via-user-name">{displayName}</span>
+            <span className="via-user-role">{displayRole}</span>
           </div>
-          <ChevronDown size={15} className="via-user-chevron" aria-hidden="true" />
+          <ChevronDown
+            size={15}
+            className="via-user-chevron"
+            aria-hidden="true"
+            style={{
+              transform: menuOpen ? 'rotate(180deg)' : 'rotate(0deg)',
+              transition: 'transform 0.2s ease',
+            }}
+          />
         </button>
+
+        {menuOpen && (
+          <div className="via-user-dropdown" role="menu">
+            <div className="via-user-dropdown-header">
+              <span className="via-user-dropdown-name">{displayName}</span>
+              {clerkUser?.primaryEmailAddress?.emailAddress && (
+                <span className="via-user-dropdown-email">
+                  {clerkUser.primaryEmailAddress.emailAddress}
+                </span>
+              )}
+            </div>
+            <button
+              type="button"
+              role="menuitem"
+              className="via-user-dropdown-item via-logout-btn"
+              onClick={handleSignOut}
+            >
+              <LogOut size={16} />
+              <span>Cerrar sesión</span>
+            </button>
+          </div>
+        )}
       </div>
     </header>
   );

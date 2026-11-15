@@ -1,17 +1,27 @@
 import React, { useState } from 'react';
 import loginBanner from '../../assets/login-banner.png';
 import baLogo from '../../assets/BA.png';
+import { useSignIn } from '@clerk/clerk-react';
 
-interface LoginViewProps {
-  onLoginSuccess: () => void;
-}
-
-export const LoginView: React.FC<LoginViewProps> = ({ onLoginSuccess }) => {
+export const LoginView: React.FC = () => {
   const [email, setEmail] = useState('');
+  const { signIn, isLoaded } = useSignIn();
+
+  // Función para manejar el inicio de sesión con Google a través de Clerk
+  const handleGoogleLogin = () => {
+    if (!isLoaded) return;
+    signIn.authenticateWithRedirect({
+      strategy: 'oauth_google',
+      redirectUrl: '/sso-callback',
+      redirectUrlComplete: '/',
+    });
+  };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    onLoginSuccess();
+    // Si querés mantener soporte para login por email/password con Clerk, 
+    // podés integrarlo acá más adelante. Por ahora usamos Google.
+    handleGoogleLogin();
   };
 
   return (
@@ -95,7 +105,6 @@ export const LoginView: React.FC<LoginViewProps> = ({ onLoginSuccess }) => {
                   outline: 'none',
                   backgroundColor: '#fff'
                 }}
-                required
               />
             </div>
 
@@ -126,10 +135,10 @@ export const LoginView: React.FC<LoginViewProps> = ({ onLoginSuccess }) => {
             <div style={{ flex: 1, borderBottom: '1px solid #d1d5db' }}></div>
           </div>
 
-          {/* Botón Google */}
+          {/* Botón Google (Conectado a Clerk) */}
           <button 
             type="button" 
-            onClick={onLoginSuccess}
+            onClick={handleGoogleLogin}
             style={{ 
               width: '100%', 
               padding: '10px', 
