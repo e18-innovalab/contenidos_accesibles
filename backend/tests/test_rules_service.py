@@ -499,13 +499,27 @@ def test_barreras_repetidas_se_quitan_y_las_distintas_sobre_la_misma_cita_quedan
     ]
 
 
-def test_multiaccion_soporta_encliticos_y_evita_falso_positivo_con_una():
-    from app.services.rules_service import _multi_action_findings
+def test_solo_color_detecta_frases_comunes_y_voseo_tuteo():
+    from app.services.rules_service import _color_only_findings
 
-    safe = "Elegí una etapa y explicala con tus palabras en dos o tres oraciones."
-    assert _multi_action_findings([(safe, len(safe.split()))]) == []
+    text = (
+        "Las respuestas correctas están en verde y las incorrectas en rojo. "
+        "Revisá lo resaltado, marcá los de color azul y pintá de amarillo el título."
+    )
+    findings = _color_only_findings(text)
+    assert len(findings) == 3
+    anchors = {f.anchor.lower() for f in findings}
+    assert "están en verde" in anchors
+    assert "incorrectas en rojo" in anchors
+    assert all(f.barrier["category"] == "accesibilidad_visual" for f in findings)
+    assert all(f.barrier["source"] == "rules" for f in findings)
 
-    lab = "Prepará los tubos, rotulalos del 1 al 5, agregá el indicador y registrá el cambio."
-    findings = _multi_action_findings([(lab, len(lab.split()))])
-    assert len(findings) == 1
-    assert "4 acciones" in findings[0].barrier["issue"]
+
+def test_solo_color_no_marca_falsos_positivos_descriptivos():
+    from app.services.rules_service import _color_only_findings
+
+    safe_text = (
+        "El color verde de las hojas se debe a la clorofila. "
+        "Las hojas son verdes en primavera y el cielo azul se ve despejado."
+    )
+    assert _color_only_findings(safe_text) == []
