@@ -64,8 +64,8 @@ def export_content(
     Genera el material educativo con **solo los cambios aceptados o editados**
     por el docente y lo entrega como archivo descargable:
 
-    - **`docx`** (por defecto): documento Word con tipografía accesible (Arial, interlineado 1.5).
-    - **`pdf`**: documento PDF accesible con diseño maquetado en memoria (márgenes 20mm, tipografía clara).
+    - **`docx`** (por defecto, **recomendado para lectores de pantalla**): documento Word con tipografía accesible (Arial, interlineado 1.5) y estructura semántica completa.
+    - **`pdf`**: documento PDF con fuente Unicode (DejaVu Sans), metadatos de idioma (`es`) y título, márgenes de 20mm e interlineado legible. *Limitación*: `fpdf2` no genera PDF etiquetado (Tagged PDF / PDF/UA), por lo que para máxima accesibilidad estructural se recomienda **`docx`**.
     - **`md`**: Markdown con metadatos de análisis y el texto adaptado.
     - **`txt`**: texto plano UTF-8.
 

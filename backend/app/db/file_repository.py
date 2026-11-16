@@ -54,6 +54,17 @@ def get_for_user(file_id: str, user_id: str) -> dict | None:
     return dict(row) if row else None
 
 
+def list_for_user(user_id: str) -> list[dict]:
+    """Archivos vigentes del usuario (Issue #155), del más reciente al más antiguo."""
+    with get_connection() as conn:
+        rows = conn.execute(
+            f"SELECT {_COLUMNS} FROM files WHERE user_id = ? AND expires_at > ? "
+            "ORDER BY created_at DESC, rowid DESC",
+            (user_id, _iso(datetime.now(timezone.utc))),
+        ).fetchall()
+    return [dict(r) for r in rows]
+
+
 def mark_uploaded(file_id: str) -> None:
     with get_connection() as conn:
         conn.execute(

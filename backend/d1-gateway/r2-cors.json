@@ -4,7 +4,9 @@
       "allowed": {
         "origins": [
           "https://contenidos-accesibles.vercel.app",
-          "https://innovalab-web-pruebas.onrender.com"
+          "https://innovalab-web-pruebas.onrender.com",
+          "http://localhost:5173",
+          "http://127.0.0.1:5173"
         ],
         "methods": ["PUT", "GET"],
         "headers": ["content-type"]

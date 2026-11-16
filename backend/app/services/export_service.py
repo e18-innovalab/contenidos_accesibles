@@ -14,9 +14,14 @@ de los bytes (app/api/v1/delivery.py).
 import io
 import re
 from datetime import datetime, timezone
+from pathlib import Path
 from fpdf import FPDF
+from fpdf.prefs import ViewerPreferences
 
 from app.schemas.adaptation import AdaptedDocumentResponse, FinalReportResponse
+
+_FONTS_DIR = Path(__file__).resolve().parent.parent / "assets" / "fonts"
+_PDF_FONT_FAMILY = "DejaVu"
 
 # ---------------------------------------------------------------------------
 # Constantes de formato
@@ -188,35 +193,45 @@ def _content_as_docx(adapted: AdaptedDocumentResponse) -> bytes:
 
 
 def _clean_pdf_text(text: str) -> str:
-    """
-    Reemplaza caracteres tipográficos no soportados por las fuentes nativas de PDF (Helvetica)
-    y asegura compatibilidad limpia con latin-1.
-    """
-    if not text:
-        return ""
-    replacements = {
-        "—": "-",
-        "–": "-",
-        "“": '"',
-        "”": '"',
-        "‘": "'",
-        "’": "'",
-        "…": "...",
-        "•": "-",
-        "Δ": "Delta",
-        "δ": "delta",
-    }
-    for k, v in replacements.items():
-        text = text.replace(k, v)
-    return text.encode("latin-1", errors="replace").decode("latin-1")
+    """Normaliza texto Unicode para renderizado PDF sin pérdida por codificación latin-1."""
+    return text or ""
 
 
 class AccessiblePDF(FPDF):
-    """Clase base de PDF accesible con pie de página institucional y numeración."""
+    """
+    Clase base de PDF accesible con fuente Unicode (DejaVu Sans), metadatos
+    de documento (título, idioma, autor y asunto) y pie de página institucional.
+
+    Nota sobre etiquetado (Tagged PDF / PDF/UA): fpdf2 2.8.x no expone una API
+    pública para generar un árbol de estructura completo (etiquetas semánticas
+    de encabezados, párrafos, tablas y orden de lectura para lectores de pantalla).
+    Para máxima accesibilidad estructural con lectores de pantalla, se recomienda
+    exportar en formato DOCX.
+    """
+
+    def __init__(
+        self,
+        *,
+        title: str = "Documento Accesible",
+        subject: str = "",
+        lang: str = "es",
+        author: str = "Innova Lab - Asistente de Accesibilidad",
+    ) -> None:
+        super().__init__()
+        self.add_font(_PDF_FONT_FAMILY, "", str(_FONTS_DIR / "DejaVuSans.ttf"))
+        self.add_font(_PDF_FONT_FAMILY, "B", str(_FONTS_DIR / "DejaVuSans-Bold.ttf"))
+        self.add_font(_PDF_FONT_FAMILY, "I", str(_FONTS_DIR / "DejaVuSans-Oblique.ttf"))
+        self.add_font(_PDF_FONT_FAMILY, "BI", str(_FONTS_DIR / "DejaVuSans-BoldOblique.ttf"))
+        self.set_title(title)
+        self.set_lang(lang)
+        self.set_author(author)
+        if subject:
+            self.set_subject(subject)
+        self.viewer_preferences = ViewerPreferences(display_doc_title=True)
 
     def footer(self):
         self.set_y(-15)
-        self.set_font("Helvetica", "I", 8)
+        self.set_font(_PDF_FONT_FAMILY, "I", 8)
         self.set_text_color(128, 128, 128)
         self.cell(
             0,
@@ -228,35 +243,38 @@ class AccessiblePDF(FPDF):
 
 def _content_as_pdf(adapted: AdaptedDocumentResponse) -> bytes:
     """
-    Genera el material adaptado en PDF accesible en memoria (fpdf2).
-    Aplica tipografía legible (Helvetica), márgenes cómodos (20mm) e interlineado 1.5.
+    Genera el material adaptado en PDF en memoria (fpdf2) con fuente Unicode (DejaVu Sans),
+    metadatos de idioma/título, márgenes cómodos (20mm) e interlineado legible.
     """
-    pdf = AccessiblePDF()
+    pdf = AccessiblePDF(
+        title="Material Adaptado",
+        subject=f"Material educativo adaptado - Análisis {adapted.analysis_id}",
+    )
     pdf.set_margins(20, 20, 20)
     pdf.set_auto_page_break(auto=True, margin=20)
     pdf.add_page()
 
     # Título del documento
-    pdf.set_font("Helvetica", "B", 18)
+    pdf.set_font(_PDF_FONT_FAMILY, "B", 18)
     pdf.set_text_color(31, 73, 125)
     pdf.cell(text="Material Adaptado")
     pdf.ln(10)
 
     # Metadatos del análisis
-    pdf.set_font("Helvetica", "B", 10)
+    pdf.set_font(_PDF_FONT_FAMILY, "B", 10)
     pdf.set_text_color(60, 60, 60)
     pdf.cell(text=f"ID de análisis: {adapted.analysis_id}")
     pdf.ln(6)
-    pdf.set_font("Helvetica", "", 10)
+    pdf.set_font(_PDF_FONT_FAMILY, "", 10)
     pdf.cell(text=f"Propuestas aplicadas: {adapted.applied_count} de {adapted.total_proposals}")
     pdf.ln(8)
 
     if adapted.warnings:
-        pdf.set_font("Helvetica", "B", 10)
+        pdf.set_font(_PDF_FONT_FAMILY, "B", 10)
         pdf.set_text_color(180, 80, 0)
         pdf.cell(text="Advertencias:")
         pdf.ln(5)
-        pdf.set_font("Helvetica", "", 9)
+        pdf.set_font(_PDF_FONT_FAMILY, "", 9)
         pdf.set_text_color(80, 80, 80)
         for w in adapted.warnings:
             pdf.multi_cell(w=0, h=5, text=_clean_pdf_text(f"- {w}"), new_x="LMARGIN", new_y="NEXT")
@@ -269,12 +287,12 @@ def _content_as_pdf(adapted: AdaptedDocumentResponse) -> bytes:
     pdf.ln(8)
 
     # Contenido adaptado
-    pdf.set_font("Helvetica", "B", 13)
+    pdf.set_font(_PDF_FONT_FAMILY, "B", 13)
     pdf.set_text_color(31, 73, 125)
     pdf.cell(text="Contenido")
     pdf.ln(8)
 
-    pdf.set_font("Helvetica", "", 11)
+    pdf.set_font(_PDF_FONT_FAMILY, "", 11)
     pdf.set_text_color(20, 20, 20)
     for line in adapted.adapted_text.splitlines():
         stripped = line.strip()
@@ -399,31 +417,31 @@ def _document_as_docx(title: str, notes: list[str], body: str) -> bytes:
 
 
 def _document_as_pdf(title: str, notes: list[str], body: str) -> bytes:
-    pdf = AccessiblePDF()
+    pdf = AccessiblePDF(title=title, subject="Material educativo adaptado")
     pdf.set_margins(20, 20, 20)
     pdf.set_auto_page_break(auto=True, margin=20)
     pdf.add_page()
-    pdf.set_font("Helvetica", "B", 18)
+    pdf.set_font(_PDF_FONT_FAMILY, "B", 18)
     pdf.set_text_color(31, 73, 125)
     pdf.multi_cell(w=0, h=9, text=_clean_pdf_text(title), new_x="LMARGIN", new_y="NEXT")
     pdf.ln(4)
     if notes:
-        pdf.set_font("Helvetica", "", 9)
+        pdf.set_font(_PDF_FONT_FAMILY, "", 9)
         pdf.set_text_color(80, 80, 80)
         for note in notes:
             pdf.multi_cell(w=0, h=5, text=_clean_pdf_text(f"- {note}"), new_x="LMARGIN", new_y="NEXT")
         pdf.ln(4)
-    pdf.set_font("Helvetica", "", 11)
+    pdf.set_font(_PDF_FONT_FAMILY, "", 11)
     pdf.set_text_color(20, 20, 20)
     for block in _body_blocks(body):
         if isinstance(block, list):
-            pdf.set_font("Helvetica", "", 10)
+            pdf.set_font(_PDF_FONT_FAMILY, "", 10)
             with pdf.table(text_align="LEFT", first_row_as_headings=True) as table:
                 for row in block:
                     cells = table.row()
                     for value in row:
                         cells.cell(_clean_pdf_text(value))
-            pdf.set_font("Helvetica", "", 11)
+            pdf.set_font(_PDF_FONT_FAMILY, "", 11)
             pdf.ln(2)
         elif not block.strip():
             pdf.ln(3)
@@ -585,17 +603,20 @@ def _report_as_txt(report: FinalReportResponse) -> bytes:
 
 def _report_as_pdf(report: FinalReportResponse) -> bytes:
     """
-    Genera el informe ejecutivo de accesibilidad en PDF accesible en memoria (fpdf2).
+    Genera el informe ejecutivo de accesibilidad en PDF en memoria (fpdf2).
     Incluye resumen ejecutivo, tabla de puntajes antes/después/delta,
     desglose estructurado de barreras y aclaración de carácter orientativo (WCAG).
     """
-    pdf = AccessiblePDF()
+    pdf = AccessiblePDF(
+        title="Informe de Accesibilidad - Material Adaptado",
+        subject=f"Informe ejecutivo de accesibilidad - Análisis {report.analysis_id}",
+    )
     pdf.set_margins(15, 15, 15)
     pdf.set_auto_page_break(auto=True, margin=15)
     pdf.add_page()
 
     # Título principal
-    pdf.set_font("Helvetica", "B", 16)
+    pdf.set_font(_PDF_FONT_FAMILY, "B", 16)
     pdf.set_text_color(31, 73, 125)
     pdf.multi_cell(
         w=0,
@@ -607,7 +628,7 @@ def _report_as_pdf(report: FinalReportResponse) -> bytes:
     pdf.ln(3)
 
     # Metadatos del informe
-    pdf.set_font("Helvetica", "", 9)
+    pdf.set_font(_PDF_FONT_FAMILY, "", 9)
     pdf.set_text_color(100, 100, 100)
     pdf.cell(
         text=_clean_pdf_text(f"ID de análisis: {report.analysis_id}  |  Generado: {report.generated_at}"),
@@ -617,12 +638,12 @@ def _report_as_pdf(report: FinalReportResponse) -> bytes:
     pdf.ln(8)
 
     # Resumen ejecutivo
-    pdf.set_font("Helvetica", "B", 12)
+    pdf.set_font(_PDF_FONT_FAMILY, "B", 12)
     pdf.set_text_color(31, 73, 125)
     pdf.cell(text="Resumen ejecutivo", new_x="LMARGIN", new_y="NEXT")
     pdf.ln(6)
 
-    pdf.set_font("Helvetica", "", 10)
+    pdf.set_font(_PDF_FONT_FAMILY, "", 10)
     pdf.set_text_color(30, 30, 30)
     for phrase in report.executive_summary:
         pdf.multi_cell(
@@ -636,13 +657,13 @@ def _report_as_pdf(report: FinalReportResponse) -> bytes:
     pdf.ln(5)
 
     # Puntaje de accesibilidad
-    pdf.set_font("Helvetica", "B", 12)
+    pdf.set_font(_PDF_FONT_FAMILY, "B", 12)
     pdf.set_text_color(31, 73, 125)
     pdf.cell(text="Puntaje de accesibilidad", new_x="LMARGIN", new_y="NEXT")
     pdf.ln(6)
 
     delta_str = f"+{report.score_delta}" if report.score_delta >= 0 else str(report.score_delta)
-    pdf.set_font("Helvetica", "", 10)
+    pdf.set_font(_PDF_FONT_FAMILY, "", 10)
     with pdf.table(col_widths=(60, 40, 40, 40)) as table:
         h = table.row()
         h.cell("Evaluación")
@@ -659,7 +680,7 @@ def _report_as_pdf(report: FinalReportResponse) -> bytes:
     pdf.ln(4)
 
     # Disclaimer
-    pdf.set_font("Helvetica", "I", 8)
+    pdf.set_font(_PDF_FONT_FAMILY, "I", 8)
     pdf.set_text_color(90, 90, 90)
     pdf.multi_cell(
         w=0,
@@ -671,12 +692,12 @@ def _report_as_pdf(report: FinalReportResponse) -> bytes:
     pdf.ln(6)
 
     # Barreras detectadas y decisiones
-    pdf.set_font("Helvetica", "B", 12)
+    pdf.set_font(_PDF_FONT_FAMILY, "B", 12)
     pdf.set_text_color(31, 73, 125)
     pdf.cell(text="Barreras detectadas y decisiones", new_x="LMARGIN", new_y="NEXT")
     pdf.ln(6)
 
-    pdf.set_font("Helvetica", "", 9)
+    pdf.set_font(_PDF_FONT_FAMILY, "", 9)
     with pdf.table(col_widths=(18, 30, 32, 65, 35)) as table:
         h = table.row()
         h.cell("ID")
@@ -699,12 +720,12 @@ def _report_as_pdf(report: FinalReportResponse) -> bytes:
     pdf.ln(6)
 
     # Métricas consolidadas
-    pdf.set_font("Helvetica", "B", 12)
+    pdf.set_font(_PDF_FONT_FAMILY, "B", 12)
     pdf.set_text_color(31, 73, 125)
     pdf.cell(text="Métricas consolidadas", new_x="LMARGIN", new_y="NEXT")
     pdf.ln(6)
 
-    pdf.set_font("Helvetica", "", 9)
+    pdf.set_font(_PDF_FONT_FAMILY, "", 9)
     pdf.set_text_color(40, 40, 40)
     pdf.multi_cell(w=0, h=5, text=_clean_pdf_text(f"- Total barreras detectadas: {report.total_barriers}"), new_x="LMARGIN", new_y="NEXT")
     pdf.multi_cell(w=0, h=5, text=_clean_pdf_text(f"- Resueltas (aceptadas o editadas): {report.resolved_count}"), new_x="LMARGIN", new_y="NEXT")
@@ -714,11 +735,11 @@ def _report_as_pdf(report: FinalReportResponse) -> bytes:
 
     if report.warnings:
         pdf.ln(4)
-        pdf.set_font("Helvetica", "B", 11)
+        pdf.set_font(_PDF_FONT_FAMILY, "B", 11)
         pdf.set_text_color(180, 80, 0)
         pdf.cell(text="Advertencias:", new_x="LMARGIN", new_y="NEXT")
         pdf.ln(5)
-        pdf.set_font("Helvetica", "", 9)
+        pdf.set_font(_PDF_FONT_FAMILY, "", 9)
         pdf.set_text_color(80, 80, 80)
         for w in report.warnings:
             pdf.multi_cell(w=0, h=5, text=_clean_pdf_text(f"- {w}"), new_x="LMARGIN", new_y="NEXT")

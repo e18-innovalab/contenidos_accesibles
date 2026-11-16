@@ -479,3 +479,46 @@ def test_pdf_endpoint_mock_returns_alt_text_proposals():
     assert "[MOCK]" in proposal["suggested_alt_text"]
     assert "image_bytes" not in str(data)
 
+
+
+def test_vision_color_y_texto_incrustado_generan_barreras_visuales():
+    from app.schemas.analysis import AltTextProposal
+    from app.services.accessibility_service import _vision_color_and_text_barriers
+
+    proposals = [
+        AltTextProposal(
+            image_index=1,
+            page_number=2,
+            location_description="Página 2, gráfico central",
+            suggested_alt_text="Gráfico de barras comparativo.",
+            relies_on_color=True,
+            color_dependency_detail="La leyenda distingue las series solo con rojo y verde.",
+            has_untranscribed_text=True,
+            embedded_text_detail="Incluye valores numéricos en los ejes no presentes en el texto.",
+        )
+    ]
+    barriers = _vision_color_and_text_barriers(proposals)
+    assert len(barriers) == 2
+    assert all(b["category"] == "accesibilidad_visual" and b["source"] == "ai" for b in barriers)
+    assert any("color" in b["issue"].lower() for b in barriers)
+    assert any("texto incrustado" in b["issue"].lower() for b in barriers)
+
+
+def test_mock_proposals_incluye_campos_color_y_texto():
+    from app.services.alt_text_service import AltTextService
+
+    img = ExtractedImage(
+        image_index=1,
+        page_number=1,
+        image_bytes=b"fake",
+        mime_type="image/png",
+        bbox=(0, 0, 100, 100),
+        width=100,
+        height=100,
+        location_description="Página 1, centro",
+        context_text="Observá la leyenda en rojo y verde del gráfico.",
+    )
+    proposals = AltTextService.generate_mock_proposals([img])
+    assert len(proposals) == 1
+    assert proposals[0].relies_on_color is True
+    assert proposals[0].has_untranscribed_text is False

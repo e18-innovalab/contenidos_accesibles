@@ -18,7 +18,9 @@ El diagnóstico combina dos fuentes:
 | Documento sin títulos estructurados (PDF, Word o PowerPoint) | `estructura` | — | doc ≥ 150 palabras sin H1/H2 |
 | Salto de jerarquía en títulos | `estructura` | salto de nivel (ej. H1 a H3) | — |
 | Sección extensa sin subdivisiones | `estructura` | más de 300 palabras bajo un título | — |
-| Referencias exclusivamente visuales (Tarea #25) | `accesibilidad_visual` | referencias a posición espacial ("a la derecha") o color sin texto alternativo (WCAG 1.3.3) | — |
+| Referencias exclusivamente visuales (Tarea #25) | `accesibilidad_visual` | referencias a posición espacial ("a la derecha") o aspecto visual (WCAG 1.3.3) | — |
+| Información solo por color (Issue #80, WCAG 1.4.1) | `accesibilidad_visual` | frases de consigna o distinción que dependen solo del color ("están en verde", "pintá de rojo", "lo resaltado") | — |
+| Colores problemáticos para daltonismo (Issue #80, solo archivos) | `accesibilidad_visual` | pares de colores cromáticos en el texto que colapsan bajo protanopía, deuteranopía o tritanopía | — |
 | Imágenes | `accesibilidad_visual` | hay imágenes sin texto alternativo conocido (en PDF no se puede verificar, cuentan todas; en Word y PowerPoint solo las que no lo tienen ni están marcadas como decorativas) | — |
 | PDF escaneado | `accesibilidad_visual` | — | sin capa de texto seleccionable |
 | Letra chica en el cuerpo (Issue #79, solo archivos) | `accesibilidad_visual` | — | tamaño predominante del texto < 9 pt |
@@ -80,6 +82,14 @@ Las reglas viven en `app/services/legibility_rules.py` y los datos tipográficos
 - Si no se conoce el tamaño (PowerPoint heredado del patrón), solo se marca lo que falla incluso con el umbral de texto grande (3:1).
 - Cada barrera indica los dos colores en hexadecimal, la relación obtenida y la exigida, y la página o diapositiva.
 - Umbrales: `NORMAL_TEXT_MIN_RATIO` (4,5), `LARGE_TEXT_MIN_RATIO` (3), `LARGE_TEXT_PT` (18), `LARGE_BOLD_TEXT_PT` (14) y `MIN_LOW_CONTRAST_WORDS` (5) en `legibility_extractor.py`.
+
+### Información solo por color y daltonismo (Issue #80)
+
+1. **Referencias solo por color en el texto (WCAG 1.4.1)**: `_color_only_findings()` en `rules_service.py` detecta frases donde el color o resaltado es el único medio de distinción (por ejemplo `"están en verde"`, `"las incorrectas en rojo"`, `"marcado en rojo"`, `"los de color azul"`, `"pintá de rojo"`, `"lo resaltado"`), contemplando voseo y tuteo.
+   - *Limitación*: menciones descriptivas sin rol de indicador (como `"el color verde de las hojas"` o `"las hojas son verdes por la clorofila"`) no se marcan; expresiones nuevas o muy idiomáticas pueden requerir ampliar los patrones.
+2. **Pares de colores problemáticos para daltonismo (solo archivos)**: `legibility_extractor.py` agrupa los colores cromáticos del texto (croma ≥ 40, mínimo 4 caracteres) y simula protanopía, deuteranopía y tritanopía mediante matrices de Viénot en sRGB lineal. Si dos colores bien diferenciados en visión normal (`distancia ≥ 60`) colapsan en alguna simulación (`distancia < 45` y relación `< 0,42`), `colorblind_assessment()` genera una barrera `para_revisar` (`colores_daltonismo`, 4 puntos por par, tope 8).
+   - *Limitación*: evalúa colores de texto extraídos del archivo; si el color está dentro de una imagen o gráfico rasterizado, la detección queda a cargo de la IA de visión.
+3. **IA de visión (`alt_text_service.py`)**: en la **misma** llamada multimodal del texto alternativo (sin costo extra de tokens), cada imagen informa `relies_on_color` (leyendas, mapas, semáforos dependientes solo del color) y `has_untranscribed_text` (texto relevante dentro de la imagen ausente en el documento). `accessibility_service.py` convierte esas señales en barreras de `accesibilidad_visual` (`source="ai"`).
 
 **Tipografía poco legible**
 

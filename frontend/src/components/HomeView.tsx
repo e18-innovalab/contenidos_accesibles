@@ -2,7 +2,7 @@ import {
   CheckCircle2, 
   ArrowRight, 
   Sparkles, 
-  PersonStanding,
+  Accessibility, 
   FileSearch, 
   FileText 
 } from 'lucide-react';
@@ -20,7 +20,7 @@ export function HomeView({ onGoToAnalysis, onSelectSection }: HomeViewProps) {
       <section className="via-home-hero">
         <div className="via-hero-content">
           <div className="via-badge-hero">
-            <PersonStanding size={14} />
+            <Accessibility size={14} />
             <span>ACCESIBILIDAD DOCENTE</span>
           </div>
 
@@ -55,21 +55,17 @@ export function HomeView({ onGoToAnalysis, onSelectSection }: HomeViewProps) {
 
         {/* 🎨 SECCIÓN DE LOS 3 DISEÑOS FLOTANTES (Lado derecho) */}
         <div className="via-hero-illustration">
-          {/* Círculos concéntricos decorativos de fondo */}
           <div className="via-circle-wave via-wave-1"></div>
           <div className="via-circle-wave via-wave-2"></div>
 
-          {/* 1. Tarjeta blanca superior izquierda (Documento) */}
           <div className="via-floating-card via-card-white">
             <FileText size={22} className="via-text-blue" />
           </div>
 
-          {/* 2. Tarjeta central principal (Celeste con ícono de accesibilidad) */}
           <div className="via-floating-card via-card-main-teal">
-            <PersonStanding size={48} className="via-text-dark" />
+            <Accessibility size={48} className="via-text-dark" />
           </div>
 
-          {/* 3. Tarjeta amarilla inferior derecha (Destellos) */}
           <div className="via-floating-card via-card-yellow">
             <Sparkles size={20} className="via-text-dark" />
           </div>

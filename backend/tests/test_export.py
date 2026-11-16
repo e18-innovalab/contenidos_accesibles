@@ -241,6 +241,39 @@ class TestExportContentPDF:
         assert res.status_code == 200
         assert len(res.content) > 500
 
+    def test_unicode_characters_preserved_without_question_marks(self, client):
+        import pymupdf
+
+        unicode_text = "Flechas → ← | Matemática ≥ Δ | Griego αβγ | Cirílico Привет | Aviso ⚠️"
+        analysis = client.post(
+            "/api/v1/analysis/sample?mock=true",
+            json={"text": f"{MATERIAL}\n\n{unicode_text}"},
+        ).json()
+        aid = analysis["analysis_id"]
+        res = _export_content(client, aid, "pdf")
+        assert res.status_code == 200
+
+        doc = pymupdf.open(stream=res.content, filetype="pdf")
+        extracted = "\n".join(page.get_text() for page in doc)
+        assert "?" not in extracted
+        for expected in ("→", "←", "≥", "Δ", "αβγ", "Привет", "⚠️"):
+            assert expected in extracted
+
+    def test_pdf_metadata_and_language_present(self, client):
+        import pymupdf
+
+        analysis = _analyze(client)
+        res = _export_content(client, analysis["analysis_id"], "pdf")
+        assert res.status_code == 200
+
+        doc = pymupdf.open(stream=res.content, filetype="pdf")
+        assert doc.metadata["title"] == "Material Adaptado"
+        assert "Innova Lab" in doc.metadata["author"]
+        assert analysis["analysis_id"] in doc.metadata["subject"]
+        catalog = doc.xref_object(doc.pdf_catalog())
+        assert "/Lang (es)" in catalog
+        assert "/DisplayDocTitle true" in catalog
+
 
 # ---------------------------------------------------------------------------
 # Tests: exportación del informe
@@ -350,6 +383,21 @@ class TestExportReportPDF:
         assert res.status_code == 200
         assert "application/pdf" in res.headers["content-type"]
         assert res.content.startswith(b"%PDF")
+
+    def test_report_pdf_metadata_and_language_present(self, client):
+        import pymupdf
+
+        analysis = _analyze(client)
+        res = _export_report(client, analysis["analysis_id"], "pdf")
+        assert res.status_code == 200
+
+        doc = pymupdf.open(stream=res.content, filetype="pdf")
+        assert doc.metadata["title"] == "Informe de Accesibilidad - Material Adaptado"
+        assert "Innova Lab" in doc.metadata["author"]
+        assert analysis["analysis_id"] in doc.metadata["subject"]
+        catalog = doc.xref_object(doc.pdf_catalog())
+        assert "/Lang (es)" in catalog
+        assert "/DisplayDocTitle true" in catalog
 
 
 # ---------------------------------------------------------------------------
