@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
-import { RotateCcw } from 'lucide-react';
+import { useAuth, AuthenticateWithRedirectCallback } from '@clerk/clerk-react';
 import {
   FileUploader,
   type UploadAnalysisProgress,
@@ -10,12 +10,12 @@ import type { NavSectionId } from './components/layout/Sidebar';
 import type { AnalysisStage } from './components/layout/Topbar';
 import { SectionPlaceholder } from './components/views/SectionPlaceholders';
 import { HomeView } from './components/HomeView';
-// 1. IMPORTAR TU VISTA DE LOGIN NUEVA
 import { LoginView } from './components/views/LoginView'; 
 import {
   analyzeFileById,
   analyzeSample,
   uploadFile,
+  setAuthTokenProvider,
 } from './services/api';
 import type { AccessibilityAnalysisResponse } from './types/analysis';
 import { getFileCacheKey } from './utils/fileValidation';
@@ -42,8 +42,18 @@ interface UploadedFileCache {
 }
 
 export function App() {
-  // 2. ESTADO DE AUTENTICACIÓN (Ponelo en true si querés saltarte el login temporalmente mientras probás)
-  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
+  // Captura automática de la ruta de callback cuando Google redirige de vuelta a la app
+  if (window.location.pathname.includes('/sso-callback')) {
+    return <AuthenticateWithRedirectCallback />;
+  }
+
+  const { getToken, isSignedIn, isLoaded } = useAuth();
+
+  useEffect(() => {
+    if (isSignedIn) {
+      setAuthTokenProvider(() => getToken());
+    }
+  }, [isSignedIn, getToken]);
 
   const [activeSection, setActiveSection] = useState<NavSectionId>(getSectionFromHash);
   const [currentStage, setCurrentStage] = useState<AnalysisStage>('upload');
@@ -143,13 +153,18 @@ export function App() {
     setCurrentStage('upload');
   }
 
-  // 3. SI NO ESTÁ AUTENTICADO, MOSTRAMOS ÚNICAMENTE EL LOGIN
-  // Le pasamos una función por prop para que al loguearse cambie el estado a true y entre a la app.
-  if (!isAuthenticated) {
-    return <LoginView onLoginSuccess={() => setIsAuthenticated(true)} />;
+  if (!isLoaded) {
+    return (
+      <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh', fontFamily: 'sans-serif' }}>
+        <p>Cargando sesión...</p>
+      </div>
+    );
   }
 
-  // 4. SI ESTÁ AUTENTICADO, SE RENDERIZA TODO TU CÓDIGO ORIGINAL EXACTAMENTE IGUAL
+  if (!isSignedIn) {
+    return <LoginView />;
+  }
+
   return (
     <AppLayout
       activeSection={activeSection}
@@ -194,17 +209,11 @@ export function App() {
             />
           ) : (
             <div className="via-results-wrapper">
-              <div className="via-results-toolbar">
-                <button
-                  type="button"
-                  className="via-btn via-btn-outline"
-                  onClick={handleResetAnalysis}
-                >
-                  <RotateCcw size={16} />
-                  <span>Nuevo análisis</span>
-                </button>
-              </div>
-              <AnalysisResults data={results} />
+              {/* Pasamos la función de reseteo directamente para que el botón aparezca al lado del badge */}
+              <AnalysisResults 
+                data={results} 
+                onResetAnalysis={handleResetAnalysis} 
+              />
             </div>
           )}
         </>
