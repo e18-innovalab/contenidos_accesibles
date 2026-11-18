@@ -4,6 +4,7 @@ import {
   FileUploader,
   type UploadAnalysisProgress,
 } from './components/FileUploader';
+import { AnalysisProgressView } from './components/AnalysisProgressView';
 import { AnalysisResults } from './components/AnalysisResults';
 import { AppLayout } from './components/layout/AppLayout';
 import type { NavSectionId } from './components/layout/Sidebar';
@@ -58,6 +59,7 @@ export function App() {
   const [activeSection, setActiveSection] = useState<NavSectionId>(getSectionFromHash);
   const [currentStage, setCurrentStage] = useState<AnalysisStage>('upload');
   const [loading, setLoading] = useState<boolean>(false);
+  const [showAnalysisProgress, setShowAnalysisProgress] = useState<boolean>(false);
   const [progress, setProgress] = useState<UploadAnalysisProgress | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [results, setResults] = useState<AccessibilityAnalysisResponse | null>(null);
@@ -108,6 +110,7 @@ export function App() {
 
   async function handleAnalyzeFile(file: File, useMock: boolean) {
     setLoading(true);
+    setShowAnalysisProgress(true);
     setError(null);
     setProgress({ step: 'requesting_url' });
     try {
@@ -124,12 +127,14 @@ export function App() {
       );
     } finally {
       setLoading(false);
+      setShowAnalysisProgress(false);
       setProgress(null);
     }
   }
 
   async function handleAnalyzeText(text: string, useMock: boolean) {
     setLoading(true);
+    setShowAnalysisProgress(false);
     setError(null);
     setProgress({ step: 'analyzing' });
     try {
@@ -200,7 +205,9 @@ export function App() {
             </div>
           )}
 
-          {currentStage === 'upload' || !results ? (
+          {loading && showAnalysisProgress ? (
+            <AnalysisProgressView />
+          ) : currentStage === 'upload' || !results ? (
             <FileUploader
               onAnalyzeFile={handleAnalyzeFile}
               onAnalyzeText={handleAnalyzeText}
