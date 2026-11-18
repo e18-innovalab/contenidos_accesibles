@@ -1,32 +1,16 @@
 import { useState, useEffect } from 'react';
 import { Sparkles, CheckCircle2, Clock, Loader2 } from 'lucide-react';
 
-interface AnalysisProgressViewProps {
-  onComplete: () => void; // Función que se ejecuta cuando termina el último paso
-}
-
-export function AnalysisProgressView({ onComplete }: AnalysisProgressViewProps) {
-  // Estado para controlar en qué paso vamos (de 1 a 4)
+export function AnalysisProgressView() {
   const [currentStep, setCurrentStep] = useState<number>(1);
 
   useEffect(() => {
-    // Definimos los tiempos de transición para simular el escaneo
-    const timer1 = setTimeout(() => setCurrentStep(2), 1500); // Pasa al paso 2 a los 1.5s
-    const timer2 = setTimeout(() => setCurrentStep(3), 3000); // Pasa al paso 3 a los 3s
-    const timer3 = setTimeout(() => setCurrentStep(4), 4500); // Pasa al paso 4 a los 4.5s
-    
-    // Al finalizar el último paso, esperamos un poco y llamamos a onComplete para mostrar los resultados
-    const timer4 = setTimeout(() => {
-      onComplete();
-    }, 6000);
+    const timer = window.setInterval(() => {
+      setCurrentStep((step) => Math.min(step + 1, 4));
+    }, 1500);
 
-    return () => {
-      clearTimeout(timer1);
-      clearTimeout(timer2);
-      clearTimeout(timer3);
-      clearTimeout(timer4);
-    };
-  }, [onComplete]);
+    return () => window.clearInterval(timer);
+  }, []);
 
   // Lista de pasos de escaneo
   const steps = [
@@ -87,7 +71,7 @@ export function AnalysisProgressView({ onComplete }: AnalysisProgressViewProps) 
         <div className="via-progress-bar-container">
           <div 
             className="via-progress-bar-fill" 
-            style={{ width: `${(currentStep / steps.length) * 100}%` }}
+            style={{ width: `${Math.min((currentStep / steps.length) * 90, 90)}%` }}
           />
         </div>
       </div>
