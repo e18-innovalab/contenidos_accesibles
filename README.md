@@ -1,4 +1,4 @@
-# VIA — Asistente de Accesibilidad Educativa (`contenidos_accesibles`)
+# VIA - Asistente de Accesibilidad Educativa (`contenidos_accesibles`)
 
 Herramienta de Inteligencia Artificial y Diseño Universal para el Aprendizaje (DUA) orientada a docentes de nivel secundario y superior. Permite diagnosticar barreras de accesibilidad en materiales educativos (`.pdf`, `.docx`, `.pptx` o texto), generar propuestas de adaptación con control docente, exportar versiones accesibles y transformar contenidos a formatos alternativos.
 
