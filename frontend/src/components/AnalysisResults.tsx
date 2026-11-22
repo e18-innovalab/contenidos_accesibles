@@ -32,7 +32,7 @@ import type {
 interface AnalysisResultsProps {
   data: AccessibilityAnalysisResponse | null;
   onGenerateAdapted?: () => void;
-  onViewAdapted?: () => void;
+  onViewAdapted?: (proposals: Record<string, AdaptationProposal>) => void;
   onResetAnalysis?: () => void;
 }
 
@@ -342,7 +342,7 @@ export function AnalysisResults({
     <div className="via-detail-container">
       <div className="via-detail-top-meta">
         {onResetAnalysis ? (
-          <button type="button" className="via-btn-new-analysis"  onClick={onResetAnalysis} >
+          <button type="button" className="via-btn-new-analysis" onClick={onResetAnalysis}>
             <RotateCcw size={16} />
             <span>Nuevo análisis</span>
           </button>
@@ -447,9 +447,14 @@ export function AnalysisResults({
                   ? openDimensions[dim.category]
                   : idx === 0;
 
- return (
-  <div key={dim.category} className="via-dimension-card">
-    <button  type="button" className="via-dimension-header" onClick={() => toggleDimension(dim.category)}  aria-expanded={isOpen} >
+              return (
+                <div key={dim.category} className="via-dimension-card">
+                  <button
+                    type="button"
+                    className="via-dimension-header"
+                    onClick={() => toggleDimension(dim.category)}
+                    aria-expanded={isOpen}
+                  >
                     <div className="via-dimension-left">
                       <div className="via-dimension-icon">
                         {getDimensionIcon(dim.category)}
@@ -497,7 +502,8 @@ export function AnalysisResults({
                           <div key={barrier.id} className="via-barrier-row-wrapper">
                             <div className="via-barrier-row">
                               <div className="via-barrier-main">
-                                <span className={`via-status-dot ${
+                                <span
+                                  className={`via-status-dot ${
                                     severe ? 'dot-danger' : 'dot-warning'
                                   }`}
                                 />
@@ -519,7 +525,11 @@ export function AnalysisResults({
                               </div>
 
                               <div className="via-barrier-actions">
-                                <button type="button"  className="via-btn-detail-toggle"  onClick={() => toggleBarrier(barrier)} >
+                                <button
+                                  type="button"
+                                  className="via-btn-detail-toggle"
+                                  onClick={() => toggleBarrier(barrier)}
+                                >
                                   <span>{isDetailOpen ? 'Ocultar edición' : 'Ver detalles'}</span>
                                   {isDetailOpen ? (
                                     <ChevronUp size={15} />
@@ -710,33 +720,7 @@ export function AnalysisResults({
                                                 )
                                               }
                                             >
-                                              Usar en versión editable
-                                            </button>
-                                          </div>
-                                        )}
-
-                                        {barrier.suggested_rewrite && (
-                                          <div className="via-proposal-card">
-                                            <div className="via-proposal-top">
-                                              <span className="via-proposal-index">
-                                                {proposal ? '02' : '01'}
-                                              </span>
-                                              <span className="via-proposal-tag">SUGERENCIA DIAGNÓSTICO</span>
-                                            </div>
-                                            <p className="via-proposal-text">
-                                              {barrier.suggested_rewrite}
-                                            </p>
-                                            <button
-                                              type="button"
-                                              className="via-btn via-btn-outline via-btn-sm"
-                                              onClick={() =>
-                                                handleApplyProposalToEditor(
-                                                  barrier.id,
-                                                  barrier.suggested_rewrite!
-                                                )
-                                              }
-                                            >
-                                              Usar en versión editable
+                                              Usar propuesta
                                             </button>
                                           </div>
                                         )}
@@ -779,7 +763,11 @@ export function AnalysisResults({
             <Sparkles size={16} />
             <span>Generar propuestas</span>
           </button>
-          <button type="button" className="via-btn-cta-outline" onClick={onViewAdapted} >
+          <button
+            type="button"
+            className="via-btn-cta-outline"
+            onClick={() => onViewAdapted?.(proposalsByBarrier)}
+          >
             <span>Ver versión adaptada</span>
             <ArrowRight size={16} />
           </button>
