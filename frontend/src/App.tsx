@@ -6,19 +6,23 @@ import {
 } from './components/FileUploader';
 import { AnalysisProgressView } from './components/AnalysisProgressView';
 import { AnalysisResults } from './components/AnalysisResults';
+import { AdaptedVersionView } from './components/AdaptedVersionView';
 import { AppLayout } from './components/layout/AppLayout';
 import type { NavSectionId } from './components/layout/Sidebar';
 import type { AnalysisStage } from './components/layout/Topbar';
 import { SectionPlaceholder } from './components/views/SectionPlaceholders';
 import { HomeView } from './components/HomeView';
-import { LoginView } from './components/views/LoginView'; 
+import { LoginView } from './components/views/LoginView';
 import {
   analyzeFileById,
   analyzeSample,
   uploadFile,
   setAuthTokenProvider,
 } from './services/api';
-import type { AccessibilityAnalysisResponse } from './types/analysis';
+import type {
+  AccessibilityAnalysisResponse,
+  AdaptationProposal,
+} from './types/analysis';
 import { getFileCacheKey } from './utils/fileValidation';
 
 const VALID_SECTIONS: NavSectionId[] = [
@@ -43,7 +47,6 @@ interface UploadedFileCache {
 }
 
 export function App() {
-  // Captura automática de la ruta de callback cuando Google redirige de vuelta a la app
   if (window.location.pathname.includes('/sso-callback')) {
     return <AuthenticateWithRedirectCallback />;
   }
@@ -63,6 +66,9 @@ export function App() {
   const [progress, setProgress] = useState<UploadAnalysisProgress | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [results, setResults] = useState<AccessibilityAnalysisResponse | null>(null);
+  const [originalSourceText, setOriginalSourceText] = useState<string>('');
+  const [adaptedProposals, setAdaptedProposals] = useState<Record<string, AdaptationProposal>>({});
+  const [hasAdaptedVersion, setHasAdaptedVersion] = useState<boolean>(false);
 
   const uploadedCacheRef = useRef<UploadedFileCache | null>(null);
 
@@ -112,6 +118,9 @@ export function App() {
     setLoading(true);
     setShowAnalysisProgress(true);
     setError(null);
+    setOriginalSourceText('');
+    setHasAdaptedVersion(false);
+    setAdaptedProposals({});
     setProgress({ step: 'requesting_url' });
     try {
       const fileId = await ensureFileUploaded(file);
@@ -136,6 +145,9 @@ export function App() {
     setLoading(true);
     setShowAnalysisProgress(false);
     setError(null);
+    setOriginalSourceText(text);
+    setHasAdaptedVersion(false);
+    setAdaptedProposals({});
     setProgress({ step: 'analyzing' });
     try {
       const data = await analyzeSample(text, { mock: useMock });
@@ -151,8 +163,17 @@ export function App() {
     }
   }
 
+  function handleOpenAdaptedVersion(proposals: Record<string, AdaptationProposal>) {
+    setAdaptedProposals(proposals);
+    setHasAdaptedVersion(true);
+    setCurrentStage('adapted');
+  }
+
   function handleResetAnalysis() {
     setResults(null);
+    setOriginalSourceText('');
+    setAdaptedProposals({});
+    setHasAdaptedVersion(false);
     setError(null);
     setProgress(null);
     setCurrentStage('upload');
@@ -177,7 +198,7 @@ export function App() {
       currentStage={currentStage}
       onSelectStage={setCurrentStage}
       hasResults={Boolean(results)}
-      hasAdaptedVersion={false}
+      hasAdaptedVersion={hasAdaptedVersion}
     >
       {activeSection === 'inicio' ? (
         <HomeView
@@ -214,12 +235,19 @@ export function App() {
               isLoading={loading}
               progress={progress}
             />
+          ) : currentStage === 'adapted' ? (
+            <AdaptedVersionView
+              analysis={results}
+              proposalsByBarrier={adaptedProposals}
+              originalSourceText={originalSourceText}
+              onBackToAnalysis={() => setCurrentStage('results')}
+            />
           ) : (
             <div className="via-results-wrapper">
-              {/* Pasamos la función de reseteo directamente para que el botón aparezca al lado del badge */}
-              <AnalysisResults 
-                data={results} 
-                onResetAnalysis={handleResetAnalysis} 
+              <AnalysisResults
+                data={results}
+                onViewAdapted={handleOpenAdaptedVersion}
+                onResetAnalysis={handleResetAnalysis}
               />
             </div>
           )}
