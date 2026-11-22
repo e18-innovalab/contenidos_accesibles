@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import {
   CheckCircle2,
   ChevronDown,
@@ -9,9 +9,22 @@ import {
   Sparkles,
   ArrowRight,
   RotateCcw,
+  Save,
+  Undo2,
+  XCircle,
 } from 'lucide-react';
+import {
+  ApiError,
+  createAdaptationProposal,
+  decideAdaptation,
+  getAdaptationProposal,
+  listAdaptations,
+  undoAdaptation,
+} from '../services/api';
 import type {
   AccessibilityAnalysisResponse,
+  AdaptationProposal,
+  AdaptationType,
   Barrier,
   Dimension,
 } from '../types/analysis';
@@ -23,23 +36,97 @@ interface AnalysisResultsProps {
   onResetAnalysis?: () => void;
 }
 
+const ADAPTATION_TYPE_OPTIONS: { value: AdaptationType; label: string }[] = [
+  { value: 'lenguaje_claro', label: 'Lenguaje claro' },
+  { value: 'consigna_en_pasos', label: 'Consigna en pasos' },
+  { value: 'reorganizar', label: 'Reorganizar en bloques' },
+  { value: 'mejorar_estructura', label: 'Mejorar estructura' },
+];
+
+function inferDefaultAdaptationType(category: string, issue: string): AdaptationType {
+  const text = `${category} ${issue}`.toLowerCase();
+  if (text.includes('paso') || text.includes('acción') || text.includes('accion') || text.includes('consigna')) {
+    return 'consigna_en_pasos';
+  }
+  if (text.includes('estructur') || text.includes('título') || text.includes('titulo') || text.includes('lista')) {
+    return 'mejorar_estructura';
+  }
+  if (text.includes('párrafo') || text.includes('parrafo') || text.includes('extens') || text.includes('reorganiz')) {
+    return 'reorganizar';
+  }
+  return 'lenguaje_claro';
+}
+
+function isSevereBarrier(severity?: string): boolean {
+  const normalized = (severity || '').toLowerCase();
+  return normalized === 'barrera_detectada' || normalized === 'high' || normalized === 'alta';
+}
+
 export function AnalysisResults({
   data,
   onGenerateAdapted,
   onViewAdapted,
   onResetAnalysis,
 }: AnalysisResultsProps) {
-  const [decisions, setDecisions] = useState<Record<string, 'accepted' | 'rejected'>>({});
   const [openDimensions, setOpenDimensions] = useState<Record<string, boolean>>({});
   const [openBarriers, setOpenBarriers] = useState<Record<string, boolean>>({});
 
+  // Estado de propuestas por barrier.id
+  const [proposalsByBarrier, setProposalsByBarrier] = useState<Record<string, AdaptationProposal>>({});
+  const [selectedTypeByBarrier, setSelectedTypeByBarrier] = useState<Record<string, AdaptationType>>({});
+  const [editableTextByBarrier, setEditableTextByBarrier] = useState<Record<string, string>>({});
+  const [customFragmentByBarrier, setCustomFragmentByBarrier] = useState<Record<string, string>>({});
+  const [useMockAi, setUseMockAi] = useState<boolean>(false);
+
+  // Estados de carga y error por barrera
+  const [generatingByBarrier, setGeneratingByBarrier] = useState<Record<string, boolean>>({});
+  const [savingByBarrier, setSavingByBarrier] = useState<Record<string, boolean>>({});
+  const [errorByBarrier, setErrorByBarrier] = useState<Record<string, string | null>>({});
+
+  useEffect(() => {
+    if (!data?.analysis_id) return;
+    let cancelled = false;
+
+    listAdaptations(data.analysis_id)
+      .then((existingProposals) => {
+        if (cancelled || !Array.isArray(existingProposals)) return;
+        const latestByBarrier: Record<string, AdaptationProposal> = {};
+        for (const prop of existingProposals) {
+          latestByBarrier[prop.barrier_id] = prop;
+        }
+        setProposalsByBarrier(latestByBarrier);
+        setEditableTextByBarrier((prev) => {
+          const next = { ...prev };
+          for (const [bId, prop] of Object.entries(latestByBarrier)) {
+            if (next[bId] === undefined) {
+              next[bId] = prop.final_text ?? prop.edited_text ?? prop.proposed_text;
+            }
+          }
+          return next;
+        });
+      })
+      .catch(() => {
+        // Si no hay propuestas previas o el diagnóstico es local/sin persistencia, no bloquea la vista
+      });
+
+    return () => {
+      cancelled = true;
+    };
+  }, [data?.analysis_id]);
+
   if (!data) return null;
 
-  const { estimated_score, summary, dimensions, barriers } = data;
+  const { analysis_id, estimated_score, summary, dimensions, barriers } = data;
 
-  const acceptedCount = Object.values(decisions).filter((d) => d === 'accepted').length;
+  const resolvedCount = Object.values(proposalsByBarrier).filter(
+    (p) => p.status === 'aceptada' || p.status === 'editada'
+  ).length;
+
   const criticalDimensionsCount = dimensions
-    ? dimensions.filter((d) => d.status?.toLowerCase() !== 'ok' && d.status?.toLowerCase() !== 'óptimo').length
+    ? dimensions.filter((d) => {
+        const st = (d.status || '').toLowerCase();
+        return st !== 'correcta' && st !== 'ok' && st !== 'óptimo' && st !== 'optimo';
+      }).length
     : 0;
 
   function toggleDimension(category: string) {
@@ -49,21 +136,197 @@ export function AnalysisResults({
     }));
   }
 
-  function toggleBarrier(barrierId: string) {
-    setOpenBarriers((prev) => ({
-      ...prev,
-      [barrierId]: !prev[barrierId],
-    }));
+  function toggleBarrier(barrier: Barrier) {
+    setOpenBarriers((prev) => {
+      const nextOpen = !prev[barrier.id];
+      if (nextOpen) {
+        setSelectedTypeByBarrier((typePrev) => ({
+          ...typePrev,
+          [barrier.id]:
+            typePrev[barrier.id] ?? inferDefaultAdaptationType(barrier.category, barrier.issue),
+        }));
+        setEditableTextByBarrier((textPrev) => {
+          if (textPrev[barrier.id] !== undefined) return textPrev;
+          const existing = proposalsByBarrier[barrier.id];
+          const initialText =
+            existing?.final_text ??
+            existing?.edited_text ??
+            existing?.proposed_text ??
+            barrier.suggested_rewrite ??
+            barrier.original_text ??
+            '';
+          return { ...textPrev, [barrier.id]: initialText };
+        });
+      }
+      return { ...prev, [barrier.id]: nextOpen };
+    });
   }
 
-  function handleDecision(barrierId: string, decision: 'accepted' | 'rejected') {
-    setDecisions((prev) => ({
-      ...prev,
-      [barrierId]: decision,
-    }));
+  async function handleGenerateAiSuggestion(barrier: Barrier) {
+    if (!analysis_id) {
+      setErrorByBarrier((prev) => ({
+        ...prev,
+        [barrier.id]: 'No se encontró un ID de diagnóstico válido para generar propuestas con IA.',
+      }));
+      return;
+    }
+
+    const adaptationType =
+      selectedTypeByBarrier[barrier.id] ?? inferDefaultAdaptationType(barrier.category, barrier.issue);
+    const fragmentToSend = (customFragmentByBarrier[barrier.id] ?? barrier.original_text ?? '').trim();
+
+    setGeneratingByBarrier((prev) => ({ ...prev, [barrier.id]: true }));
+    setErrorByBarrier((prev) => ({ ...prev, [barrier.id]: null }));
+
+    try {
+      const proposal = await createAdaptationProposal(
+        {
+          analysis_id,
+          barrier_id: barrier.id,
+          adaptation_type: adaptationType,
+          fragment: fragmentToSend.length >= 10 ? fragmentToSend : undefined,
+        },
+        { mock: useMockAi }
+      );
+
+      setProposalsByBarrier((prev) => ({ ...prev, [barrier.id]: proposal }));
+      setEditableTextByBarrier((prev) => ({ ...prev, [barrier.id]: proposal.proposed_text }));
+    } catch (err) {
+      if (err instanceof ApiError && err.status === 409 && err.proposal_id) {
+        try {
+          const pendingProp = await getAdaptationProposal(err.proposal_id);
+          setProposalsByBarrier((prev) => ({ ...prev, [barrier.id]: pendingProp }));
+          setEditableTextByBarrier((prev) => ({
+            ...prev,
+            [barrier.id]: pendingProp.proposed_text,
+          }));
+          setErrorByBarrier((prev) => ({
+            ...prev,
+            [barrier.id]:
+              'Ya existe una propuesta pendiente para esta barrera. Se cargó para que puedas aceptarla, editarla o descartarla.',
+          }));
+        } catch {
+          setErrorByBarrier((prev) => ({
+            ...prev,
+            [barrier.id]: err.message,
+          }));
+        }
+      } else if (err instanceof ApiError) {
+        setErrorByBarrier((prev) => ({ ...prev, [barrier.id]: err.message }));
+      } else {
+        setErrorByBarrier((prev) => ({
+          ...prev,
+          [barrier.id]: 'Ocurrió un error al generar la sugerencia con IA.',
+        }));
+      }
+    } finally {
+      setGeneratingByBarrier((prev) => ({ ...prev, [barrier.id]: false }));
+    }
   }
 
-  // Ícono según la categoría de la dimensión
+  function handleApplyProposalToEditor(barrierId: string, text: string) {
+    setEditableTextByBarrier((prev) => ({ ...prev, [barrierId]: text }));
+  }
+
+  async function handleSaveDecision(barrier: Barrier) {
+    const proposal = proposalsByBarrier[barrier.id];
+    const currentText = (editableTextByBarrier[barrier.id] ?? '').trim();
+
+    if (!currentText) {
+      setErrorByBarrier((prev) => ({
+        ...prev,
+        [barrier.id]: 'La versión editable no puede estar vacía para guardar cambios.',
+      }));
+      return;
+    }
+
+    if (!proposal) {
+      setErrorByBarrier((prev) => ({
+        ...prev,
+        [barrier.id]: 'Primero generá una sugerencia con IA para registrar la decisión en el backend.',
+      }));
+      return;
+    }
+
+    setSavingByBarrier((prev) => ({ ...prev, [barrier.id]: true }));
+    setErrorByBarrier((prev) => ({ ...prev, [barrier.id]: null }));
+
+    try {
+      let activeProposal = proposal;
+      if (activeProposal.status !== 'pendiente') {
+        activeProposal = await undoAdaptation(activeProposal.proposal_id);
+      }
+
+      const isModified = currentText !== activeProposal.proposed_text.trim();
+      const updated = await decideAdaptation(
+        activeProposal.proposal_id,
+        isModified
+          ? { decision: 'editada', edited_text: currentText }
+          : { decision: 'aceptada' }
+      );
+
+      setProposalsByBarrier((prev) => ({ ...prev, [barrier.id]: updated }));
+      setEditableTextByBarrier((prev) => ({
+        ...prev,
+        [barrier.id]: updated.final_text ?? currentText,
+      }));
+    } catch (err) {
+      setErrorByBarrier((prev) => ({
+        ...prev,
+        [barrier.id]: err instanceof ApiError ? err.message : 'No se pudo guardar la decisión.',
+      }));
+    } finally {
+      setSavingByBarrier((prev) => ({ ...prev, [barrier.id]: false }));
+    }
+  }
+
+  async function handleDiscardProposal(barrierId: string) {
+    const proposal = proposalsByBarrier[barrierId];
+    if (!proposal) return;
+
+    setSavingByBarrier((prev) => ({ ...prev, [barrierId]: true }));
+    setErrorByBarrier((prev) => ({ ...prev, [barrierId]: null }));
+
+    try {
+      let activeProposal = proposal;
+      if (activeProposal.status !== 'pendiente') {
+        activeProposal = await undoAdaptation(activeProposal.proposal_id);
+      }
+      const updated = await decideAdaptation(activeProposal.proposal_id, {
+        decision: 'descartada',
+      });
+      setProposalsByBarrier((prev) => ({ ...prev, [barrierId]: updated }));
+    } catch (err) {
+      setErrorByBarrier((prev) => ({
+        ...prev,
+        [barrierId]: err instanceof ApiError ? err.message : 'No se pudo descartar la propuesta.',
+      }));
+    } finally {
+      setSavingByBarrier((prev) => ({ ...prev, [barrierId]: false }));
+    }
+  }
+
+  async function handleUndoDecision(barrierId: string) {
+    const proposal = proposalsByBarrier[barrierId];
+    if (!proposal || proposal.status === 'pendiente') return;
+
+    setSavingByBarrier((prev) => ({ ...prev, [barrierId]: true }));
+    setErrorByBarrier((prev) => ({ ...prev, [barrierId]: null }));
+
+    try {
+      const reverted = await undoAdaptation(proposal.proposal_id);
+      setProposalsByBarrier((prev) => ({ ...prev, [barrierId]: reverted }));
+      setEditableTextByBarrier((prev) => ({ ...prev, [barrierId]: reverted.proposed_text }));
+    } catch (err) {
+      setErrorByBarrier((prev) => ({
+        ...prev,
+        [barrierId]: err instanceof ApiError ? err.message : 'No se pudo deshacer la decisión.',
+      }));
+    } finally {
+      setSavingByBarrier((prev) => ({ ...prev, [barrierId]: false }));
+    }
+  }
+
   function getDimensionIcon(category: string) {
     const cat = category.toLowerCase();
     if (cat.includes('comprens')) return <BookOpen size={20} />;
@@ -71,21 +334,15 @@ export function AnalysisResults({
     return <Eye size={20} />;
   }
 
-  // Cálculo para el anillo SVG del puntaje
   const radius = 42;
   const circumference = 2 * Math.PI * radius;
   const strokeDashoffset = circumference - (estimated_score / 100) * circumference;
 
   return (
     <div className="via-detail-container">
-      {/* Meta superior: Botón "Nuevo análisis" y Badge de estado alineados */}
       <div className="via-detail-top-meta">
         {onResetAnalysis ? (
-          <button
-            type="button"
-            className="via-btn-new-analysis"
-            onClick={onResetAnalysis}
-          >
+          <button type="button" className="via-btn-new-analysis"  onClick={onResetAnalysis} >
             <RotateCcw size={16} />
             <span>Nuevo análisis</span>
           </button>
@@ -98,7 +355,6 @@ export function AnalysisResults({
         </span>
       </div>
 
-      {/* Tarjeta de Resumen General */}
       <section className="via-summary-card">
         <div className="via-score-column">
           <div className="via-donut-wrapper">
@@ -159,16 +415,25 @@ export function AnalysisResults({
         </div>
       </section>
 
-      {/* Sección Revisión Detallada */}
       <section className="via-findings-section">
         <div className="via-findings-header">
           <div>
             <span className="via-section-eyebrow">REVISIÓN DETALLADA</span>
             <h3 className="via-findings-title">Detalle de hallazgos</h3>
           </div>
-          <span className="via-selected-counter">
-            {acceptedCount} {acceptedCount === 1 ? 'hallazgo seleccionado' : 'hallazgos seleccionados'}
-          </span>
+          <div className="via-findings-header-right">
+            <label className="via-mock-toggle">
+              <input
+                type="checkbox"
+                checked={useMockAi}
+                onChange={(e) => setUseMockAi(e.target.checked)}
+              />
+              <span>Simular IA (mock)</span>
+            </label>
+            <span className="via-selected-counter">
+              {resolvedCount} {resolvedCount === 1 ? 'hallazgo resuelto' : 'hallazgos resueltos'}
+            </span>
+          </div>
         </div>
 
         <div className="via-dimensions-accordion-list">
@@ -177,20 +442,14 @@ export function AnalysisResults({
               const dimBarriers = (barriers || []).filter(
                 (b) => b.category.toLowerCase() === dim.category.toLowerCase()
               );
-              // Por defecto abrimos la primera dimensión para que se vea como en Figma
               const isOpen =
                 openDimensions[dim.category] !== undefined
                   ? openDimensions[dim.category]
                   : idx === 0;
 
-              return (
-                <div key={dim.category} className="via-dimension-card">
-                  <button
-                    type="button"
-                    className="via-dimension-header"
-                    onClick={() => toggleDimension(dim.category)}
-                    aria-expanded={isOpen}
-                  >
+ return (
+  <div key={dim.category} className="via-dimension-card">
+    <button  type="button" className="via-dimension-header" onClick={() => toggleDimension(dim.category)}  aria-expanded={isOpen} >
                     <div className="via-dimension-left">
                       <div className="via-dimension-icon">
                         {getDimensionIcon(dim.category)}
@@ -217,37 +476,51 @@ export function AnalysisResults({
                     <div className="via-dimension-body">
                       {dimBarriers.map((barrier: Barrier) => {
                         const isDetailOpen = Boolean(openBarriers[barrier.id]);
-                        const currentDecision = decisions[barrier.id];
-                        const isHigh =
-                          barrier.severity?.toLowerCase() === 'high' ||
-                          barrier.severity?.toLowerCase() === 'alta';
+                        const proposal = proposalsByBarrier[barrier.id];
+                        const editableText =
+                          editableTextByBarrier[barrier.id] ??
+                          proposal?.final_text ??
+                          proposal?.edited_text ??
+                          proposal?.proposed_text ??
+                          barrier.suggested_rewrite ??
+                          barrier.original_text ??
+                          '';
+                        const selectedType =
+                          selectedTypeByBarrier[barrier.id] ??
+                          inferDefaultAdaptationType(barrier.category, barrier.issue);
+                        const isGenerating = Boolean(generatingByBarrier[barrier.id]);
+                        const isSaving = Boolean(savingByBarrier[barrier.id]);
+                        const barrierError = errorByBarrier[barrier.id];
+                        const severe = isSevereBarrier(barrier.severity);
 
                         return (
                           <div key={barrier.id} className="via-barrier-row-wrapper">
                             <div className="via-barrier-row">
                               <div className="via-barrier-main">
-                                <span
-                                  className={`via-status-dot ${
-                                    isHigh ? 'dot-danger' : 'dot-warning'
+                                <span className={`via-status-dot ${
+                                    severe ? 'dot-danger' : 'dot-warning'
                                   }`}
                                 />
                                 <span className="via-barrier-issue">{barrier.issue}</span>
                                 <span
                                   className={`via-barrier-tag ${
-                                    isHigh ? 'tag-danger' : 'tag-warning'
+                                    severe ? 'tag-danger' : 'tag-warning'
                                   }`}
                                 >
-                                  {isHigh ? 'Barrera detectada' : 'Para revisar'}
+                                  {severe ? 'Barrera detectada' : 'Para revisar'}
                                 </span>
+                                {proposal && proposal.status !== 'pendiente' && (
+                                  <span className={`via-proposal-status-badge status-${proposal.status}`}>
+                                    {proposal.status === 'aceptada' && '✓ Aceptada'}
+                                    {proposal.status === 'editada' && '✎ Editada'}
+                                    {proposal.status === 'descartada' && '✕ Descartada'}
+                                  </span>
+                                )}
                               </div>
 
                               <div className="via-barrier-actions">
-                                <button
-                                  type="button"
-                                  className="via-btn-detail-toggle"
-                                  onClick={() => toggleBarrier(barrier.id)}
-                                >
-                                  <span>Ver detalles</span>
+                                <button type="button"  className="via-btn-detail-toggle"  onClick={() => toggleBarrier(barrier)} >
+                                  <span>{isDetailOpen ? 'Ocultar edición' : 'Ver detalles'}</span>
                                   {isDetailOpen ? (
                                     <ChevronUp size={15} />
                                   ) : (
@@ -257,42 +530,219 @@ export function AnalysisResults({
                               </div>
                             </div>
 
-                            {/* Panel desplegable al hacer clic en "Ver detalles" */}
                             {isDetailOpen && (
                               <div className="via-barrier-expanded-panel">
                                 <p className="via-barrier-explanation">{barrier.explanation}</p>
                                 <div className="via-barrier-recommendation">
                                   <strong>Recomendación:</strong> {barrier.recommendation}
                                 </div>
-                                {barrier.suggested_rewrite && (
-                                  <div className="via-barrier-rewrite">
-                                    <strong>Sugerencia de redacción:</strong>{' '}
-                                    <em>“{barrier.suggested_rewrite}”</em>
+
+                                <div className="via-assisted-editor-box">
+                                  <div className="via-assisted-header">
+                                    <div>
+                                      <span className="via-assisted-eyebrow">EDICIÓN ASISTIDA</span>
+                                      <h4 className="via-assisted-title">
+                                        Revisá y adaptá el enunciado
+                                      </h4>
+                                    </div>
+
+                                    <div className="via-assisted-controls">
+                                      <select
+                                        aria-label="Tipo de adaptación con IA"
+                                        className="via-adaptation-select"
+                                        value={selectedType}
+                                        onChange={(e) =>
+                                          setSelectedTypeByBarrier((prev) => ({
+                                            ...prev,
+                                            [barrier.id]: e.target.value as AdaptationType,
+                                          }))
+                                        }
+                                      >
+                                        {ADAPTATION_TYPE_OPTIONS.map((opt) => (
+                                          <option key={opt.value} value={opt.value}>
+                                            {opt.label}
+                                          </option>
+                                        ))}
+                                      </select>
+
+                                      <button
+                                        type="button"
+                                        className="via-btn via-btn-primary via-btn-sm"
+                                        onClick={() => handleGenerateAiSuggestion(barrier)}
+                                        disabled={isGenerating || isSaving}
+                                      >
+                                        <Sparkles size={15} />
+                                        <span>
+                                          {isGenerating ? 'Generando...' : 'Sugerencias con IA'}
+                                        </span>
+                                      </button>
+                                    </div>
                                   </div>
-                                )}
-                                <div className="via-barrier-decision-btns">
-                                  <button
-                                    type="button"
-                                    className={`via-decision-btn accept ${
-                                      currentDecision === 'accepted' ? 'active' : ''
-                                    }`}
-                                    onClick={() => handleDecision(barrier.id, 'accepted')}
-                                  >
-                                    {currentDecision === 'accepted'
-                                      ? '✓ Cambio aceptado'
-                                      : 'Aceptar cambio'}
-                                  </button>
-                                  <button
-                                    type="button"
-                                    className={`via-decision-btn reject ${
-                                      currentDecision === 'rejected' ? 'active' : ''
-                                    }`}
-                                    onClick={() => handleDecision(barrier.id, 'rejected')}
-                                  >
-                                    {currentDecision === 'rejected'
-                                      ? '✕ Rechazado'
-                                      : 'Rechazar'}
-                                  </button>
+
+                                  <div className="via-assisted-grid">
+                                    <div className="via-original-box">
+                                      <span className="via-box-label">Enunciado original</span>
+                                      {barrier.original_text ? (
+                                        <p className="via-original-text">{barrier.original_text}</p>
+                                      ) : (
+                                        <div className="via-custom-fragment-wrap">
+                                          <p className="via-original-muted">
+                                            Esta barrera no cita un fragmento textual. Podés indicar un fragmento (mín. 10 caracteres):
+                                          </p>
+                                          <textarea
+                                            rows={3}
+                                            className="via-textarea"
+                                            placeholder="Escribí o pegá el fragmento a adaptar..."
+                                            value={customFragmentByBarrier[barrier.id] ?? ''}
+                                            onChange={(e) =>
+                                              setCustomFragmentByBarrier((prev) => ({
+                                                ...prev,
+                                                [barrier.id]: e.target.value,
+                                              }))
+                                            }
+                                          />
+                                        </div>
+                                      )}
+                                    </div>
+
+                                    <div className="via-editable-box">
+                                      <label htmlFor={`editable-${barrier.id}`} className="via-box-label">
+                                        Versión editable
+                                      </label>
+                                      <textarea
+                                        id={`editable-${barrier.id}`}
+                                        rows={4}
+                                        className="via-textarea"
+                                        value={editableText}
+                                        onChange={(e) =>
+                                          setEditableTextByBarrier((prev) => ({
+                                            ...prev,
+                                            [barrier.id]: e.target.value,
+                                          }))
+                                        }
+                                        placeholder="Escribí la versión adaptada o generá una sugerencia con IA..."
+                                      />
+                                      <div className="via-editable-footer">
+                                        <span className="via-text-counter">
+                                          {editableText.length} caracteres
+                                        </span>
+
+                                        <div className="via-editable-actions">
+                                          {proposal && proposal.status !== 'pendiente' && (
+                                            <button
+                                              type="button"
+                                              className="via-btn via-btn-outline via-btn-sm"
+                                              onClick={() => handleUndoDecision(barrier.id)}
+                                              disabled={isSaving || isGenerating}
+                                            >
+                                              <Undo2 size={14} />
+                                              <span>Deshacer</span>
+                                            </button>
+                                          )}
+
+                                          {proposal && proposal.status !== 'descartada' && (
+                                            <button
+                                              type="button"
+                                              className="via-btn via-btn-outline-danger via-btn-sm"
+                                              onClick={() => handleDiscardProposal(barrier.id)}
+                                              disabled={isSaving || isGenerating}
+                                            >
+                                              <XCircle size={14} />
+                                              <span>Descartar</span>
+                                            </button>
+                                          )}
+
+                                          <button
+                                            type="button"
+                                            className="via-btn via-btn-yellow via-btn-sm"
+                                            onClick={() => handleSaveDecision(barrier)}
+                                            disabled={isSaving || isGenerating}
+                                          >
+                                            <Save size={14} />
+                                            <span>{isSaving ? 'Guardando...' : 'Guardar cambios'}</span>
+                                          </button>
+                                        </div>
+                                      </div>
+                                    </div>
+                                  </div>
+
+                                  {barrierError && (
+                                    <p className="via-validation-error" role="alert">
+                                      {barrierError}
+                                    </p>
+                                  )}
+
+                                  {(proposal || barrier.suggested_rewrite) && (
+                                    <div className="via-proposals-section">
+                                      <div className="via-proposals-header">
+                                        <span className="via-box-label">Alternativas sugeridas</span>
+                                      </div>
+
+                                      <div className="via-proposals-grid">
+                                        {proposal && (
+                                          <div
+                                            className={`via-proposal-card ${
+                                              editableText.trim() === proposal.proposed_text.trim()
+                                                ? 'is-selected'
+                                                : ''
+                                            }`}
+                                          >
+                                            <div className="via-proposal-top">
+                                              <span className="via-proposal-index">01</span>
+                                              <span className="via-proposal-tag">PROPUESTA IA</span>
+                                            </div>
+                                            <p className="via-proposal-text">{proposal.proposed_text}</p>
+                                            <div className="via-proposal-why">
+                                              <strong>POR QUÉ SE HACE ESTE CAMBIO</strong>
+                                              <p>{proposal.explanation}</p>
+                                            </div>
+                                            <div className="via-proposal-objective">
+                                              <strong>Objetivo conservado:</strong>{' '}
+                                              {proposal.preserved_objective}
+                                            </div>
+                                            <button
+                                              type="button"
+                                              className="via-btn via-btn-outline via-btn-sm"
+                                              onClick={() =>
+                                                handleApplyProposalToEditor(
+                                                  barrier.id,
+                                                  proposal.proposed_text
+                                                )
+                                              }
+                                            >
+                                              Usar en versión editable
+                                            </button>
+                                          </div>
+                                        )}
+
+                                        {barrier.suggested_rewrite && (
+                                          <div className="via-proposal-card">
+                                            <div className="via-proposal-top">
+                                              <span className="via-proposal-index">
+                                                {proposal ? '02' : '01'}
+                                              </span>
+                                              <span className="via-proposal-tag">SUGERENCIA DIAGNÓSTICO</span>
+                                            </div>
+                                            <p className="via-proposal-text">
+                                              {barrier.suggested_rewrite}
+                                            </p>
+                                            <button
+                                              type="button"
+                                              className="via-btn via-btn-outline via-btn-sm"
+                                              onClick={() =>
+                                                handleApplyProposalToEditor(
+                                                  barrier.id,
+                                                  barrier.suggested_rewrite!
+                                                )
+                                              }
+                                            >
+                                              Usar en versión editable
+                                            </button>
+                                          </div>
+                                        )}
+                                      </div>
+                                    </div>
+                                  )}
                                 </div>
                               </div>
                             )}
@@ -307,7 +757,6 @@ export function AnalysisResults({
         </div>
       </section>
 
-      {/* Banner inferior oscuro "Generar versión adaptada con IA" */}
       <section className="via-ai-cta-banner">
         <div className="via-ai-cta-left">
           <div className="via-ai-cta-icon">
@@ -330,11 +779,7 @@ export function AnalysisResults({
             <Sparkles size={16} />
             <span>Generar propuestas</span>
           </button>
-          <button
-            type="button"
-            className="via-btn-cta-outline"
-            onClick={onViewAdapted}
-          >
+          <button type="button" className="via-btn-cta-outline" onClick={onViewAdapted} >
             <span>Ver versión adaptada</span>
             <ArrowRight size={16} />
           </button>
