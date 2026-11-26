@@ -5,6 +5,7 @@
         "origins": [
           "https://contenidos-accesibles.vercel.app",
           "https://contenidosaccesibles.vercel.app",
+          "https://via18.vercel.app",
           "https://innovalab-web-pruebas.onrender.com",
           "http://localhost:5173",
           "http://127.0.0.1:5173"

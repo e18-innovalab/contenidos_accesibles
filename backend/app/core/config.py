@@ -123,6 +123,7 @@ class Settings(BaseSettings):
     # NoDecode evita que pydantic-settings lo decodifique como JSON antes del
     # validador: sin él, el formato con comas rompe el arranque (Issue #57).
     BACKEND_CORS_ORIGINS: Annotated[list[str], NoDecode] = [
+        "https://via18.vercel.app",
         "http://localhost:3000",
         "http://localhost:5173",
         "http://127.0.0.1:3000",
