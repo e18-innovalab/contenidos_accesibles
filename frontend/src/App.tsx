@@ -7,6 +7,7 @@ import {
 import { AnalysisProgressView } from './components/AnalysisProgressView';
 import { AnalysisResults } from './components/AnalysisResults';
 import { AdaptedVersionView } from './components/AdaptedVersionView';
+import { LandingPage } from './components/LandingPage';
 import { TransformMaterialView } from './components/views/TransformMaterialView';
 import { AppLayout } from './components/layout/AppLayout';
 import type { NavSectionId } from './components/layout/Sidebar';
@@ -74,6 +75,7 @@ export function App() {
   const [originalSourceText, setOriginalSourceText] = useState<string>('');
   const [sourceFile, setSourceFile] = useState<File | null>(null);
   const [sensitiveUploadAlert, setSensitiveUploadAlert] = useState<boolean>(false);
+  const [authScreen, setAuthScreen] = useState<'landing' | 'login'>('landing');
   const [adaptedProposals, setAdaptedProposals] = useState<Record<string, AdaptationProposal>>({});
   const [hasAdaptedVersion, setHasAdaptedVersion] = useState<boolean>(false);
 
@@ -210,7 +212,14 @@ export function App() {
   }
 
   if (!isSignedIn) {
-    return <LoginView />;
+    return authScreen === 'login' ? (
+      <LoginView onBackToLanding={() => setAuthScreen('landing')} />
+    ) : (
+      <LandingPage
+        onLogin={() => setAuthScreen('login')}
+        onRegister={() => setAuthScreen('login')}
+      />
+    );
   }
 
   const transformInitialSource = results?.analysis_id
