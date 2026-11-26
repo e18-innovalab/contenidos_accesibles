@@ -3,6 +3,7 @@ import type {
   AdaptationProposal,
   AdaptationRequest,
   AdaptedDocumentResponse,
+  CreateTransformationOptions,
   DecisionLogEntry,
   DecisionRequest,
   ErrorDetail,
@@ -21,8 +22,12 @@ import type {
   ShareCreated,
   ShareCreateRequest,
   ShareInfo,
+  TransformationDecisionRequest,
+  TransformationRequest,
+  TransformationResponse,
   ValidationErrorItem,
 } from '../types/analysis';
+
 
 const RAW_BASE_URL =
   import.meta.env?.VITE_API_URL || 'https://innovalab-educacion-e18-test.up.railway.app';
@@ -251,15 +256,15 @@ export type AuthTokenProvider = () =>
 let authTokenProvider: AuthTokenProvider | null = null;
 
 /**
- * Configura el proveedor dinámico de token de sesión (por ejemplo, `() => getToken()` de Clerk).
- * Se invoca automáticamente antes de cada request a la API.
+- Configura el proveedor dinámico de token de sesión (por ejemplo, `() => getToken()` de Clerk).
+- Se invoca automáticamente antes de cada request a la API.
  */
 export function setAuthTokenProvider(provider: AuthTokenProvider | null): void {
   authTokenProvider = provider;
 }
 
 /**
- * Configura un token de sesión estático (o lo limpia pasando `null`).
+- Configura un token de sesión estático (o lo limpia pasando `null`).
  */
 export function setAuthToken(token: string | null): void {
   authTokenProvider = token ? () => token : null;
@@ -444,7 +449,7 @@ export interface UploadFileOptions {
 }
 
 /**
- * Solicita una URL firmada `PUT` para subir un archivo directo al almacenamiento (R2 o local).
+- Solicita una URL firmada `PUT` para subir un archivo directo al almacenamiento (R2 o local).
  */
 export async function requestUploadUrl(
   payload: FileUploadRequest,
@@ -484,8 +489,8 @@ function putWithXhrProgress(
 }
 
 /**
- * Sube los bytes del archivo directamente a la URL firmada devuelta por `requestUploadUrl`.
- * Envía únicamente los headers firmados requeridos por el almacenamiento (sin Authorization Bearer).
+- Sube los bytes del archivo directamente a la URL firmada devuelta por `requestUploadUrl`.
+- Envía únicamente los headers firmados requeridos por el almacenamiento (sin Authorization Bearer).
  */
 export async function uploadToPresignedUrl(
   upload: PresignedRequest | string,
@@ -557,7 +562,7 @@ export async function uploadToPresignedUrl(
 }
 
 /**
- * Confirma en el backend que el archivo terminó de subirse y verifica su firma binaria y tamaño.
+- Confirma en el backend que el archivo terminó de subirse y verifica su firma binaria y tamaño.
  */
 export async function completeUpload(fileId: string): Promise<FileInfo> {
   return apiRequest<FileInfo>(`/files/${encodeURIComponent(fileId)}/complete`, {
@@ -566,8 +571,8 @@ export async function completeUpload(fileId: string): Promise<FileInfo> {
 }
 
 /**
- * Flujo completo de subida directa en 3 pasos:
- * 1) `POST /files/upload-url` → 2) `PUT <presignedUrl>` → 3) `POST /files/{file_id}/complete`.
+- Flujo completo de subida directa en 3 pasos:
+- 1) `POST /files/upload-url` → 2) `PUT <presignedUrl>` → 3) `POST /files/{file_id}/complete`.
  */
 export async function uploadFile(
   file: File,
@@ -591,21 +596,21 @@ export async function uploadFile(
 }
 
 /**
- * Consulta los metadatos y estado de un archivo por su `file_id`.
+- Consulta los metadatos y estado de un archivo por su `file_id`.
  */
 export async function getFile(fileId: string): Promise<FileInfo> {
   return apiRequest<FileInfo>(`/files/${encodeURIComponent(fileId)}`);
 }
 
 /**
- * Lista los archivos vigentes del usuario autenticado.
+- Lista los archivos vigentes del usuario autenticado.
  */
 export async function listFiles(): Promise<FileInfo[]> {
   return apiRequest<FileInfo[]>('/files');
 }
 
 /**
- * Obtiene una URL firmada `GET` temporal para descargar el archivo con su nombre original.
+- Obtiene una URL firmada `GET` temporal para descargar el archivo con su nombre original.
  */
 export async function getDownloadUrl(fileId: string): Promise<FileDownloadResponse> {
   return apiRequest<FileDownloadResponse>(
@@ -614,7 +619,7 @@ export async function getDownloadUrl(fileId: string): Promise<FileDownloadRespon
 }
 
 /**
- * Elimina un archivo del usuario y revoca sus enlaces compartidos.
+- Elimina un archivo del usuario y revoca sus enlaces compartidos.
  */
 export async function deleteFile(fileId: string): Promise<void> {
   return apiRequest<void>(`/files/${encodeURIComponent(fileId)}`, {
@@ -624,7 +629,7 @@ export async function deleteFile(fileId: string): Promise<void> {
 }
 
 /**
- * Crea un enlace corto revocable (`/s/{token}`) para compartir un archivo subido o exportado.
+- Crea un enlace corto revocable (`/s/{token}`) para compartir un archivo subido o exportado.
  */
 export async function createShareLink(
   fileId: string,
@@ -640,7 +645,7 @@ export async function createShareLink(
 }
 
 /**
- * Lista los enlaces compartidos activos de un archivo junto con su contador de aperturas.
+- Lista los enlaces compartidos activos de un archivo junto con su contador de aperturas.
  */
 export async function listShareLinks(fileId: string): Promise<ShareInfo[]> {
   return apiRequest<ShareInfo[]>(
@@ -649,7 +654,7 @@ export async function listShareLinks(fileId: string): Promise<ShareInfo[]> {
 }
 
 /**
- * Revoca de inmediato un enlace compartido existente.
+- Revoca de inmediato un enlace compartido existente.
  */
 export async function revokeShareLink(
   fileId: string,
@@ -698,7 +703,7 @@ function normalizeAnalysisQuery(
 }
 
 /**
- * Diagnóstico de accesibilidad de un texto educativo pegado (`POST /analysis/sample`).
+- Diagnóstico de accesibilidad de un texto educativo pegado (`POST /analysis/sample`).
  */
 export async function analyzeSample(
   text: string,
@@ -712,7 +717,7 @@ export async function analyzeSample(
 }
 
 /**
- * Diagnóstico de accesibilidad de un archivo ya subido al almacenamiento por su `file_id` (`POST /analysis/files/{file_id}`).
+- Diagnóstico de accesibilidad de un archivo ya subido al almacenamiento por su `file_id` (`POST /analysis/files/{file_id}`).
  */
 export async function analyzeFileById(
   fileId: string,
@@ -728,7 +733,7 @@ export async function analyzeFileById(
 }
 
 /**
- * Diagnóstico de accesibilidad enviando un archivo `.pdf`, `.docx` o `.pptx` por multipart (`POST /analysis/file`).
+- Diagnóstico de accesibilidad enviando un archivo `.pdf`, `.docx` o `.pptx` por multipart (`POST /analysis/file`).
  */
 export async function analyzeMultipartFile(
   file: File,
@@ -745,7 +750,7 @@ export async function analyzeMultipartFile(
 }
 
 /**
- * Recupera un diagnóstico generado previamente por su `analysis_id` (`GET /analysis/{analysis_id}`).
+- Recupera un diagnóstico generado previamente por su `analysis_id` (`GET /analysis/{analysis_id}`).
  */
 export async function getAnalysisById(
   analysisId: string,
@@ -756,7 +761,7 @@ export async function getAnalysisById(
 }
 
 /**
- * Alias retrocompatible de `analyzeSample` (por defecto `useMock = true` para no alterar llamadas existentes).
+- Alias retrocompatible de `analyzeSample` (por defecto `useMock = true` para no alterar llamadas existentes).
  */
 export async function analyzeText(
   text: string,
@@ -767,7 +772,7 @@ export async function analyzeText(
 }
 
 /**
- * Alias retrocompatible que delega en `analyzeMultipartFile` (soporta `.pdf`, `.docx` y `.pptx`).
+- Alias retrocompatible que delega en `analyzeMultipartFile` (soporta `.pdf`, `.docx` y `.pptx`).
  */
 export async function analyzePdf(
   file: File,
@@ -792,7 +797,7 @@ export interface CreateAdaptationOptions {
 }
 
 /**
- * Genera una propuesta de adaptación con IA para una barrera del diagnóstico (`POST /adaptations`).
+- Genera una propuesta de adaptación con IA para una barrera del diagnóstico (`POST /adaptations`).
  */
 export async function createAdaptationProposal(
   payload: AdaptationRequest,
@@ -817,7 +822,7 @@ export async function createAdaptationProposal(
 }
 
 /**
- * Lista todas las propuestas de adaptación generadas para un diagnóstico (`GET /adaptations`).
+- Lista todas las propuestas de adaptación generadas para un diagnóstico (`GET /adaptations`).
  */
 export async function listAdaptations(
   analysisId: string,
@@ -828,7 +833,7 @@ export async function listAdaptations(
 }
 
 /**
- * Recupera una propuesta de adaptación puntual por su `proposal_id` (`GET /adaptations/{proposal_id}`).
+- Recupera una propuesta de adaptación puntual por su `proposal_id` (`GET /adaptations/{proposal_id}`).
  */
 export async function getAdaptationProposal(
   proposalId: string,
@@ -839,7 +844,7 @@ export async function getAdaptationProposal(
 }
 
 /**
- * Registra la decisión docente (`aceptada`, `editada` o `descartada`) sobre una propuesta pendiente (`POST /adaptations/{proposal_id}/decision`).
+- Registra la decisión docente (`aceptada`, `editada` o `descartada`) sobre una propuesta pendiente (`POST /adaptations/{proposal_id}/decision`).
  */
 export async function decideAdaptation(
   proposalId: string,
@@ -855,7 +860,7 @@ export async function decideAdaptation(
 }
 
 /**
- * Deshace la decisión vigente sobre una propuesta, devolviéndola a estado `pendiente` (`POST /adaptations/{proposal_id}/undo`).
+- Deshace la decisión vigente sobre una propuesta, devolviéndola a estado `pendiente` (`POST /adaptations/{proposal_id}/undo`).
  */
 export async function undoAdaptation(
   proposalId: string,
@@ -869,7 +874,7 @@ export async function undoAdaptation(
 }
 
 /**
- * Obtiene el historial cronológico de decisiones y deshaceres de un diagnóstico (`GET /adaptations/decisions`).
+- Obtiene el historial cronológico de decisiones y deshaceres de un diagnóstico (`GET /adaptations/decisions`).
  */
 export async function listDecisions(
   analysisId: string,
@@ -880,7 +885,7 @@ export async function listDecisions(
 }
 
 /**
- * Construye la versión final del documento aplicando solo las propuestas aceptadas o editadas (`GET /adaptations/final-version`).
+- Construye la versión final del documento aplicando solo las propuestas aceptadas o editadas (`GET /adaptations/final-version`).
  */
 export async function getAdaptedDocument(
   analysisId: string,
@@ -891,7 +896,7 @@ export async function getAdaptedDocument(
 }
 
 /**
- * Genera el informe ejecutivo de cierre con el puntaje antes/después y el detalle por barrera (`GET /adaptations/report`).
+- Genera el informe ejecutivo de cierre con el puntaje antes/después y el detalle por barrera (`GET /adaptations/report`).
  */
 export async function getFinalReport(
   analysisId: string,
@@ -906,8 +911,8 @@ export async function getFinalReport(
 // ============================================================================
 
 /**
- * Exporta el material adaptado en formato `docx`, `pdf`, `md` o `txt`.
- * Por defecto usa `delivery = 'link'`, que guarda el archivo en almacenamiento y devuelve su URL firmada de descarga.
+- Exporta el material adaptado en formato `docx`, `pdf`, `md` o `txt`.
+- Por defecto usa `delivery = 'link'`, que guarda el archivo en almacenamiento y devuelve su URL firmada de descarga.
  */
 export async function exportAdaptedContent(
   analysisId: string,
@@ -936,8 +941,8 @@ export async function exportAdaptedContent(
 }
 
 /**
- * Exporta el informe ejecutivo de accesibilidad en formato `pdf`, `md` o `txt`.
- * Por defecto usa `delivery = 'link'`, que guarda el archivo en almacenamiento y devuelve su URL firmada de descarga.
+- Exporta el informe ejecutivo de accesibilidad en formato `pdf`, `md` o `txt`.
+- Por defecto usa `delivery = 'link'`, que guarda el archivo en almacenamiento y devuelve su URL firmada de descarga.
  */
 export async function exportAccessibilityReport(
   analysisId: string,
@@ -963,4 +968,171 @@ export async function exportAccessibilityReport(
   return apiRequest<FileDownloadResponse>('/export/report', {
     query: { analysis_id: analysisId, format, delivery: 'link' },
   });
+}
+
+// ============================================================================
+// 8. Módulo de Transformación de Material (transformations) — Issue #116
+// ============================================================================
+
+export async function createTransformation(
+  payload: TransformationRequest,
+  options: CreateTransformationOptions = {},
+): Promise<TransformationResponse> {
+  const query: QueryParams = {
+    mock: options.mock ?? false,
+  };
+  if (options.dismissed && options.dismissed.length > 0) {
+    query.dismissed = options.dismissed;
+  }
+
+  return apiRequest<TransformationResponse>('/transformations', {
+    method: 'POST',
+    query,
+    body: payload,
+  });
+}
+
+export async function listTransformations(): Promise<TransformationResponse[]> {
+  return apiRequest<TransformationResponse[]>('/transformations');
+}
+
+export async function getTransformation(
+  transformationId: string,
+): Promise<TransformationResponse> {
+  return apiRequest<TransformationResponse>(
+    `/transformations/${encodeURIComponent(transformationId)}`,
+  );
+}
+
+export async function decideTransformation(
+  transformationId: string,
+  payload: TransformationDecisionRequest,
+): Promise<TransformationResponse> {
+  return apiRequest<TransformationResponse>(
+    `/transformations/${encodeURIComponent(transformationId)}/decision`,
+    {
+      method: 'POST',
+      body: payload,
+    },
+  );
+}
+
+export async function retryTransformationFile(
+  transformationId: string,
+): Promise<TransformationResponse> {
+  return apiRequest<TransformationResponse>(
+    `/transformations/${encodeURIComponent(transformationId)}/file`,
+    {
+      method: 'POST',
+    },
+  );
+}
+
+export async function exportTransformation(
+  transformationId: string,
+  format: string,
+  delivery: 'link',
+): Promise<FileDownloadResponse>;
+export async function exportTransformation(
+  transformationId: string,
+  format: string,
+  delivery?: 'file',
+): Promise<Blob>;
+export async function exportTransformation(
+  transformationId: string,
+  format: string,
+  delivery: 'file' | 'link' = 'file',
+): Promise<FileDownloadResponse | Blob> {
+  if (delivery === 'link') {
+    return apiRequest<FileDownloadResponse>(
+      `/transformations/${encodeURIComponent(transformationId)}/export`,
+      {
+        query: { format, delivery: 'link' },
+      },
+    );
+  }
+  return apiRequest<Blob>(
+    `/transformations/${encodeURIComponent(transformationId)}/export`,
+    {
+      query: { format, delivery: 'file' },
+      responseType: 'blob',
+    },
+  );
+}
+
+// ============================================================================
+// 9. Texto a Voz de Prueba (AI TTS) — Issue #121
+// ============================================================================
+
+export interface TestTtsOptions {
+  mock?: boolean;
+}
+
+export interface TestTtsResult {
+  blob: Blob;
+  audioUrl: string;
+  durationSeconds?: string | null;
+  chunks?: string | null;
+  model?: string | null;
+}
+
+/**
+- Convierte un texto corto (1..1000 caracteres) en audio MP3 (`POST /api/v1/ai/test-tts`).
+ */
+export async function synthesizeTestAudio(
+  text: string,
+  options: TestTtsOptions = {},
+): Promise<TestTtsResult> {
+  const cleanText = text.trim().slice(0, 1000);
+  if (!cleanText) {
+    throw new ApiError({
+      status: 400,
+      code: 'empty_tts_text',
+      message: 'No hay texto disponible para generar el audio.',
+    });
+  }
+
+  const url = buildApiUrl('/ai/test-tts', {
+    mock: options.mock ?? false,
+  });
+
+  const headers: Record<string, string> = {
+    Accept: 'audio/mpeg, */*',
+    'Content-Type': 'application/json',
+  };
+
+  const bearerToken = await resolveAuthToken();
+  if (bearerToken) {
+    headers.Authorization = `Bearer ${bearerToken}`;
+  }
+
+  let response: Response;
+  try {
+    response = await fetch(url, {
+      method: 'POST',
+      headers,
+      body: JSON.stringify({ text: cleanText }),
+    });
+  } catch {
+    throw new ApiError({
+      status: 0,
+      code: 'network_error',
+      message: DEFAULT_STATUS_MESSAGES[0],
+    });
+  }
+
+  if (!response.ok) {
+    throw await parseErrorResponse(response);
+  }
+
+  const blob = await response.blob();
+  const audioUrl = URL.createObjectURL(blob);
+
+  return {
+    blob,
+    audioUrl,
+    durationSeconds: response.headers.get('X-Audio-Duration'),
+    chunks: response.headers.get('X-Audio-Chunks'),
+    model: response.headers.get('X-TTS-Model'),
+  };
 }

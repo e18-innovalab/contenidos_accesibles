@@ -1,13 +1,13 @@
-import { Home, Sparkles, Folder, Settings, ArrowRight } from 'lucide-react';
+import { Folder, Settings, ArrowRight } from 'lucide-react';
 import type { NavSectionId } from '../layout/Sidebar';
 
 interface SectionPlaceholderProps {
-section: Exclude<NavSectionId, 'analisis' | 'inicio'>;
+  section: Exclude<NavSectionId, 'inicio' | 'analisis' | 'transformar'>;
   onGoToAnalysis: () => void;
 }
 
 const SECTION_CONFIG: Record<
-  Exclude<NavSectionId, 'analisis' | 'inicio'>,
+  Exclude<NavSectionId, 'inicio' | 'analisis' | 'transformar'>,
   {
     icon: React.ComponentType<{ size?: number }>;
     title: string;
@@ -15,12 +15,6 @@ const SECTION_CONFIG: Record<
     showCta?: boolean;
   }
 > = {
-  transformar: {
-    icon: Sparkles,
-    title: 'Transformar material',
-    subtitle:
-      'Convertí un contenido en distintos formatos pedagógicos accesibles (resumen en lectura fácil, glosario o secuencia de diapositivas).',
-  },
   materiales: {
     icon: Folder,
     title: 'Mis materiales',
