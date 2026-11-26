@@ -109,7 +109,7 @@ def _user_entry(user_id: str, profile: dict | None, all_time: dict, in_range: di
     }
 
 
-def _window(range_key: str, tz_offset_minutes: int, now: datetime | None):
+def _window(range_key: str, tz_offset_minutes: int, now: datetime | None = None):
     if range_key not in RANGES:
         raise ValueError(f"Rango inválido. Opciones: {', '.join(RANGES)}.")
     span, unit = RANGES[range_key]

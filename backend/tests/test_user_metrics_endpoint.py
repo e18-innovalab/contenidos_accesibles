@@ -10,8 +10,12 @@ from app.main import app
 
 def test_metrics_endpoint_empty_user():
     init_db()
-    client = TestClient(app)
-    res = client.get("/api/v1/metrics?range=24h")
+    app.dependency_overrides[current_owner] = lambda: "user_truly_empty_no_activity_999"
+    try:
+        client = TestClient(app)
+        res = client.get("/api/v1/metrics?range=24h&tz_offset=-180")
+    finally:
+        app.dependency_overrides.clear()
     assert res.status_code == 200
     data = res.json()
     assert data["range"] == "24h"
