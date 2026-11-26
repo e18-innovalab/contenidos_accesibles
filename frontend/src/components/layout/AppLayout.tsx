@@ -18,6 +18,7 @@ const SECTION_TITLES: Record<NavSectionId, string> = {
   analisis: 'ANÁLISIS INTEGRAL',
   transformar: 'TRANSFORMAR MATERIAL',
   materiales: 'MIS MATERIALES',
+  metricas: 'MÉTRICAS',
   configuracion: 'CONFIGURACIÓN',
 };
 

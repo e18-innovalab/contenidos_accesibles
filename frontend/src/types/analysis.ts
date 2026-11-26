@@ -413,3 +413,61 @@ export interface CreateTransformationOptions {
   mock?: boolean;
   dismissed?: string[];
 }
+
+
+// ============================================================================
+// Métricas del usuario (/api/v1/metrics) — sin proveedor ni modelo de IA
+// ============================================================================
+
+export type MetricsRange = '24h' | '7d' | '30d';
+
+export interface UserActivityStats {
+  actions: number;
+  analyses: number;
+  mock_analyses: number;
+  proposals: number;
+  mock_proposals: number;
+  decisions: Record<string, number>;
+  uploads: number;
+  uploads_rejected: number;
+  exports: number;
+  downloads: number;
+  shares_created: number;
+  share_opens: number;
+  shares_revoked: number;
+  ai_calls: number;
+  tokens: number;
+  rate_limited: number;
+  transformations: number;
+  mock_transformations: number;
+  transformations_failed: number;
+  transformation_decisions: Record<string, number>;
+}
+
+export interface UserRecentEvent {
+  created_at: string;
+  action: string;
+  format?: string | null;
+  detail?: string | null;
+  adaptation_type?: string | null;
+  mock: number;
+  size_bytes?: number | null;
+  score?: number | null;
+  barriers?: number | null;
+  latency_ms?: number | null;
+  tokens: number;
+}
+
+export interface UserMetricsResponse {
+  range: MetricsRange;
+  unit: string;
+  buckets: string[];
+  tokens: number[];
+  activity: Record<string, number[]>;
+  in_range: UserActivityStats;
+  all_time: UserActivityStats;
+  formats: Record<string, Record<string, number>>;
+  adaptations: Record<string, Record<string, number>>;
+  transformations: Record<string, Record<string, number>>;
+  recent: UserRecentEvent[];
+}

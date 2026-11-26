@@ -14,6 +14,7 @@ import type { AnalysisStage } from './components/layout/Topbar';
 import { SectionPlaceholder } from './components/views/SectionPlaceholders';
 import { HomeView } from './components/HomeView';
 import { LoginView } from './components/views/LoginView';
+import { MetricsView } from './components/views/MetricsView';
 import {
   analyzeFileById,
   analyzeSample,
@@ -31,6 +32,7 @@ const VALID_SECTIONS: NavSectionId[] = [
   'analisis',
   'transformar',
   'materiales',
+  'metricas',
   'configuracion',
 ];
 
@@ -242,6 +244,8 @@ export function App() {
             }
           }}
         />
+      ) : activeSection === 'metricas' ? (
+        <MetricsView />
       ) : activeSection !== 'analisis' ? (
         <SectionPlaceholder
           section={activeSection}
