@@ -71,6 +71,7 @@ export function App() {
   const [error, setError] = useState<string | null>(null);
   const [results, setResults] = useState<AccessibilityAnalysisResponse | null>(null);
   const [originalSourceText, setOriginalSourceText] = useState<string>('');
+  const [sourceFile, setSourceFile] = useState<File | null>(null);
   const [adaptedProposals, setAdaptedProposals] = useState<Record<string, AdaptationProposal>>({});
   const [hasAdaptedVersion, setHasAdaptedVersion] = useState<boolean>(false);
 
@@ -120,6 +121,7 @@ export function App() {
   }
 
   async function handleAnalyzeFile(file: File, useMock: boolean) {
+    setSourceFile(file);
     setLoading(true);
     setShowAnalysisProgress(true);
     setError(null);
@@ -147,6 +149,7 @@ export function App() {
   }
 
   async function handleAnalyzeText(text: string, useMock: boolean) {
+    setSourceFile(null);
     setLoading(true);
     setShowAnalysisProgress(false);
     setError(null);
@@ -177,6 +180,7 @@ export function App() {
   function handleResetAnalysis() {
     setResults(null);
     setOriginalSourceText('');
+    setSourceFile(null);
     setAdaptedProposals({});
     setHasAdaptedVersion(false);
     setError(null);
@@ -288,6 +292,8 @@ export function App() {
             <div className="via-results-wrapper">
               <AnalysisResults
                 data={results}
+                sourceFile={sourceFile}
+                originalSourceText={originalSourceText}
                 onViewAdapted={handleOpenAdaptedVersion}
                 onResetAnalysis={handleResetAnalysis}
               />

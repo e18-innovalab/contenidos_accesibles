@@ -21,6 +21,7 @@ import {
   listAdaptations,
   undoAdaptation,
 } from '../services/api';
+import { PdfPreview } from './PdfPreview';
 import type {
   AccessibilityAnalysisResponse,
   AdaptationProposal,
@@ -31,6 +32,8 @@ import type {
 
 interface AnalysisResultsProps {
   data: AccessibilityAnalysisResponse | null;
+  sourceFile: File | null;
+  originalSourceText: string;
   onGenerateAdapted?: () => void;
   onViewAdapted?: (proposals: Record<string, AdaptationProposal>) => void;
   onResetAnalysis?: () => void;
@@ -64,6 +67,8 @@ function isSevereBarrier(severity?: string): boolean {
 
 export function AnalysisResults({
   data,
+  sourceFile,
+  originalSourceText,
   onGenerateAdapted,
   onViewAdapted,
   onResetAnalysis,
@@ -589,144 +594,165 @@ export function AnalysisResults({
                                     </div>
                                   </div>
 
-                                  <div className="via-assisted-grid">
-                                    <div className="via-original-box">
-                                      <span className="via-box-label">Enunciado original</span>
-                                      {barrier.original_text ? (
-                                        <p className="via-original-text">{barrier.original_text}</p>
-                                      ) : (
-                                        <div className="via-custom-fragment-wrap">
-                                          <p className="via-original-muted">
-                                            Esta barrera no cita un fragmento textual. Podés indicar un fragmento (mín. 10 caracteres):
-                                          </p>
-                                          <textarea
-                                            rows={3}
-                                            className="via-textarea"
-                                            placeholder="Escribí o pegá el fragmento a adaptar..."
-                                            value={customFragmentByBarrier[barrier.id] ?? ''}
-                                            onChange={(e) =>
-                                              setCustomFragmentByBarrier((prev) => ({
-                                                ...prev,
-                                                [barrier.id]: e.target.value,
-                                              }))
-                                            }
-                                          />
-                                        </div>
-                                      )}
-                                    </div>
+                                  <div className="via-assisted-workspace">
+                                    <PdfPreview
+                                      file={sourceFile}
+                                      fallbackText={originalSourceText || barrier.original_text || ''}
+                                      pageCount={data.metadata?.page_count ?? 1}
+                                    />
 
-                                    <div className="via-editable-box">
-                                      <label htmlFor={`editable-${barrier.id}`} className="via-box-label">
-                                        Versión editable
-                                      </label>
-                                      <textarea
-                                        id={`editable-${barrier.id}`}
-                                        rows={4}
-                                        className="via-textarea"
-                                        value={editableText}
-                                        onChange={(e) =>
-                                          setEditableTextByBarrier((prev) => ({
-                                            ...prev,
-                                            [barrier.id]: e.target.value,
-                                          }))
-                                        }
-                                        placeholder="Escribí la versión adaptada o generá una sugerencia con IA..."
-                                      />
-                                      <div className="via-editable-footer">
-                                        <span className="via-text-counter">
-                                          {editableText.length} caracteres
-                                        </span>
-
-                                        <div className="via-editable-actions">
-                                          {proposal && proposal.status !== 'pendiente' && (
-                                            <button
-                                              type="button"
-                                              className="via-btn via-btn-outline via-btn-sm"
-                                              onClick={() => handleUndoDecision(barrier.id)}
-                                              disabled={isSaving || isGenerating}
-                                            >
-                                              <Undo2 size={14} />
-                                              <span>Deshacer</span>
-                                            </button>
-                                          )}
-
-                                          {proposal && proposal.status !== 'descartada' && (
-                                            <button
-                                              type="button"
-                                              className="via-btn via-btn-outline-danger via-btn-sm"
-                                              onClick={() => handleDiscardProposal(barrier.id)}
-                                              disabled={isSaving || isGenerating}
-                                            >
-                                              <XCircle size={14} />
-                                              <span>Descartar</span>
-                                            </button>
-                                          )}
-
-                                          <button
-                                            type="button"
-                                            className="via-btn via-btn-yellow via-btn-sm"
-                                            onClick={() => handleSaveDecision(barrier)}
-                                            disabled={isSaving || isGenerating}
-                                          >
-                                            <Save size={14} />
-                                            <span>{isSaving ? 'Guardando...' : 'Guardar cambios'}</span>
-                                          </button>
-                                        </div>
-                                      </div>
-                                    </div>
-                                  </div>
-
-                                  {barrierError && (
-                                    <p className="via-validation-error" role="alert">
-                                      {barrierError}
-                                    </p>
-                                  )}
-
-                                  {(proposal || barrier.suggested_rewrite) && (
-                                    <div className="via-proposals-section">
-                                      <div className="via-proposals-header">
-                                        <span className="via-box-label">Alternativas sugeridas</span>
-                                      </div>
-
-                                      <div className="via-proposals-grid">
-                                        {proposal && (
-                                          <div
-                                            className={`via-proposal-card ${
-                                              editableText.trim() === proposal.proposed_text.trim()
-                                                ? 'is-selected'
-                                                : ''
-                                            }`}
-                                          >
-                                            <div className="via-proposal-top">
-                                              <span className="via-proposal-index">01</span>
-                                              <span className="via-proposal-tag">PROPUESTA IA</span>
-                                            </div>
-                                            <p className="via-proposal-text">{proposal.proposed_text}</p>
-                                            <div className="via-proposal-why">
-                                              <strong>POR QUÉ SE HACE ESTE CAMBIO</strong>
-                                              <p>{proposal.explanation}</p>
-                                            </div>
-                                            <div className="via-proposal-objective">
-                                              <strong>Objetivo conservado:</strong>{' '}
-                                              {proposal.preserved_objective}
-                                            </div>
-                                            <button
-                                              type="button"
-                                              className="via-btn via-btn-outline via-btn-sm"
-                                              onClick={() =>
-                                                handleApplyProposalToEditor(
-                                                  barrier.id,
-                                                  proposal.proposed_text
-                                                )
+                                    <div className="via-assisted-editor-column">
+                                      <div className="via-original-box">
+                                        <span className="via-box-label">Enunciado original</span>
+                                        {barrier.original_text ? (
+                                          <p className="via-original-text">{barrier.original_text}</p>
+                                        ) : (
+                                          <div className="via-custom-fragment-wrap">
+                                            <p className="via-original-muted">
+                                              Esta barrera no cita un fragmento textual. Podés indicar un fragmento (mín. 10 caracteres):
+                                            </p>
+                                            <textarea
+                                              rows={3}
+                                              className="via-textarea"
+                                              placeholder="Escribí o pegá el fragmento a adaptar..."
+                                              value={customFragmentByBarrier[barrier.id] ?? ''}
+                                              onChange={(e) =>
+                                                setCustomFragmentByBarrier((prev) => ({
+                                                  ...prev,
+                                                  [barrier.id]: e.target.value,
+                                                }))
                                               }
-                                            >
-                                              Usar propuesta
-                                            </button>
+                                            />
                                           </div>
                                         )}
                                       </div>
+
+                                      <div className="via-editable-box">
+                                        <label
+                                          htmlFor={`editable-${barrier.id}`}
+                                          className="via-box-label"
+                                        >
+                                          Versión editable
+                                        </label>
+                                        <textarea
+                                          id={`editable-${barrier.id}`}
+                                          rows={4}
+                                          className="via-textarea"
+                                          value={editableText}
+                                          onChange={(e) =>
+                                            setEditableTextByBarrier((prev) => ({
+                                              ...prev,
+                                              [barrier.id]: e.target.value,
+                                            }))
+                                          }
+                                          placeholder="Escribí la versión adaptada o generá una sugerencia con IA..."
+                                        />
+                                        <div className="via-editable-footer">
+                                          <span className="via-text-counter">
+                                            {editableText.length} caracteres
+                                          </span>
+
+                                          <div className="via-editable-actions">
+                                            {proposal && proposal.status !== 'pendiente' && (
+                                              <button
+                                                type="button"
+                                                className="via-btn via-btn-outline via-btn-sm"
+                                                onClick={() => handleUndoDecision(barrier.id)}
+                                                disabled={isSaving || isGenerating}
+                                              >
+                                                <Undo2 size={14} />
+                                                <span>Deshacer</span>
+                                              </button>
+                                            )}
+
+                                            {proposal && proposal.status !== 'descartada' && (
+                                              <button
+                                                type="button"
+                                                className="via-btn via-btn-outline-danger via-btn-sm"
+                                                onClick={() => handleDiscardProposal(barrier.id)}
+                                                disabled={isSaving || isGenerating}
+                                              >
+                                                <XCircle size={14} />
+                                                <span>Descartar</span>
+                                              </button>
+                                            )}
+
+                                            <button
+                                              type="button"
+                                              className="via-btn via-btn-yellow via-btn-sm"
+                                              onClick={() => handleSaveDecision(barrier)}
+                                              disabled={isSaving || isGenerating}
+                                            >
+                                              <Save size={14} />
+                                              <span>
+                                                {isSaving ? 'Guardando...' : 'Guardar cambios'}
+                                              </span>
+                                            </button>
+                                          </div>
+                                        </div>
+                                      </div>
+
+                                      {barrierError && (
+                                        <p className="via-validation-error" role="alert">
+                                          {barrierError}
+                                        </p>
+                                      )}
+
                                     </div>
-                                  )}
+
+                                    {(proposal || barrier.suggested_rewrite) && (
+                                      <div className="via-proposals-section">
+                                        <div className="via-proposals-header">
+                                          <span className="via-box-label">
+                                            Alternativas sugeridas
+                                          </span>
+                                        </div>
+
+                                        <div className="via-proposals-grid">
+                                          {proposal && (
+                                            <div
+                                              className={`via-proposal-card ${
+                                                editableText.trim() ===
+                                                proposal.proposed_text.trim()
+                                                  ? 'is-selected'
+                                                  : ''
+                                              }`}
+                                            >
+                                              <div className="via-proposal-top">
+                                                <span className="via-proposal-index">01</span>
+                                                <span className="via-proposal-tag">
+                                                  PROPUESTA IA
+                                                </span>
+                                              </div>
+                                              <p className="via-proposal-text">
+                                                {proposal.proposed_text}
+                                              </p>
+                                              <div className="via-proposal-why">
+                                                <strong>POR QUÉ SE HACE ESTE CAMBIO</strong>
+                                                <p>{proposal.explanation}</p>
+                                              </div>
+                                              <div className="via-proposal-objective">
+                                                <strong>Objetivo conservado:</strong>{' '}
+                                                {proposal.preserved_objective}
+                                              </div>
+                                              <button
+                                                type="button"
+                                                className="via-btn via-btn-outline via-btn-sm"
+                                                onClick={() =>
+                                                  handleApplyProposalToEditor(
+                                                    barrier.id,
+                                                    proposal.proposed_text
+                                                  )
+                                                }
+                                              >
+                                                Usar propuesta
+                                              </button>
+                                            </div>
+                                          )}
+                                        </div>
+                                      </div>
+                                    )}
+                                  </div>
                                 </div>
                               </div>
                             )}
