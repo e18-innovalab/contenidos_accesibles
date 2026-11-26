@@ -72,7 +72,7 @@ def get_my_metrics(
         buckets=detail["buckets"],
         tokens=detail["tokens"],
         activity=detail["activity"],
-        in_range=_safe_stats(user_summary.get("in_range")),
+        in_range=_safe_stats(user_summary.get("range")),
         all_time=_safe_stats(user_summary.get("all_time")),
         formats=detail.get("formats", {}),
         adaptations=detail.get("adaptations", {}),
