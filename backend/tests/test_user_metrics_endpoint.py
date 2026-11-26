@@ -21,7 +21,7 @@ def test_metrics_endpoint_empty_user():
 
 def test_metrics_endpoint_never_exposes_provider_or_model():
     init_db()
-    user_activity.record("analysis", ANONYMOUS_OWNER, fmt="pdf", score=74, barriers=4)
+    user_activity.record("analysis", ANONYMOUS_OWNER, format="pdf", score=74, barriers=4)
     user_activity.record(
         "ai_call",
         ANONYMOUS_OWNER,
