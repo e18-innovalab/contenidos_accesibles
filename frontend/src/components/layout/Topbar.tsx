@@ -1,5 +1,12 @@
 import { useState, useRef, useEffect } from 'react';
-import { Menu, ChevronDown, GraduationCap, LogOut } from 'lucide-react';
+import {
+  AlertTriangle,
+  ChevronDown,
+  GraduationCap,
+  LogOut,
+  Menu,
+  X,
+} from 'lucide-react';
 import { useUser, useClerk } from '@clerk/clerk-react';
 
 export type AnalysisStage = 'upload' | 'results' | 'adapted';
@@ -18,6 +25,8 @@ export interface TopbarProps {
   showStages?: boolean;
   sectionTitle?: string;
   user?: UserProfileInfo;
+  showSensitiveAlert?: boolean;
+  onDismissSensitiveAlert?: () => void;
   isSidebarOpen: boolean;
   onToggleSidebar: () => void;
 }
@@ -41,6 +50,8 @@ export function Topbar({
   showStages = true,
   sectionTitle,
   user,
+  showSensitiveAlert = false,
+  onDismissSensitiveAlert,
   isSidebarOpen,
   onToggleSidebar,
 }: TopbarProps) {
@@ -88,6 +99,29 @@ export function Topbar({
 
   return (
     <header className="via-topbar">
+      {showSensitiveAlert && (
+        <aside className="via-sensitive-alert-toast" role="alert">
+          <div className="via-sensitive-alert-content">
+            <AlertTriangle size={18} aria-hidden="true" />
+            <div>
+              <strong>Se detectaron datos personales</strong>
+              <p>
+                Por favor, revise el documento ya que detectamos datos
+                personales. ¡Cuide de cargar información sensible de sus
+                alumnos!
+              </p>
+            </div>
+          </div>
+          <button
+            type="button"
+            className="via-icon-btn"
+            aria-label="Cerrar aviso de datos personales"
+            onClick={onDismissSensitiveAlert}
+          >
+            <X size={16} />
+          </button>
+        </aside>
+      )}
       <div className="via-topbar-left">
         <button
           type="button"

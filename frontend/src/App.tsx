@@ -16,6 +16,7 @@ import { HomeView } from './components/HomeView';
 import { LoginView } from './components/views/LoginView';
 import { MetricsView } from './components/views/MetricsView';
 import {
+  ApiError,
   analyzeFileById,
   analyzeSample,
   uploadFile,
@@ -72,6 +73,7 @@ export function App() {
   const [results, setResults] = useState<AccessibilityAnalysisResponse | null>(null);
   const [originalSourceText, setOriginalSourceText] = useState<string>('');
   const [sourceFile, setSourceFile] = useState<File | null>(null);
+  const [sensitiveUploadAlert, setSensitiveUploadAlert] = useState<boolean>(false);
   const [adaptedProposals, setAdaptedProposals] = useState<Record<string, AdaptationProposal>>({});
   const [hasAdaptedVersion, setHasAdaptedVersion] = useState<boolean>(false);
 
@@ -122,6 +124,7 @@ export function App() {
 
   async function handleAnalyzeFile(file: File, useMock: boolean) {
     setSourceFile(file);
+    setSensitiveUploadAlert(false);
     setLoading(true);
     setShowAnalysisProgress(true);
     setError(null);
@@ -136,11 +139,19 @@ export function App() {
       setResults(data);
       setCurrentStage('results');
     } catch (err) {
-      setError(
-        err instanceof Error
-          ? err.message
-          : 'Error al subir o analizar el documento.',
-      );
+      if (
+        err instanceof ApiError &&
+        (err.code === 'sensitive_data_detected' || (err.findings?.length ?? 0) > 0)
+      ) {
+        setSensitiveUploadAlert(true);
+        setError(null);
+      } else {
+        setError(
+          err instanceof Error
+            ? err.message
+            : 'Error al subir o analizar el documento.',
+        );
+      }
     } finally {
       setLoading(false);
       setShowAnalysisProgress(false);
@@ -150,6 +161,7 @@ export function App() {
 
   async function handleAnalyzeText(text: string, useMock: boolean) {
     setSourceFile(null);
+    setSensitiveUploadAlert(false);
     setLoading(true);
     setShowAnalysisProgress(false);
     setError(null);
@@ -181,6 +193,7 @@ export function App() {
     setResults(null);
     setOriginalSourceText('');
     setSourceFile(null);
+    setSensitiveUploadAlert(false);
     setAdaptedProposals({});
     setHasAdaptedVersion(false);
     setError(null);
@@ -228,6 +241,8 @@ export function App() {
       onSelectStage={setCurrentStage}
       hasResults={Boolean(results)}
       hasAdaptedVersion={hasAdaptedVersion}
+      showSensitiveAlert={sensitiveUploadAlert}
+      onDismissSensitiveAlert={() => setSensitiveUploadAlert(false)}
     >
       {activeSection === 'inicio' ? (
         <HomeView
@@ -278,6 +293,8 @@ export function App() {
               onAnalyzeFile={handleAnalyzeFile}
               onAnalyzeText={handleAnalyzeText}
               onGoToTransform={() => handleSelectSection('transformar')}
+              initialFile={sourceFile}
+              onClearSensitiveAlert={() => setSensitiveUploadAlert(false)}
               isLoading={loading}
               progress={progress}
             />

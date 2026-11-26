@@ -9,6 +9,8 @@ export interface AppLayoutProps {
   onSelectStage?: (stage: AnalysisStage) => void;
   hasResults?: boolean;
   hasAdaptedVersion?: boolean;
+  showSensitiveAlert?: boolean;
+  onDismissSensitiveAlert?: () => void;
   user?: UserProfileInfo;
   children: React.ReactNode;
 }
@@ -29,6 +31,8 @@ export function AppLayout({
   onSelectStage,
   hasResults = false,
   hasAdaptedVersion = false,
+  showSensitiveAlert = false,
+  onDismissSensitiveAlert,
   user,
   children,
 }: AppLayoutProps) {
@@ -56,6 +60,8 @@ export function AppLayout({
           showStages={activeSection === 'analisis'}
           sectionTitle={SECTION_TITLES[activeSection]}
           user={user}
+          showSensitiveAlert={showSensitiveAlert}
+          onDismissSensitiveAlert={onDismissSensitiveAlert}
           isSidebarOpen={isSidebarOpen}
           onToggleSidebar={() => setIsSidebarOpen((prev) => !prev)}
         />
