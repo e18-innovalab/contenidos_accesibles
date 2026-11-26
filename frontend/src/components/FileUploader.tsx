@@ -12,6 +12,8 @@ import {
   Presentation,
   Trash2,
   RefreshCw,
+  ArrowRight,
+  Wand2,
 } from 'lucide-react';
 import {
   ACCEPT_ATTRIBUTE,
@@ -37,6 +39,7 @@ export interface UploadAnalysisProgress {
 export interface FileUploaderProps {
   onAnalyzeFile: (file: File, useMock: boolean) => void;
   onAnalyzeText: (text: string, useMock: boolean) => void;
+  onGoToTransform?: () => void;
   isLoading: boolean;
   progress?: UploadAnalysisProgress | null;
 }
@@ -67,13 +70,13 @@ function renderFormatIcon(extension: SupportedExtension) {
 export function FileUploader({
   onAnalyzeFile,
   onAnalyzeText,
+  onGoToTransform,
   isLoading,
   progress = null,
 }: FileUploaderProps) {
   const [tab, setTab] = useState<'file' | 'text'>('file');
   const [selected, setSelected] = useState<SelectedFileMeta | null>(null);
   const [text, setText] = useState<string>('');
-  const [useMock, setUseMock] = useState<boolean>(true);
   const [isDragging, setIsDragging] = useState<boolean>(false);
   const [validationError, setValidationError] = useState<string | null>(null);
 
@@ -178,14 +181,14 @@ export function FileUploader({
         setValidationError(check.message);
         return;
       }
-      onAnalyzeFile(selected.file, useMock);
+      onAnalyzeFile(selected.file, false);
     } else {
       const textError = validateText(text);
       if (textError) {
         setValidationError(textError);
         return;
       }
-      onAnalyzeText(text, useMock);
+      onAnalyzeText(text, false);
     }
   }
 
@@ -204,7 +207,7 @@ export function FileUploader({
   return (
     <div className="via-upload-view">
       <div className="via-page-heading">
-        <h1 className="via-page-title">¿Listo para analizar?</h1>
+        <h1 className="via-page-title">¿Listo para escanear?</h1>
         <p className="via-page-subtitle">
           Adaptá tu contenido educativo para que sea más accesible.
         </p>
@@ -216,11 +219,10 @@ export function FileUploader({
         </div>
         <div className="via-welcome-text">
           <h2 className="via-welcome-title">
-            Te damos la bienvenida al análisis integral
+            Te damos la bienvenida al análisis integral con escáner inteligente
           </h2>
           <p className="via-welcome-desc">
-            Subí tu material. Te guiaremos paso a paso con recomendaciones
-            claras para que sea fácil de entender, navegar y usar.
+            Subí tu material y la herramienta te hará un escaneo inteligente. Te guiaremos paso a paso con recomendaciones claras para que sea fácil de entender, navegar y usar.
           </p>
         </div>
       </div>
@@ -261,15 +263,17 @@ export function FileUploader({
           </button>
         </div>
 
-        <label className="via-mock-toggle">
-          <input
-            type="checkbox"
-            checked={useMock}
+        {onGoToTransform && (
+          <button
+            type="button"
+            className="via-btn via-btn-outline via-btn-sm"
             disabled={isLoading}
-            onChange={() => setUseMock(!useMock)}
-          />
-          <span>Modo prueba rápida (Mock)</span>
-        </label>
+            onClick={onGoToTransform}
+          >
+            <Wand2 size={15} />
+            <span>Ir a transformar material</span>
+          </button>
+        )}
       </div>
 
       <form onSubmit={handleSubmit} noValidate>
@@ -418,7 +422,8 @@ export function FileUploader({
                 className="via-btn via-btn-primary via-btn-lg"
                 disabled={isLoading}
               >
-                {isLoading ? progressLabel : 'Iniciar análisis'}
+                <span>{isLoading ? progressLabel : 'Iniciar análisis'}</span>
+                {!isLoading && <ArrowRight size={16} />}
               </button>
             </div>
           )}

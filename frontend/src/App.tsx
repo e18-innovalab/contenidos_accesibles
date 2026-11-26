@@ -7,6 +7,7 @@ import {
 import { AnalysisProgressView } from './components/AnalysisProgressView';
 import { AnalysisResults } from './components/AnalysisResults';
 import { AdaptedVersionView } from './components/AdaptedVersionView';
+import { TransformMaterialView } from './components/views/TransformMaterialView';
 import { AppLayout } from './components/layout/AppLayout';
 import type { NavSectionId } from './components/layout/Sidebar';
 import type { AnalysisStage } from './components/layout/Topbar';
@@ -43,6 +44,7 @@ function getSectionFromHash(): NavSectionId {
 interface UploadedFileCache {
   key: string;
   fileId: string;
+  filename: string;
   expiresAt: string;
 }
 
@@ -109,6 +111,7 @@ export function App() {
     uploadedCacheRef.current = {
       key: cacheKey,
       fileId: fileInfo.file_id,
+      filename: fileInfo.filename || file.name,
       expiresAt: fileInfo.expires_at,
     };
     return fileInfo.file_id;
@@ -191,6 +194,26 @@ export function App() {
     return <LoginView />;
   }
 
+  const transformInitialSource = results?.analysis_id
+    ? {
+        analysisId: results.analysis_id,
+        fileId: uploadedCacheRef.current?.fileId ?? null,
+        filename:
+          results.metadata?.filename ||
+          uploadedCacheRef.current?.filename ||
+          'Material analizado',
+        isUploaded: true,
+      }
+    : uploadedCacheRef.current &&
+        new Date(uploadedCacheRef.current.expiresAt).getTime() > Date.now()
+      ? {
+          fileId: uploadedCacheRef.current.fileId,
+          analysisId: null,
+          filename: uploadedCacheRef.current.filename,
+          isUploaded: true,
+        }
+      : null;
+
   return (
     <AppLayout
       activeSection={activeSection}
@@ -204,6 +227,20 @@ export function App() {
         <HomeView
           onGoToAnalysis={() => handleSelectSection('analisis')}
           onSelectSection={(section: NavSectionId) => handleSelectSection(section)}
+        />
+      ) : activeSection === 'transformar' ? (
+        <TransformMaterialView
+          initialSource={transformInitialSource}
+          onSourceChange={(nextSource) => {
+            if (nextSource?.fileId && nextSource?.filename) {
+              uploadedCacheRef.current = {
+                key: `manual-${nextSource.fileId}`,
+                fileId: nextSource.fileId,
+                filename: nextSource.filename,
+                expiresAt: new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString(),
+              };
+            }
+          }}
         />
       ) : activeSection !== 'analisis' ? (
         <SectionPlaceholder
@@ -232,6 +269,7 @@ export function App() {
             <FileUploader
               onAnalyzeFile={handleAnalyzeFile}
               onAnalyzeText={handleAnalyzeText}
+              onGoToTransform={() => handleSelectSection('transformar')}
               isLoading={loading}
               progress={progress}
             />

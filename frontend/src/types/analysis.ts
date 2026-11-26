@@ -342,3 +342,74 @@ export interface ErrorResponse {
   total?: number;
   proposal_id?: string | null;
 }
+
+// ----------------------------------------------------------------------------
+// 5. Transformar Material (backend/app/schemas/transformation.py — Issue #116)
+// ----------------------------------------------------------------------------
+
+export type TransformationFormat = 'no_images' | 'mind_map' | 'infographic' | 'audio';
+export type TransformationJobStatus = 'pending' | 'processing' | 'ready' | 'failed';
+export type TransformationReviewStatus = 'pendiente' | 'aceptada' | 'editada' | 'descartada';
+export type TransformationDecisionType = 'aceptada' | 'editada' | 'descartada';
+
+export interface TransformationRequest {
+  format: TransformationFormat;
+  analysis_id?: string | null;
+  file_id?: string | null;
+}
+
+export interface TransformationSource {
+  type: 'analysis' | 'file';
+  id: string;
+}
+
+export interface TransformationErrorInfo {
+  code: string;
+  message: string;
+}
+
+export interface GeneratedFileInfo {
+  filename: string;
+  content_type: string;
+  size_bytes: number;
+  preview_url?: string | null;
+  expires_in_seconds?: number | null;
+  file_id?: string | null;
+}
+
+export interface TransformationProgressInfo {
+  done: number;
+  total: number;
+}
+
+export interface TransformationResponse {
+  transformation_id: string;
+  format: TransformationFormat;
+  source: TransformationSource;
+  status: TransformationJobStatus;
+  review_status: TransformationReviewStatus;
+  result?: Record<string, unknown> | null;
+  edited_result?: Record<string, unknown> | null;
+  final_result?: Record<string, unknown> | null;
+  file?: GeneratedFileInfo | null;
+  extra_files: GeneratedFileInfo[];
+  progress?: TransformationProgressInfo | null;
+  views?: Record<string, string> | null;
+  error?: TransformationErrorInfo | null;
+  warnings: string[];
+  created_at: string;
+  updated_at: string;
+  decided_at?: string | null;
+  expires_at: string;
+  metadata?: AdaptationMetadata | null;
+}
+
+export interface TransformationDecisionRequest {
+  decision: TransformationDecisionType;
+  edited_result?: Record<string, unknown> | null;
+}
+
+export interface CreateTransformationOptions {
+  mock?: boolean;
+  dismissed?: string[];
+}
