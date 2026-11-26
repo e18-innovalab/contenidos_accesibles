@@ -6,6 +6,7 @@ from app.api.v1.endpoints import (
     export,
     files,
     health,
+    metrics,
     privacy,
     settings,
     test_ai,
@@ -42,5 +43,6 @@ api_router.include_router(
     dependencies=[Depends(require_permission("transformations:manage"))], responses=_AUTH_RESPONSES,
 )
 api_router.include_router(files.router, prefix="/files", tags=["Files"])
+api_router.include_router(metrics.router, prefix="/metrics", tags=["Metrics"], responses=_AUTH_RESPONSES)
 # Configuración editable por un admin (Issue #64): cada ruta exige settings:retention
 api_router.include_router(settings.router, prefix="/settings", tags=["Settings"], responses=_AUTH_RESPONSES)
