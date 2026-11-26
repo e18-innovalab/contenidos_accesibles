@@ -40,6 +40,8 @@ export interface FileUploaderProps {
   onAnalyzeFile: (file: File, useMock: boolean) => void;
   onAnalyzeText: (text: string, useMock: boolean) => void;
   onGoToTransform?: () => void;
+  initialFile?: File | null;
+  onClearSensitiveAlert?: () => void;
   isLoading: boolean;
   progress?: UploadAnalysisProgress | null;
 }
@@ -71,11 +73,19 @@ export function FileUploader({
   onAnalyzeFile,
   onAnalyzeText,
   onGoToTransform,
+  initialFile = null,
+  onClearSensitiveAlert,
   isLoading,
   progress = null,
 }: FileUploaderProps) {
   const [tab, setTab] = useState<'file' | 'text'>('file');
-  const [selected, setSelected] = useState<SelectedFileMeta | null>(null);
+  const [selected, setSelected] = useState<SelectedFileMeta | null>(() => {
+    if (!initialFile) return null;
+    const check = validateFile(initialFile);
+    return check.ok
+      ? { file: initialFile, extension: check.extension, label: check.label }
+      : null;
+  });
   const [text, setText] = useState<string>('');
   const [isDragging, setIsDragging] = useState<boolean>(false);
   const [validationError, setValidationError] = useState<string | null>(null);
@@ -84,6 +94,7 @@ export function FileUploader({
   const dragDepthRef = useRef<number>(0);
 
   function applyCandidateFile(candidate: File) {
+    onClearSensitiveAlert?.();
     const check = validateFile(candidate);
     if (!check.ok) {
       setSelected(null);
@@ -110,6 +121,7 @@ export function FileUploader({
   }
 
   function handleRemoveFile() {
+    onClearSensitiveAlert?.();
     setSelected(null);
     setValidationError(null);
     if (fileInputRef.current) {
@@ -256,6 +268,7 @@ export function FileUploader({
             onClick={() => {
               setTab('text');
               setValidationError(null);
+              onClearSensitiveAlert?.();
             }}
           >
             <FileText size={16} />
