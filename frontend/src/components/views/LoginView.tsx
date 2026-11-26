@@ -2,8 +2,13 @@ import React, { useState } from 'react';
 import loginBanner from '../../assets/login-banner.png';
 import baLogo from '../../assets/BA.png';
 import { useSignIn } from '@clerk/clerk-react';
+import { ArrowLeft } from 'lucide-react';
 
-export const LoginView: React.FC = () => {
+interface LoginViewProps {
+  onBackToLanding?: () => void;
+}
+
+export const LoginView: React.FC<LoginViewProps> = ({ onBackToLanding }) => {
   const [email, setEmail] = useState('');
   const { signIn, isLoaded } = useSignIn();
 
@@ -104,6 +109,16 @@ export const LoginView: React.FC = () => {
         {/* Columna Derecha / Vista principal en celular */}
         <div className="login-panel">
           <div className="login-header">
+            {onBackToLanding && (
+              <button
+                type="button"
+                onClick={onBackToLanding}
+                className="login-back-button"
+              >
+                <ArrowLeft size={16} />
+                Volver a VIA
+              </button>
+            )}
             <img
               src={baLogo}
               alt="Buenos Aires Ciudad"
