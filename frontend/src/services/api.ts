@@ -970,7 +970,7 @@ export async function exportAccessibilityReport(
   });
 }
 
-// ============================================================================
+// =====================================================================
 // 8. Módulo de Transformación de Material (transformations) — Issue #116
 // ============================================================================
 
@@ -1135,4 +1135,17 @@ export async function synthesizeTestAudio(
     chunks: response.headers.get('X-Audio-Chunks'),
     model: response.headers.get('X-TTS-Model'),
   };
+}
+
+// ============================================================================
+// Métricas personales del usuario (/api/v1/metrics)
+// ============================================================================
+
+export async function getMyMetrics(
+  range: import('../types/analysis').MetricsRange = '7d',
+): Promise<import('../types/analysis').UserMetricsResponse> {
+  const tzOffset = -new Date().getTimezoneOffset();
+  return apiRequest<import('../types/analysis').UserMetricsResponse>('/metrics', {
+    query: { range, tz_offset: tzOffset },
+  });
 }

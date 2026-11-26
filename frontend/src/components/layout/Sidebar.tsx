@@ -4,6 +4,7 @@ import {
   FileText,
   Sparkles,
   Folder,
+  BarChart3,
   Settings,
   X,
   PersonStanding,
@@ -14,6 +15,7 @@ export type NavSectionId =
   | 'analisis'
   | 'transformar'
   | 'materiales'
+  | 'metricas'
   | 'configuracion';
 
 export interface SidebarProps {
@@ -34,6 +36,7 @@ const NAV_ITEMS: NavItemConfig[] = [
   { id: 'analisis', label: 'Análisis integral', icon: FileText },
   { id: 'transformar', label: 'Transformar material', icon: Sparkles },
   { id: 'materiales', label: 'Mis materiales', icon: Folder },
+  { id: 'metricas', label: 'Métricas', icon: BarChart3 },
   { id: 'configuracion', label: 'Configuración', icon: Settings },
 ];
 

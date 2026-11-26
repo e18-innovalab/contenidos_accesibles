@@ -85,7 +85,6 @@ body {
 
 /* ==========================================================================
    APP SHELL (Sidebar + Columna Derecha)
-   ========================================================================== */
 
 .via-app-shell {
   display: flex;
@@ -102,7 +101,6 @@ body {
 
 /* ==========================================================================
    SIDEBAR (Navegación Lateral)
-   ========================================================================== */
 
 .via-sidebar {
   width: var(--via-sidebar-width);
@@ -246,7 +244,6 @@ body {
 
 /* ==========================================================================
    TOPBAR (Etapas + Línea amarilla GCBA + Perfil Docente)
-   ========================================================================== */
 
 .via-topbar {
   height: var(--via-topbar-height);
@@ -418,7 +415,6 @@ body {
 
 /* ==========================================================================
    MAIN CONTENT AREA
-   ========================================================================== */
 
 .via-main-content {
   flex: 1;
@@ -433,7 +429,6 @@ body {
 
 /* ==========================================================================
    VISTA "INICIAR ANÁLISIS" (Figma Issue #76 / #143 / #145)
-   ========================================================================== */
 
 .via-page-heading {
   margin-bottom: 1.5rem;
@@ -890,7 +885,6 @@ body {
 }
 /* ==========================================================================
    VISTA DE INICIO (HOME) - Obelisco v2 & VIA Tokens
-   ========================================================================== */
 
 .via-home-container {
   display: flex;
@@ -1299,7 +1293,6 @@ body {
 
 /* ==========================================================================
    PANTALLA DE PROCESAMIENTO / ESCANEO (Mock Frontend)
-   ========================================================================== */
 
 .via-processing-card-wrapper {
   display: flex;
@@ -1457,7 +1450,6 @@ body {
 
 /* ==========================================================================
    ALERTAS Y VISTAS SECUNDARIAS
-   ========================================================================== */
 
 .via-alert {
   display: flex;
@@ -1518,7 +1510,6 @@ body {
 
 /* ==========================================================================
    RESPONSIVE (Tablets & Móviles - Issue #1 / #143)
-   ========================================================================== */
 
 @media (max-width: 992px) {
   .via-sidebar {
@@ -2094,7 +2085,6 @@ body {
 
 /* =================================================   
    MENÚ DESPLEGABLE DE PERFIL Y CERRAR SESIÓN   
-   ================================================= */
 .via-user-dropdown {
   position: absolute;
   top: calc(100% + 0.5rem);
@@ -2154,7 +2144,6 @@ body {
 }
 /* ==========================================================================
    RESULTADOS DEL ANÁLISIS, HALLAZGOS Y EDICIÓN ASISTIDA
-   ========================================================================== */
 
 .via-btn-new-analysis {
   display: inline-flex;
@@ -2894,7 +2883,6 @@ body {
 
 /* ============================================================================
    Vista de Versión Adaptada (Finalizar Revisión)
-   ============================================================================ */
 
 .via-adapted-view {
   display: flex;
@@ -3178,9 +3166,8 @@ body {
   padding: 0.35rem 0.65rem;
   margin-bottom: 1rem;
 }
-/* ==========================================================================
+/* ===================================================================
    TransformMaterialView (.via-*) - Completo
-   ========================================================================== */
 
 .via-transform-view {
   display: flex;
@@ -3945,6 +3932,286 @@ body {
   cursor: pointer;
   padding: 0.25rem;
   border-radius: 6px;
+
+
+/* ============================================================================
+   Módulo Métricas (estética VIA)
+
+.via-metrics-page {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.via-metrics-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.via-metrics-eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  color: var(--via-teal-700);
+  margin-bottom: 0.35rem;
+}
+
+.via-metrics-controls {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+.via-segmented {
+  display: inline-flex;
+  background: var(--via-bg-surface);
+  border: 1px solid var(--via-border-light);
+  border-radius: var(--via-radius-sm);
+  padding: 0.2rem;
+  gap: 0.2rem;
+}
+
+.via-segmented-btn {
+  border: none;
+  background: transparent;
+  color: var(--via-text-secondary);
+  font-family: var(--via-font-body);
+  font-size: 0.85rem;
+  font-weight: 600;
+  padding: 0.42rem 0.85rem;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.15s ease, color 0.15s ease;
+}
+
+.via-segmented-btn:hover:not(:disabled) {
+  background: var(--via-bg-canvas);
+  color: var(--via-navy-900);
+}
+
+.via-segmented-btn.active {
+  background: var(--via-teal-900);
+  color: #ffffff;
+}
+
+.via-metrics-kpis {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 1rem;
+}
+
+.via-metric-card {
+  background: var(--via-bg-surface);
+  border: 1px solid var(--via-border-light);
+  border-radius: var(--via-radius-lg);
+  padding: 1.25rem 1.35rem;
+  box-shadow: var(--via-shadow-card);
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.via-metric-card.accent {
+  border-top: 3px solid var(--via-yellow-gcba);
+}
+
+.via-metric-icon {
+  width: 38px;
+  height: 38px;
+  border-radius: 10px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 0.35rem;
+}
+
+.via-metric-icon.teal {
+  background: var(--via-teal-soft);
+  color: var(--via-teal-900);
+}
+
+.via-metric-icon.green {
+  background: var(--via-green-bg);
+  color: var(--via-green-success);
+}
+
+.via-metric-icon.blue {
+  background: var(--via-blue-active-bg);
+  color: var(--via-blue-primary);
+}
+
+.via-metric-icon.gold {
+  background: #fff8db;
+  color: #8a6400;
+}
+
+.via-metric-label {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--via-text-secondary);
+}
+
+.via-metric-value {
+  font-family: var(--via-font-heading);
+  font-size: 1.85rem;
+  font-weight: 800;
+  color: var(--via-navy-900);
+  line-height: 1.15;
+}
+
+.via-metric-sub {
+  font-size: 0.8rem;
+  color: var(--via-text-muted);
+}
+
+.via-metrics-panel {
+  background: var(--via-bg-surface);
+  border: 1px solid var(--via-border-light);
+  border-radius: var(--via-radius-lg);
+  padding: 1.35rem 1.5rem;
+  box-shadow: var(--via-shadow-card);
+}
+
+.via-metrics-panel-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 1rem;
+  margin-bottom: 1rem;
+  flex-wrap: wrap;
+}
+
+.via-metrics-panel-title {
+  font-family: var(--via-font-heading);
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--via-navy-900);
+  margin: 0;
+}
+
+.via-metrics-panel-sub {
+  font-size: 0.82rem;
+  color: var(--via-text-secondary);
+  margin: 0.2rem 0 0;
+}
+
+.via-chart-box {
+  padding-top: 0.5rem;
+}
+
+.via-bars {
+  display: flex;
+  align-items: flex-end;
+  gap: 6px;
+  height: 165px;
+  padding: 0.5rem 0.25rem 0;
+}
+
+.via-bar-col {
+  flex: 1;
+  min-width: 0;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.via-bar-track {
+  width: 100%;
+  flex: 1;
+  display: flex;
+  align-items: flex-end;
+  background: #f4f8fb;
+  border-radius: 6px;
+  overflow: hidden;
+}
+
+.via-bar-fill {
+  width: 100%;
+  background: #d8e3ec;
+  border-radius: 6px 6px 0 0;
+  transition: height 0.25s ease;
+}
+
+.via-bar-fill.has-value {
+  background: linear-gradient(180deg, var(--via-blue-primary), var(--via-teal-900));
+}
+
+.via-bar-label {
+  font-size: 0.68rem;
+  color: var(--via-text-muted);
+  white-space: nowrap;
+  height: 1rem;
+}
+
+.via-metrics-two-col {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem;
+}
+
+.via-breakdown-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+}
+
+.via-breakdown-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.55rem 0.75rem;
+  border-radius: var(--via-radius-sm);
+  background: #f8fbfe;
+  border: 1px solid #edf2f7;
+  font-size: 0.88rem;
+  color: var(--via-text-primary);
+}
+
+.via-inline-icon {
+  vertical-align: -2px;
+  margin-right: 0.35rem;
+  color: var(--via-teal-700);
+}
+
+.via-table-scroll {
+  overflow-x: auto;
+}
+
+.via-metrics-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.86rem;
+}
+
+.via-metrics-table th,
+.via-metrics-table td {
+  padding: 0.65rem 0.75rem;
+  border-bottom: 1px solid #edf2f7;
+  text-align: left;
+}
+
+.via-metrics-table th {
+  font-size: 0.76rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--via-text-secondary);
+  background: #f8fbfe;
+}
+
+.via-metrics-empty {
+  color: var(--via-text-secondary);
+  font-size: 0.9rem;
+  margin: 0;
 }
 
 .via-spin {
@@ -3975,9 +4242,9 @@ body {
     align-items: stretch;
   }
 }
-/* ==========================================================================
+/* ===================================================================
    Showcase de resultados por formato (.via-showcase*)
-   ========================================================================== */
+   =================================================================== */
 
 .via-showcase-hero {
   border-radius: 18px;
@@ -4159,4 +4426,18 @@ body {
   margin: 0.2rem 0 0;
   font-size: 0.84rem;
   color: #475569;
+}
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+@media (max-width: 768px) {
+  .via-metrics-two-col {
+    grid-template-columns: 1fr;
+  }
+
+  .via-metrics-controls {
+    width: 100%;
+    justify-content: space-between;
+  }
 }

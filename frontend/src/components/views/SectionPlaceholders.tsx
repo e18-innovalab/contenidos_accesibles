@@ -2,12 +2,12 @@ import { Folder, Settings, ArrowRight } from 'lucide-react';
 import type { NavSectionId } from '../layout/Sidebar';
 
 interface SectionPlaceholderProps {
-  section: Exclude<NavSectionId, 'inicio' | 'analisis' | 'transformar'>;
+  section: Exclude<NavSectionId, 'inicio' | 'analisis' | 'transformar' | 'metricas'>;
   onGoToAnalysis: () => void;
 }
 
 const SECTION_CONFIG: Record<
-  Exclude<NavSectionId, 'inicio' | 'analisis' | 'transformar'>,
+  Exclude<NavSectionId, 'inicio' | 'analisis' | 'transformar' | 'metricas'>,
   {
     icon: React.ComponentType<{ size?: number }>;
     title: string;
