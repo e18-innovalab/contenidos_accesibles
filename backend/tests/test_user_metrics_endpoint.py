@@ -2,7 +2,7 @@
 
 from fastapi.testclient import TestClient
 
-from app.core.permissions import ANONYMOUS_OWNER
+from app.core.owner import current_owner
 from app.db import user_activity_repository as user_activity
 from app.db.database import init_db
 from app.main import app
@@ -21,10 +21,11 @@ def test_metrics_endpoint_empty_user():
 
 def test_metrics_endpoint_never_exposes_provider_or_model():
     init_db()
-    user_activity.record("analysis", ANONYMOUS_OWNER, format="pdf", score=74, barriers=4)
+    test_user = "user_docente_metrics_test"
+    user_activity.record("analysis", test_user, format="pdf", score=74, barriers=4)
     user_activity.record(
         "ai_call",
-        ANONYMOUS_OWNER,
+        test_user,
         detail="ok",
         provider="groq",
         model="openai/gpt-oss-120b",
@@ -32,8 +33,13 @@ def test_metrics_endpoint_never_exposes_provider_or_model():
         tokens=1250,
     )
 
-    client = TestClient(app)
-    res = client.get("/api/v1/metrics?range=7d")
+    app.dependency_overrides[current_owner] = lambda: test_user
+    try:
+        client = TestClient(app)
+        res = client.get("/api/v1/metrics?range=7d")
+    finally:
+        app.dependency_overrides.clear()
+
     assert res.status_code == 200
     raw = res.text
     assert "groq" not in raw
