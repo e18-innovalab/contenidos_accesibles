@@ -85,6 +85,7 @@ body {
 
 /* ==========================================================================
    APP SHELL (Sidebar + Columna Derecha)
+   ========================================================================== */
 
 .via-app-shell {
   display: flex;
@@ -101,6 +102,7 @@ body {
 
 /* ==========================================================================
    SIDEBAR (Navegación Lateral)
+   ========================================================================== */
 
 .via-sidebar {
   width: var(--via-sidebar-width);
@@ -244,6 +246,7 @@ body {
 
 /* ==========================================================================
    TOPBAR (Etapas + Línea amarilla GCBA + Perfil Docente)
+   ========================================================================== */
 
 .via-topbar {
   height: var(--via-topbar-height);
@@ -415,6 +418,7 @@ body {
 
 /* ==========================================================================
    MAIN CONTENT AREA
+   ========================================================================== */
 
 .via-main-content {
   flex: 1;
@@ -429,6 +433,7 @@ body {
 
 /* ==========================================================================
    VISTA "INICIAR ANÁLISIS" (Figma Issue #76 / #143 / #145)
+   ========================================================================== */
 
 .via-page-heading {
   margin-bottom: 1.5rem;
@@ -885,6 +890,7 @@ body {
 }
 /* ==========================================================================
    VISTA DE INICIO (HOME) - Obelisco v2 & VIA Tokens
+   ========================================================================== */
 
 .via-home-container {
   display: flex;
@@ -1293,6 +1299,7 @@ body {
 
 /* ==========================================================================
    PANTALLA DE PROCESAMIENTO / ESCANEO (Mock Frontend)
+   ========================================================================== */
 
 .via-processing-card-wrapper {
   display: flex;
@@ -1450,6 +1457,7 @@ body {
 
 /* ==========================================================================
    ALERTAS Y VISTAS SECUNDARIAS
+   ========================================================================== */
 
 .via-alert {
   display: flex;
@@ -1510,6 +1518,7 @@ body {
 
 /* ==========================================================================
    RESPONSIVE (Tablets & Móviles - Issue #1 / #143)
+   ========================================================================== */
 
 @media (max-width: 992px) {
   .via-sidebar {
@@ -2085,6 +2094,7 @@ body {
 
 /* =================================================   
    MENÚ DESPLEGABLE DE PERFIL Y CERRAR SESIÓN   
+   ================================================= */
 .via-user-dropdown {
   position: absolute;
   top: calc(100% + 0.5rem);
@@ -2144,6 +2154,7 @@ body {
 }
 /* ==========================================================================
    RESULTADOS DEL ANÁLISIS, HALLAZGOS Y EDICIÓN ASISTIDA
+   ========================================================================== */
 
 .via-btn-new-analysis {
   display: inline-flex;
@@ -2883,6 +2894,7 @@ body {
 
 /* ============================================================================
    Vista de Versión Adaptada (Finalizar Revisión)
+   ============================================================================ */
 
 .via-adapted-view {
   display: flex;
@@ -3166,8 +3178,9 @@ body {
   padding: 0.35rem 0.65rem;
   margin-bottom: 1rem;
 }
-/* ===================================================================
+/* ==========================================================================
    TransformMaterialView (.via-*) - Completo
+   ========================================================================== */
 
 .via-transform-view {
   display: flex;
@@ -3932,10 +3945,226 @@ body {
   cursor: pointer;
   padding: 0.25rem;
   border-radius: 6px;
+}
+
+.via-spin {
+  animation: via-spin-anim 1s linear infinite;
+}
+
+@keyframes via-spin-anim {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Responsive */
+@media (max-width: 1024px) {
+  .via-format-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 768px) {
+  .via-stepper,
+  .via-format-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .via-bottom-bar {
+    flex-direction: column;
+    align-items: stretch;
+  }
+}
+/* ==========================================================================
+   Showcase de resultados por formato (.via-showcase*)
+   ========================================================================== */
+
+.via-showcase-hero {
+  border-radius: 18px;
+  padding: 1.75rem;
+  color: #ffffff;
+  background: linear-gradient(135deg, #0b3b4c 0%, #0f5c6e 55%, #0a4252 100%);
+  box-shadow: 0 12px 28px rgba(11, 59, 76, 0.16);
+}
+
+.via-showcase.is-audio .via-showcase-hero,
+.via-showcase.is-infographic .via-showcase-hero,
+.via-showcase.is-mind_map .via-showcase-hero,
+.via-showcase.is-no_images .via-showcase-hero {
+  background: linear-gradient(135deg, #0b3b4c 0%, #0f5c6e 55%, #0a4252 100%);
+  box-shadow: 0 12px 28px rgba(11, 59, 76, 0.16);
+}
+
+.via-showcase-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  display: grid;
+  place-items: center;
+  background-color: rgba(255, 255, 255, 0.14);
+  color: #ffffff;
+  margin-bottom: 1rem;
+}
+
+.via-showcase-kicker {
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.78);
+  margin-bottom: 0.35rem;
+}
+
+.via-showcase-title {
+  margin: 0 0 0.4rem;
+  font-size: 1.45rem;
+  font-weight: 700;
+  color: #ffffff;
+}
+
+.via-showcase-sub {
+  margin: 0 0 1.35rem;
+  font-size: 0.9rem;
+  line-height: 1.5;
+  color: rgba(255, 255, 255, 0.86);
+  max-width: 62ch;
+}
+
+.via-showcase-surface {
+  background-color: #ffffff;
+  color: #0f172a;
+  border-radius: 14px;
+  padding: 1.15rem 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.via-audio-box {
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+}
+
+.via-audio-meta {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.via-audio-meta span {
+  font-size: 0.8rem;
+  color: #64748b;
+}
+
+.via-showcase-items {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+  gap: 0.75rem;
+}
+
+.via-showcase-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.65rem;
+  min-width: 0;
+  padding: 0.85rem 0.95rem;
+  border-radius: 10px;
+  background-color: #f8fafc;
+  border: 1px solid #e2e8f0;
+}
+
+.via-showcase-item p {
+  margin: 0;
+  min-width: 0;
+  flex: 1;
+  font-size: 0.86rem;
+  line-height: 1.45;
+  color: #334155;
+  overflow-wrap: anywhere;
+  word-break: break-word;
+}
+
+.via-showcase-item-num {
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: #0284c7;
+  background-color: #e0f2fe;
+  padding: 0.2rem 0.45rem;
+  border-radius: 6px;
+  flex-shrink: 0;
+  margin-top: 0.1rem;
+}
+
+.via-showcase-highlight {
+  display: inline-block;
+  margin-left: 0.45rem;
+  padding: 0.12rem 0.5rem;
+  border-radius: 999px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  background-color: #e0f2fe;
+  color: #0369a1;
+  vertical-align: middle;
+}
+
+.via-showcase-closing {
+  margin: 0.25rem 0 0;
+  padding: 0.75rem 0.95rem;
+  border-radius: 10px;
+  background-color: #f1f5f9;
+  color: #0f172a;
+  font-size: 0.86rem;
+  line-height: 1.45;
+}
+
+.via-showcase.is-no_images .via-showcase-items {
+  grid-template-columns: 1fr;
+}
+
+.via-job-status-card {
+  padding: 1.1rem 1.35rem;
+  border-radius: 14px;
+  background: linear-gradient(135deg, #f8fcff 0%, #eff6ff 100%);
+  border: 1px solid #bae6fd;
+  color: #0f172a;
+  box-shadow: 0 4px 14px rgba(2, 132, 199, 0.06);
+}
+
+.via-job-status-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.via-job-status-title {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  color: #0284c7;
+}
+
+.via-job-status-title strong {
+  display: block;
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: #0f172a;
+}
+
+.via-job-status-sub {
+  margin: 0.2rem 0 0;
+  font-size: 0.84rem;
+  color: #475569;
+}
 
 
 /* ============================================================================
    Módulo Métricas (estética VIA)
+   ============================================================================ */
 
 .via-metrics-page {
   display: flex;
@@ -4222,213 +4451,6 @@ body {
   to {
     transform: rotate(360deg);
   }
-}
-
-/* Responsive */
-@media (max-width: 1024px) {
-  .via-format-grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-}
-
-@media (max-width: 768px) {
-  .via-stepper,
-  .via-format-grid {
-    grid-template-columns: 1fr;
-  }
-
-  .via-bottom-bar {
-    flex-direction: column;
-    align-items: stretch;
-  }
-}
-/* ===================================================================
-   Showcase de resultados por formato (.via-showcase*)
-   =================================================================== */
-
-.via-showcase-hero {
-  border-radius: 18px;
-  padding: 1.75rem;
-  color: #ffffff;
-  background: linear-gradient(135deg, #0b3b4c 0%, #0f5c6e 55%, #0a4252 100%);
-  box-shadow: 0 12px 28px rgba(11, 59, 76, 0.16);
-}
-
-.via-showcase.is-audio .via-showcase-hero,
-.via-showcase.is-infographic .via-showcase-hero,
-.via-showcase.is-mind_map .via-showcase-hero,
-.via-showcase.is-no_images .via-showcase-hero {
-  background: linear-gradient(135deg, #0b3b4c 0%, #0f5c6e 55%, #0a4252 100%);
-  box-shadow: 0 12px 28px rgba(11, 59, 76, 0.16);
-}
-
-.via-showcase-icon {
-  width: 40px;
-  height: 40px;
-  border-radius: 10px;
-  display: grid;
-  place-items: center;
-  background-color: rgba(255, 255, 255, 0.14);
-  color: #ffffff;
-  margin-bottom: 1rem;
-}
-
-.via-showcase-kicker {
-  font-size: 0.7rem;
-  font-weight: 700;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: rgba(255, 255, 255, 0.78);
-  margin-bottom: 0.35rem;
-}
-
-.via-showcase-title {
-  margin: 0 0 0.4rem;
-  font-size: 1.45rem;
-  font-weight: 700;
-  color: #ffffff;
-}
-
-.via-showcase-sub {
-  margin: 0 0 1.35rem;
-  font-size: 0.9rem;
-  line-height: 1.5;
-  color: rgba(255, 255, 255, 0.86);
-  max-width: 62ch;
-}
-
-.via-showcase-surface {
-  background-color: #ffffff;
-  color: #0f172a;
-  border-radius: 14px;
-  padding: 1.15rem 1.25rem;
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-}
-
-.via-audio-box {
-  display: flex;
-  flex-direction: column;
-  gap: 0.65rem;
-}
-
-.via-audio-meta {
-  display: flex;
-  align-items: baseline;
-  justify-content: space-between;
-  gap: 0.75rem;
-  flex-wrap: wrap;
-}
-
-.via-audio-meta span {
-  font-size: 0.8rem;
-  color: #64748b;
-}
-
-.via-showcase-items {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
-  gap: 0.75rem;
-}
-
-.via-showcase-item {
-  display: flex;
-  align-items: flex-start;
-  gap: 0.65rem;
-  min-width: 0;
-  padding: 0.85rem 0.95rem;
-  border-radius: 10px;
-  background-color: #f8fafc;
-  border: 1px solid #e2e8f0;
-}
-
-.via-showcase-item p {
-  margin: 0;
-  min-width: 0;
-  flex: 1;
-  font-size: 0.86rem;
-  line-height: 1.45;
-  color: #334155;
-  overflow-wrap: anywhere;
-  word-break: break-word;
-}
-
-.via-showcase-item-num {
-  font-size: 0.72rem;
-  font-weight: 700;
-  color: #0284c7;
-  background-color: #e0f2fe;
-  padding: 0.2rem 0.45rem;
-  border-radius: 6px;
-  flex-shrink: 0;
-  margin-top: 0.1rem;
-}
-
-.via-showcase-highlight {
-  display: inline-block;
-  margin-left: 0.45rem;
-  padding: 0.12rem 0.5rem;
-  border-radius: 999px;
-  font-size: 0.72rem;
-  font-weight: 700;
-  background-color: #e0f2fe;
-  color: #0369a1;
-  vertical-align: middle;
-}
-
-.via-showcase-closing {
-  margin: 0.25rem 0 0;
-  padding: 0.75rem 0.95rem;
-  border-radius: 10px;
-  background-color: #f1f5f9;
-  color: #0f172a;
-  font-size: 0.86rem;
-  line-height: 1.45;
-}
-
-.via-showcase.is-no_images .via-showcase-items {
-  grid-template-columns: 1fr;
-}
-
-.via-job-status-card {
-  padding: 1.1rem 1.35rem;
-  border-radius: 14px;
-  background: linear-gradient(135deg, #f8fcff 0%, #eff6ff 100%);
-  border: 1px solid #bae6fd;
-  color: #0f172a;
-  box-shadow: 0 4px 14px rgba(2, 132, 199, 0.06);
-}
-
-.via-job-status-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 1rem;
-  flex-wrap: wrap;
-}
-
-.via-job-status-title {
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-  color: #0284c7;
-}
-
-.via-job-status-title strong {
-  display: block;
-  font-size: 0.95rem;
-  font-weight: 700;
-  color: #0f172a;
-}
-
-.via-job-status-sub {
-  margin: 0.2rem 0 0;
-  font-size: 0.84rem;
-  color: #475569;
-}
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
 }
 
 @media (max-width: 768px) {
