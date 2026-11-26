@@ -2621,10 +2621,107 @@ body {
   cursor: pointer;
 }
 
-.via-assisted-grid {
+.via-assisted-workspace {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 1.45rem;
+  grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.95fr);
+  gap: 1.25rem;
+  align-items: start;
+}
+
+.via-assisted-editor-column {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  gap: 0.9rem;
+}
+
+.via-document-preview {
+  min-width: 0;
+  overflow: hidden;
+  border: 1px solid var(--via-border-light);
+  border-radius: var(--via-radius-sm);
+  background-color: #f3f6fa;
+}
+
+.via-document-preview-frame {
+  display: flex;
+  min-height: 390px;
+  align-items: stretch;
+  justify-content: center;
+  overflow: hidden;
+  padding: 0.65rem;
+}
+
+.via-document-preview-iframe {
+  width: 100%;
+  min-height: 390px;
+  border: 0;
+  background-color: #ffffff;
+}
+
+.via-document-preview-text {
+  width: 100%;
+  max-height: 480px;
+  overflow: auto;
+  padding: 1rem;
+}
+
+.via-document-preview-paper {
+  min-height: 360px;
+  padding: 1.5rem;
+  background-color: #ffffff;
+  border: 1px solid #e2e8f0;
+  box-shadow: 0 2px 8px rgba(15, 23, 42, 0.06);
+  color: var(--via-navy-900);
+  font-size: 0.87rem;
+  line-height: 1.7;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+.via-document-preview-paper p {
+  margin: 0;
+}
+
+.via-document-preview-empty {
+  display: flex;
+  min-height: 390px;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.7rem;
+  padding: 1.5rem;
+  color: var(--via-text-secondary);
+  text-align: center;
+}
+
+.via-document-preview-empty p {
+  max-width: 22rem;
+  margin: 0;
+  font-size: 0.87rem;
+  line-height: 1.55;
+}
+
+.via-document-preview-controls {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  padding: 0.7rem;
+  background-color: #ffffff;
+  border-top: 1px solid var(--via-border-light);
+}
+
+.via-document-preview-controls .via-btn {
+  gap: 0.25rem;
+  padding-inline: 0.6rem;
+  white-space: nowrap;
+}
+
+.via-document-preview-page {
+  color: var(--via-text-secondary);
+  font-size: 0.78rem;
+  white-space: nowrap;
 }
 
 .via-original-box,
@@ -2684,7 +2781,8 @@ body {
 
 /* Alternativas / Propuestas IA */
 .via-proposals-section {
-  margin-top: 1.55rem;
+  grid-column: 1 / -1;
+  margin-top: 0;
   padding-top: 1.35rem;
   border-top: 1px solid var(--via-border-light);
 }
@@ -2874,8 +2972,14 @@ body {
     padding: 1.5rem 1.35rem;
   }
 
-  .via-assisted-grid {
+  .via-assisted-workspace {
     grid-template-columns: 1fr;
+  }
+
+  .via-document-preview-frame,
+  .via-document-preview-iframe,
+  .via-document-preview-empty {
+    min-height: 320px;
   }
 
   .via-barrier-row,
