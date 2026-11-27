@@ -7,8 +7,8 @@ import {
   BarChart3,
   Settings,
   X,
-  PersonStanding,
 } from 'lucide-react';
+import viaLogo from '../../assets/BA.png';
 
 export type NavSectionId =
   | 'inicio'
@@ -78,15 +78,11 @@ export function Sidebar({
       >
         <div className="via-sidebar-header">
           <div className="via-brand">
-            <div className="via-brand-logo-wrapper" aria-hidden="true">
-              <div className="via-brand-logo-accent" />
-              <div className="via-brand-logo">
-                <PersonStanding size={24} strokeWidth={2.2} />
-              </div>
-            </div>
+            <img className="via-brand-logo" src={viaLogo} alt="VIA" />
             <div className="via-brand-text">
-              <span className="via-brand-title">VIA</span>
-              <span className="via-brand-subtitle">Accesibilidad docente</span>
+              <span className="via-brand-subtitle">
+                Visualización, inclusión y accesibilidad
+              </span>
             </div>
           </div>
 
