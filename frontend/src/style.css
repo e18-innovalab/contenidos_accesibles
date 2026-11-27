@@ -128,55 +128,27 @@ body {
 
 .via-brand {
   display: flex;
-  align-items: center;
-  gap: 0.9rem;
-}
-
-.via-brand-logo-wrapper {
-  position: relative;
-  width: 48px;
-  height: 48px;
-  flex-shrink: 0;
-}
-
-.via-brand-logo-accent {
-  position: absolute;
-  inset: 4px -3px -4px 4px;
-  background-color: var(--via-teal-accent);
-  border-radius: 14px;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.35rem;
 }
 
 .via-brand-logo {
-  position: relative;
-  width: 46px;
-  height: 46px;
-  background-color: var(--via-teal-900);
-  color: #ffffff;
-  border-radius: 14px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  display: block;
+  width: 88px;
+  height: auto;
 }
 
 .via-brand-text {
   display: flex;
   flex-direction: column;
-  gap: 0.1rem;
-}
-
-.via-brand-title {
-  font-family: var(--via-font-heading);
-  font-size: 1.35rem;
-  font-weight: 800;
-  line-height: 1.15;
-  color: var(--via-navy-900);
-  letter-spacing: 0.01em;
 }
 
 .via-brand-subtitle {
-  font-size: 0.85rem;
+  font-size: 0.7rem;
   font-weight: 500;
   color: var(--via-text-secondary);
+  white-space: nowrap;
 }
 
 .via-sidebar-close-btn {
